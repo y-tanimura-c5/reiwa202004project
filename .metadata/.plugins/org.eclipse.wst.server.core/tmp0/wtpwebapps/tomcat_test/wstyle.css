@@ -1,0 +1,267 @@
+/* カレンダー（日） */
+td.sunred, th.sunred {
+  color: red;
+  background-color: #ffccff;
+}
+
+/* カレンダー（土） */
+td.satblue, th.satblue {
+  color: blue;
+  background-color: #ccffff;
+}
+
+/* カレンダー（平日）*/
+td.default, th.default {
+  color: black;
+  background-color: #ffebcd;
+}
+
+/* 背景 */
+.formBgColor {
+  background-color: #bfbfbf;
+}
+
+/* テーブルタイトル色 */
+.tableTitleBgColor {
+  background-color: #bfbfbf;
+}
+
+/* テーブル背景色 */
+.tableBgColor {
+  background-color: #ffffff;
+}
+
+/* テーブル線色 */
+.tableLineColor {
+  background-color: #666666;
+}
+
+/* 文字色（必須項目の表示） */
+.c_gray {
+  color: #999999;
+}
+
+/* 文字色（エラーメッセージ） */
+.c_red {
+  color: #ff0000;
+}
+
+/* ダッシュボードの文字（小さめ） */
+.s_moji {
+  font-size: small;
+}
+
+/* ダッシュボードの文字（背景白色） */
+.s_moji_bg_white {
+  font-size: small;
+  background-color: #ffffff;
+}
+
+/* テーブルの幅（ダッシュボード） */
+table.dashb1 {
+  background-color: #cccccc;
+  width: 160px;
+  border-style: solid;
+  border-width: 1px 1px 1px 1px;
+}
+
+/* テーブルの幅（ダッシュボードの右） */
+table.rightb0 {
+  width: 640px;
+}
+
+/* テーブルの幅（ダッシュボードの右、線表示あり） */
+table.rightb1 {
+  width: 640px;
+  border-style: solid;
+  border-width: 1px;
+}
+
+/* テーブルの幅（ダッシュボードなし） */
+table.fullb0 {
+  width: 1000px;
+}
+
+/* テーブルの幅（ダッシュボードなし、線表示あり） */
+table.fullb1 {
+  width: 800px;
+  border-style: solid;
+  border-width: 1px;
+}
+
+/* テーブルの幅（指定幅全体） */
+.p100b0 {
+  width: 100%;
+}
+
+/* テーブルの幅（指定幅全体） */
+table.p100dash tr td {
+  width: 100%;
+  padding: 10px;
+}
+
+/* テーブルの幅（指定幅全体、線表示あり） */
+table.p100b1 tr td {
+  width: 100%;
+  border-style: solid;
+  border-width: 1px;
+}
+
+/* テーブルの幅 */
+table.pad5 tr td {
+  padding: 5px;
+}
+
+/* テーブルの幅 */
+table.pad10 tr td {
+  padding: 10px;
+}
+
+/* テーブルの幅（CSV up/down） */
+table.rb1 {
+  width: 500px;
+  border-style: solid;
+  border-width: 1px;
+  padding: 30px;
+  margin: 10px;
+}
+
+table.preview {
+  border-collapse: collapse;
+}
+table.preview,
+table.preview th,
+table.preview td {
+  border: 1px #cccccc solid;
+}
+
+img.prev {
+  width: 95%;
+  height: auto;
+}
+
+/* タイトル文字フォント */
+.titleFont {
+  font-size: 28px;
+}
+
+/* 基本文字フォント */
+.normalFont {
+  font-size: 15px;
+  color: #ffffff;
+}
+
+/* エラー文字フォント */
+.errorFont {
+  font-size: 15px;
+  color: #ff0000;
+}
+
+/* ログインタイトルテーブルの幅 */
+.loginTitleWidth {
+  width: 400px;
+  border-style: solid;
+  border-width: 0px;
+  text-align: center;
+  padding: 0px;
+}
+
+/* メッセージテーブルの幅 */
+.loginMsgWidth {
+  width: 400px;
+  border-width: 0px;
+}
+
+/* 契約情報メッセージテーブルの幅 */
+.contractMsgWidth {
+  width: 1000px;
+  border-width: 0px;
+}
+
+/* フォームメッセージテーブルの幅 */
+.formMsgWidth {
+  width: 600px;
+  border-width: 0px;
+}
+
+/* ログインフィールドテーブルの幅 */
+.loginWidth {
+  width: 400px;
+  border-style: solid;
+  border-width: 1px;
+  padding: 50px;
+}
+
+/* メニューテーブルの幅 */
+.menuWidth {
+  width: 400px;
+  border-style: solid;
+  border-width: 1px;
+  padding: 50px;
+}
+
+/* メニューコメントテーブルの幅 */
+.menuCommentWidth {
+  width: 500px;
+  border-style: solid;
+  border-width: 0px;
+  padding: 0px;
+}
+
+/* 契約情報テーブルの幅 */
+.contractWidth {
+  width: 1000px;
+  border-style: solid;
+  border-width: 1px;
+  padding: 10px;
+}
+
+/* フォームテーブルの幅 */
+.formWidth {
+  width: 600px;
+  border-style: solid;
+  border-width: 1px;
+  padding: 20px;
+}
+
+/* 確定ボタンテーブルの幅 */
+.submitButtonWidth {
+  width: 600px;
+  border-style: solid;
+  border-width: 0px;
+  padding: 50px;
+}
+
+/* ボタン */
+input[type="submit"],
+input[type="button"]{
+  width: 300px;
+  height: 60px;
+  font-size: 18px;
+  color: #ffffff;
+}
+
+/* ヘッダのスタイル */
+.headerStyle {
+  width: 100%;
+  font-size: 18px;
+  border-style: solid;
+  border-width: 0px;
+  text-align: center;
+  padding: 0px;
+}
+
+/* 契約情報ヘッダのスタイル */
+.contractHeaderStyle {
+  width: 1000px;
+  font-size: 18px;
+  border-style: solid;
+  border-width: 0px;
+  text-align: center;
+  padding: 0px;
+}
+
+.center {
+  margin-left : auto;
+  margin-right : auto;
+}

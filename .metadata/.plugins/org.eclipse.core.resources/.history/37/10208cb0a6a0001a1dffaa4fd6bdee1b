@@ -1,0 +1,13 @@
+package com.example.demo;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+public class Test {
+    @Autowired
+    private UserAccountService sv;
+
+    void Test() {
+        sv.registerUser("user","user");
+
+    }
+}

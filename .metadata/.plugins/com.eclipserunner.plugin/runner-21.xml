@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<runner version="1.0.0">
+    <category expanded="true" name="カテゴリーなし">
+        <launchConfiguration bookmark="false" defaultLaunchMode="run" name="NViewerApplication"/>
+        <launchConfiguration bookmark="false" defaultLaunchMode="run" name="WebReceipt build.xml"/>
+        <launchConfiguration bookmark="false" defaultLaunchMode="run" name="dbtest - DbtestApplication"/>
+        <launchConfiguration bookmark="false" defaultLaunchMode="run" name="devtools-client[dbtest]"/>
+        <launchConfiguration bookmark="false" defaultLaunchMode="run" name="test - TestApplication"/>
+        <launchConfiguration bookmark="false" defaultLaunchMode="run" name="ローカルホスト の Tomcat9 (Java11)"/>
+        <launchConfiguration bookmark="false" defaultLaunchMode="run" name="新規構成"/>
+    </category>
+</runner>

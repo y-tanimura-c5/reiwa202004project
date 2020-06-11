@@ -1,0 +1,8 @@
+  @Autowired
+  EmployeeRepository empRepository;
+  @RequestMapping(value = "/", method = RequestMethod.GET)
+  public String index(Model model) {
+    List<Employee> emplist=empRepository.findAll();
+    model.addAttribute("employeelist", emplist);
+    return "index";
+  }

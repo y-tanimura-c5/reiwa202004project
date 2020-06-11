@@ -1,0 +1,207 @@
+@charset "UTF-8";
+@-webkit-keyframes background-active-anim {
+  0% {
+    opacity: 0; }
+
+  100% {
+    opacity: 1; } }
+
+@-webkit-keyframes background-inactive-anim {
+  100% {
+    opacity: 0; } }
+
+.backgrounds {
+  z-index: 1;
+  overflow: hidden; }
+  .backgrounds .background-value {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+    background: -webkit-linear-gradient(-90deg, #ff9999 0%, #ff3333 100%);
+    background: linear-gradient(-180deg, #ff9999 0%, #ff3333 100%); }
+    .backgrounds .background-value .channel-name {
+      z-index: 9;
+      position: absolute;
+      top: 30px;
+      left: -50px;
+      width: 240px;
+      height: 48px;
+      line-height: 48px;
+      font-size: 14px;
+      font-weight: bold;
+      text-align: center;
+      color: #000;
+      background: #FFF;
+      -webkit-transform: rotate(-45deg); }
+    .backgrounds .background-value .image {
+      position: absolute;
+      top: 72px;
+      right: -72px;
+      -webkit-transform: rotate(10deg); }
+  .backgrounds .background-news {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+    background: -webkit-linear-gradient(-90deg, #3ba5f8 0%, #2634a8 100%);
+    background: linear-gradient(-180deg, #3ba5f8 0%, #2634a8 100%); }
+    .backgrounds .background-news .channel-name {
+      z-index: 9;
+      position: absolute;
+      top: 30px;
+      left: -50px;
+      width: 240px;
+      height: 48px;
+      line-height: 48px;
+      font-size: 14px;
+      font-weight: bold;
+      text-align: center;
+      color: #FFF;
+      background: #139;
+      -webkit-transform: rotate(-45deg); }
+    .backgrounds .background-news .image {
+      position: absolute;
+      top: 72px;
+      left: 72px; }
+  .backgrounds .background-image {
+    background: #000; }
+  .backgrounds .background-active {
+    display: block !important; }
+  .backgrounds .background-inactive {
+    display: none !important; }
+  .backgrounds .background-active-anim {
+    -webkit-animation: .4s background-active-anim;
+    -webkit-animation-fill-mode: forwards; }
+  .backgrounds .background-inactive-anim {
+    -webkit-animation: .4s background-inactive-anim;
+    -webkit-animation-fill-mode: forwards; }
+
+.contents {
+  z-index: 2;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0; }
+  .contents .content-value .header-container {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 55%; }
+    .contents .content-value .header-container .shopName {
+      font-size: 2.0rem;
+      color: #FFF; }
+      .contents .content-value .header-container .shopName:after {
+        content: "からのお知らせ"; }
+    .contents .content-value .header-container h2.title {
+      margin: 0;
+      padding: 0;
+      line-height: 3.8rem;
+      font-size: 3.6rem;
+      color: #FFF; }
+  .contents .content-value .text-container {
+    position: absolute;
+    right: 0;
+    bottom: 16px;
+    left: 0;
+    height: 144px;
+    background: rgba(255, 255, 255, 0.9); }
+    .contents .content-value .text-container p.text {
+      margin: 0;
+      padding: 16px 8px;
+      line-height: 3.8rem;
+      text-wrap: normal;
+      font-size: 3.6rem;
+      font-weight: bold; }
+  .contents .content-value ul {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    margin: 0;
+    padding: 0; }
+    .contents .content-value ul li {
+      margin: 0;
+      padding: 0;
+      list-style: none; }
+      .contents .content-value ul li img {
+        height: 520px; }
+  .contents .content-news .headline-container {
+    position: absolute;
+    top: 16px;
+    right: 0;
+    left: 0;
+    height: 96px;
+    background: rgba(0, 0, 0, 0.3); }
+    .contents .content-news .headline-container h2.headline {
+      margin: 0;
+      padding: 0;
+      line-height: 96px;
+      text-align: center;
+      letter-spacing: 0px;
+      font-size: 48px;
+      color: #FFF; }
+    .contents .content-news .headline-container .from figure {
+      position: absolute;
+      top: 50%;
+      right: 16px;
+      margin-top: -32px;
+      display: box;
+      display: -webkit-box; }
+      .contents .content-news .headline-container .from figure img {
+        height: 64px; }
+      .contents .content-news .headline-container .from figure figcaption {
+        line-height: 64px;
+        font-size: 1.0rem;
+        font-weight: bold;
+        color: #FFF; }
+  .contents .content-news .text-container {
+    position: absolute;
+    right: 0;
+    bottom: 16px;
+    left: 0;
+    height: 144px;
+    background: rgba(255, 255, 255, 0.9); }
+    .contents .content-news .text-container p.text {
+      margin: 0;
+      padding: 8px 8px;
+      line-height: 2.8rem;
+      text-wrap: normal;
+      font-size: 2.8rem;
+      font-weight: bold; }
+  .contents .content-news ul {
+    position: absolute;
+    top: 128px;
+    right: 16px;
+    margin: 0;
+    padding: 0; }
+    .contents .content-news ul li {
+      margin: 0;
+      padding: 0;
+      list-style: none; }
+      .contents .content-news ul li img {
+        height: 420px; }
+  .contents .content-active {
+    display: block !important; }
+  .contents .content-inactive {
+    display: none !important; }
+  .contents .image-active {
+    display: block !important; }
+  .contents .image-inactive {
+    display: none !important; }
+
+.btn {
+  z-index: 10;
+  position: absolute;
+  top: 94%;
+  left: 41%; }
+
+.btn_c {
+  z-index: 10;
+  position: absolute;
+  top: 94%;
+  left: 48%; }

@@ -1,0 +1,20 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+  <title>Springboot</title>
+  <meta charset="utf-8" />
+  <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+</head>
+<body>
+<div class="box">
+	<div id="body-bk">
+		<div id="body">
+			<div style="padding: 1px; margin-bottom: 0px; border: 1px solid #333333; border-radius: 10px; width: 500px;">
+
+				<span class="size12">Copyright &copy レイワソリューションズ株式会社</span>
+
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

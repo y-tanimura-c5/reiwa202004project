@@ -1,0 +1,20 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+  <title>Springboot</title>
+  <meta charset="utf-8" />
+  <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+</head>
+<body>
+	<h1>MyApp Home Page</h1>
+
+	<form role="form" id="logout" th:action="@{/logout}" method="post">
+        <button type="submit">ログアウト</button>
+    </form>
+<!--   <table> -->
+<!--     <tr th:each="emp : ${employeelist}" th:object="${emp}"> -->
+<!--       <td th:text="*{empno}"></td> -->
+<!--       <td th:text="*{empname}"></td> -->
+<!--     </tr> -->
+<!--   </table> -->
+</body>
+</html>

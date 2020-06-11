@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<classpath>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/annotations-api.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://javaee.github.io/javaee-spec/javadocs/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/catalina-ant.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://tomcat.apache.org/tomcat-9.0-doc/api/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/catalina-ha.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://tomcat.apache.org/tomcat-9.0-doc/api/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/catalina-ssi.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://tomcat.apache.org/tomcat-9.0-doc/api/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/catalina-storeconfig.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://tomcat.apache.org/tomcat-9.0-doc/api/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/catalina-tribes.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://tomcat.apache.org/tomcat-9.0-doc/api/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/catalina.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://tomcat.apache.org/tomcat-9.0-doc/api/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/ecj-4.13.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://tomcat.apache.org/tomcat-9.0-doc/api/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/el-api.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://javaee.github.io/javaee-spec/javadocs/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/jasper-el.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://tomcat.apache.org/tomcat-9.0-doc/api/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/jasper.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://tomcat.apache.org/tomcat-9.0-doc/api/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/jaspic-api.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://javaee.github.io/javaee-spec/javadocs/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/jsp-api.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://javaee.github.io/javaee-spec/javadocs/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/servlet-api.jar" runtime-id="Tomcat9 (Java11)" source-attachment-path="C:/Users/Y-TANI~1/AppData/Local/Temp/.org.sf.feeling.decompiler1580262991716/source/tomcat-servlet-api-9.0.30-sources.jar">
+    <attribute name="javadoc_location" value="https://javaee.github.io/javaee-spec/javadocs/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/tomcat-api.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://tomcat.apache.org/tomcat-9.0-doc/api/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/tomcat-coyote.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://tomcat.apache.org/tomcat-9.0-doc/api/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/tomcat-dbcp.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://tomcat.apache.org/tomcat-9.0-doc/api/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/tomcat-i18n-cs.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://tomcat.apache.org/tomcat-9.0-doc/api/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/tomcat-i18n-de.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://tomcat.apache.org/tomcat-9.0-doc/api/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/tomcat-i18n-es.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://tomcat.apache.org/tomcat-9.0-doc/api/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/tomcat-i18n-fr.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://tomcat.apache.org/tomcat-9.0-doc/api/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/tomcat-i18n-ja.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://tomcat.apache.org/tomcat-9.0-doc/api/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/tomcat-i18n-ko.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://tomcat.apache.org/tomcat-9.0-doc/api/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/tomcat-i18n-pt-BR.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://tomcat.apache.org/tomcat-9.0-doc/api/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/tomcat-i18n-ru.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://tomcat.apache.org/tomcat-9.0-doc/api/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/tomcat-i18n-zh-CN.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://tomcat.apache.org/tomcat-9.0-doc/api/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/tomcat-jdbc.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://tomcat.apache.org/tomcat-9.0-doc/api/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/tomcat-jni.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://tomcat.apache.org/tomcat-9.0-doc/api/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/tomcat-util-scan.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://tomcat.apache.org/tomcat-9.0-doc/api/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/tomcat-util.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://tomcat.apache.org/tomcat-9.0-doc/api/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/tomcat-websocket.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://tomcat.apache.org/tomcat-9.0-doc/api/"/>
+  </source-attachment>
+  <source-attachment entry="C:/pleiades/tomcat/9/lib/websocket-api.jar" runtime-id="Tomcat9 (Java11)">
+    <attribute name="javadoc_location" value="https://javaee.github.io/javaee-spec/javadocs/"/>
+  </source-attachment>
+</classpath>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+    <appender name="FILE" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="/usr/local/simpleweb/log/simpleweb.log" />
+        <param name="Append" value="true" />
+        <param name="Threshold" value="INFO"/>
+        <param name="MaxFileSize" value="10MB"/>
+        <param name="MaxBackupIndex" value="50"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p %m%n"/>
+        </layout>
+    </appender>
+
+    <category name="com.cfiv.simpleweb.common.Log">
+        <priority value="info" />
+        <appender-ref ref="FILE"/>
+    </category>
+
+</log4j:configuration>
+
