@@ -2,7 +2,7 @@ package com.cfiv.sysdev.rrs.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -122,12 +122,12 @@ public class InterviewResult implements Serializable {
      */
     @OneToMany(fetch = FetchType.EAGER, cascade= CascadeType.ALL)
     @JoinColumn(name = "INTERVIEW_NO")
-    private List<InterviewContent> interviewContentList;
+    private Set<InterviewContent> interviewContentList;
 
     /**
      * 添付ファイルリスト
      */
     @OneToMany(fetch = FetchType.EAGER, cascade= CascadeType.ALL)
     @JoinColumn(name = "INTERVIEW_NO")
-    private List<InterviewAttach> interviewAttachList;
+    private Set<InterviewAttach> interviewAttachList;
 }
