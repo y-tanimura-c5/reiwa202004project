@@ -1,0 +1,90 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+  <title>Springboot</title>
+  <meta charset="utf-8" />
+  <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+</head>
+<body>
+<div class="box">
+	<div id="header-fixed">
+		<div id="header-bk">
+			<div id="header">
+				<div id="header-left">
+					<span class="sizeb24"><a href="/" id="header">Reiwa Refiner System</a></span>
+				</div>
+				<div id="header-right">
+					<form role="form" id="logout" th:action="@{/logout}" method="post">
+	        			<button type="submit">ログアウト</button>
+				    </form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="body-bk">
+		<div id="body">
+			<div style="padding: 1px; margin-bottom: 0px; border: 1px solid #333333; border-radius: 10px; width: 500px;">
+
+				<h1>MyApp Home Page</h1>
+				<br>
+
+				<table class="list">
+				  <tr>
+				    <th>ID</th>
+				    <th>名前</th>
+				  </tr>
+				  <tr th:each="list:${list}">
+				    <td th:text="${list.id}"></td>
+				    <td th:text="${list.name}"></td>
+				  </tr>
+				</table>
+
+				<br>
+
+				<form method="post" name="create" action="/" accept-charset="UTF8">
+				    <input type="text" name="name"/>
+				    <input type="submit" value="新規登録" />
+				</form>
+
+				<br>
+				<br>
+				<br>
+				<br>
+				<br>
+				<br>
+				<br>
+				<br>
+				<br>
+				<br>
+				<br>
+				<br>
+				<br>
+				<br>
+				<br>
+				<br>
+				<br>
+				<br>
+				<br>
+				<br>
+				<br>
+				<br>
+				<h1>MyApp Home Page</h1>
+
+			</div>
+		</div>
+	</div>
+<!--   <table> -->
+<!--     <tr th:each="emp : ${employeelist}" th:object="${emp}"> -->
+<!--       <td th:text="*{empno}"></td> -->
+<!--       <td th:text="*{empname}"></td> -->
+<!--     </tr> -->
+<!--   </table> -->
+	<div id="footer-fixed">
+		<div id="footer-bk">
+			<div id="footer">
+				<span class="size12">Copyright &copy レイワソリューションズ株式会社</span>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>
