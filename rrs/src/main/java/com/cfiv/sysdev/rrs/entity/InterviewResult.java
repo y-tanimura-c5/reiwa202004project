@@ -82,39 +82,39 @@ public class InterviewResult implements Serializable {
     private String adminComment;
 
     /**
-     * 削除フラグ
+     * 削除
      */
-    @Column(name="DELETE_FLAG")
-    private int deleteFlag;
-
-    /**
-     * 登録者
-     */
-    @Column(name="REGIST_USER_ID")
-    private String registUserID;
+    @Column(name="DELETED")
+    private Boolean deleted;
 
     /**
      * 登録日
      */
-    @Column(name="REGIST_DATETIME")
-    private Date registDateTime;
+    @Column(name="REGIST_TIME")
+    private Date registTime;
 
     /**
-     * 更新者
+     * 登録者
      */
-    @Column(name="UPDATE_USER_ID")
-    private String updateUserID;
+    @Column(name="REGIST_USER")
+    private String registUser;
 
     /**
      * 更新日
      */
-    @Column(name="UPDATE_DATETIME")
-    private Date updateDateTime;
+    @Column(name="UPDATE_TIME")
+    private Date updateTime;
+
+    /**
+     * 更新者
+     */
+    @Column(name="UPDATE_USER")
+    private String updateUser;
 
     /**
      * 更新回数
      */
-    @Column(name="UPDATETIME_COUNT")
+    @Column(name="UPDATE_COUNT")
     private int updateCount;
 
     /**

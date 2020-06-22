@@ -13,32 +13,32 @@ import javax.persistence.Table;
 import lombok.Data;
 
 /**
- * 添付ファイル Entity
+ * 企業情報 Entity
  */
 @Entity
 @Data
-@Table(name="D_INTERVIEW_ATTACH")
-public class InterviewAttach implements Serializable {
+@Table(name="m_company")
+public class Company implements Serializable {
 
     /**
-     * 添付ファイル番号
+     * ID
      */
     @Id
-    @Column(name="ATTACH_NO")
+    @Column(name="ID")
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private String attachNo;
+    private Long id;
 
     /**
-     * 面談番号
+     * 名前
      */
-    @Column(name="INTERVIEW_NO")
-    private String interviewNo;
+    @Column(name="NAME")
+    private String name;
 
     /**
-     * 添付ファイルURL
+     * 有効／無効
      */
-    @Column(name="ATTACH_URL")
-    private String attachURL;
+    @Column(name="ENABLED")
+    private Boolean enabled;
 
     /**
      * 削除

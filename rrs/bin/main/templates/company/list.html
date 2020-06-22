@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>企業情報一覧</title>
+<!-- 	<link href="/css/list.css" rel="stylesheet"></link> -->
+<!-- 	<link th:href="@{/css/styles.css}" rel="stylesheet"/> -->
+	<link rel="stylesheet" href="/css/bootstrap.css" />
+	<script src="/js/jquery.js"></script>
+	<script src="/js/bootstrap.js"></script>
+	<meta charset="utf-8" />
+</head>
+<body>
+<div class="box">
+	<div class="container-fluid">
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<a class="navbar-brand" href="#">Reiwa Refiner System</a>
+			<button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber"
+			aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="Navber">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item active">
+						<a class="nav-link" href="#">ホーム <span class="sr-only">(現位置)</span></a>
+					</li>
+						<li class="nav-item">
+						<a class="nav-link" href="#">リンク</a>
+					</li>
+					<li class="nav-item dropdown">
+						<a href="#" class="nav-link dropdown-toggle" id="navbarDropdown" role="button"
+						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							ドロップダウン
+						</a>
+						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+							<a class="dropdown-item" href="#">メニュー1</a>
+							<a class="dropdown-item" href="#">メニュー2</a>
+							<div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="#">その他</a>
+						</div>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">無効</a>
+					</li>
+				</ul>
+				<form class="form-inline my-2 my-lg-0" id="logout" th:action="@{/logout}" method="post">
+	       			<button type="submit" class="btn btn-primary">ログアウト</button>
+				</form>
+			</div><!-- /.navbar-collapse -->
+		</nav>
+	</div>
+
+	<div class="container-fluid">
+		<div class="panel panel-default">
+			<div class="panel-heading">企業情報一覧</div>
+			<div class="panel-body">
+				<div><a th:href="@{/company/add}">新規登録はこちら</a></div>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>企業コード</th>
+							<th>企業名称</th>
+							<th>種別</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+					    <tr th:each="company : ${company_list}" th:object="${company}">
+					        <td class="center" th:text="*{id}"></td>
+					        <td th:text="*{name}"></td>
+					        <td th:text="*{enabled}"></td>
+				            <td class="center"><a class="btn btn-default btn-xs" th:href="@{/company/{id}/edit(id=*{id})}">編集</a></td>
+					    </tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+
+	<footer class="fixed-bottom">
+		<div class="container">
+			<p class="text-right">Copyright &copy レイワソリューションズ株式会社</p>
+		</div>
+	</footer>
+
+<!-- 	<div id="footer-fixed"> -->
+<!-- 		<div id="footer-bk"> -->
+<!-- 			<div id="footer"> -->
+<!-- 				<span class="size12">Copyright &copy レイワソリューションズ株式会社</span> -->
+<!-- 			</div> -->
+<!-- 		</div> -->
+<!-- 	</div> -->
+</div>
+</body>
