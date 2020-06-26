@@ -1,55 +1,88 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
-	<title>企業情報新規登録</title>
-<!-- 	<link href="/css/add.css" rel="stylesheet"></link> -->
-	<link href="/css/list.css" rel="stylesheet"></link>
-	<link th:href="@{/css/styles.css}" rel="stylesheet"/>
-<!-- 	<link rel="stylesheet" href="/css/bootstrap.css" /> -->
+	<title>企業情報新規登録 - Reiwa Refiner System</title>
+	<link rel="stylesheet" href="/css/bootstrap.css" />
 	<script src="/js/jquery.js"></script>
 	<script src="/js/bootstrap.js"></script>
 	<meta charset="utf-8" />
 </head>
 <body>
 <div class="box">
-	<div id="header-fixed">
-		<div id="header-bk">
-			<div id="header">
-				<div id="header-left">
-					<span class="sizeb24"><a href="/" id="header">Reiwa Refiner System</a></span>
+	<div class="container-fluid">
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<a class="navbar-brand" href="/">Reiwa Refiner System</a>
+			<button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber"
+			aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="Navber">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item disabled">
+						<a class="nav-link" href="#" aria-disabled="true">面談結果検索</a>
+					</li>
+						<li class="nav-item disabled">
+						<a class="nav-link" href="#" aria-disabled="true">従業員一括登録</a>
+					</li>
+					<li class="nav-item dropdown">
+						<a href="#" class="nav-link dropdown-toggle" id="navbarDropdown" role="button"
+						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							設定
+						</a>
+						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+							<a class="dropdown-item disabled" href="#" aria-disabled="true">従業員情報検索</a>
+							<a class="dropdown-item disabled" href="#" aria-disabled="true">ユーザ情報一覧</a>
+							<a class="dropdown-item" href="/company/list">顧客情報一覧</a>
+							<a class="dropdown-item disabled" href="#" aria-disabled="true">面談結果検索初期表示設定変更</a>
+						</div>
+					</li>
+				</ul>
+				<div sec:authorize="isAuthenticated()">
+					<span sec:authentication="principal.username">userさん</span>
 				</div>
-				<div id="header-right">
-					<form role="form" id="logout" th:action="@{/logout}" method="post">
-	        			<button type="submit">ログアウト</button>
-				    </form>
-				</div>
+				<form class="form-inline my-2 my-lg-0" id="logout" th:action="@{/logout}" method="post">
+	       			<button type="submit" class="btn btn-primary">ログアウト</button>
+				</form>
 			</div>
-		</div>
+		</nav>
 	</div>
-	<div id="body-bk">
-		<div id="body">
-			<div style="padding: 1px; margin-bottom: 0px; border: 1px solid #333333; border-radius: 10px; width: 500px;">
-				<h1>企業情報新規登録</h1>
-				<form th:action="@{/company/create}" th:object="${company}" method="post">
-					<table>
-						<tr>
-							<th class="cell_title">企業名称</th>
-							<th class="cell_required"></th>
-							<td><input type="text" th:field="*{name}"></td>
-						</tr>
-					</table>
-					<div class="btn_area_center"><input type="submit" value="登録" class="btn"></div>
+
+	<div class="container-fluid">
+		<div class="card mt-2 pt-2">
+			<div class="card-heading"><h2>企業情報新規登録</h2></div>
+			<div class="card-body">
+				<div><a class="btn btn-link" href="/company/list">一覧画面へ</a></div>
+				<form th:action="@{/company/create}" th:method="post" th:object="${company_request}">
+					<div class="form-group">
+						<label class="control-label">企業名称</label>
+						<input class="form-control" type="text" th:field="*{name}" />
+					</div>
+					<div class="form-group">
+						<label class="control-label">有効／無効</label>
+						<br>
+						<table class="table table-borderless" style="width:300px;">
+							<tbody>
+								<tr>
+									<td><input type="radio" name="enabled" th:value="有効" th:text="有効" th:field="*{enabled}" /></td>
+									<td><input type="radio" name="enabled" th:value="無効" th:text="無効" th:field="*{enabled}" /></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<br>
+					<div class="col text-center">
+						<button class="btn btn-primary" type="submit">更新</button>
+					</div>
 				</form>
 			</div>
 		</div>
 	</div>
-	<div id="footer-fixed">
-		<div id="footer-bk">
-			<div id="footer">
-				<span class="size12">Copyright &copy レイワソリューションズ株式会社</span>
-			</div>
+
+	<footer class="fixed-bottom">
+		<div class="container">
+			<p class="text-right">Copyright &copy レイワソリューションズ株式会社</p>
 		</div>
-	</div>
+	</footer>
 </div>
 </body>
 </html>

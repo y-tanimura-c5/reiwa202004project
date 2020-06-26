@@ -1,4 +1,4 @@
-package com.cfiv.sysdev.rrs;
+package com.cfiv.sysdev.rrs.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -10,11 +10,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-
 
 @Configuration
 @EnableWebSecurity
@@ -24,35 +19,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
 
     @Autowired
-    void configureAuthenticationManager(AuthenticationManagerBuilder auth) throws Exception{
+    void configureAuthenticationManager(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Override
-    protected void configure(HttpSecurity web)throws Exception{
+    protected void configure(HttpSecurity web) throws Exception {
         web.formLogin().loginPage("/login").defaultSuccessUrl("/").failureUrl("/login-error").permitAll();
         web.authorizeRequests().antMatchers("/css/**", "/images/**", "/js/**").permitAll().anyRequest().authenticated();
         web.logout().logoutSuccessUrl("/login").permitAll();
     }
 
     @Bean
-    PasswordEncoder passwordEncoder(){
+    PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Controller
-    public class LoginController {
-        @RequestMapping(value = "/login", method = RequestMethod.GET)
-        public String index(Model model) {
-            model.addAttribute("iserror",false);
-            return "login";
-        }
-
-        @RequestMapping(value = "/login-error", method = RequestMethod.GET)
-        public String loginError(Model model) {
-             model.addAttribute("iserror",true);
-             return "login";
-        }
-
     }
 }

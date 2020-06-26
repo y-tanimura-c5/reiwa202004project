@@ -17,7 +17,7 @@ import lombok.Data;
  */
 @Entity
 @Data
-@Table(name="m_company")
+@Table(name="M_COMPANY")
 public class Company implements Serializable {
 
     /**
@@ -38,13 +38,13 @@ public class Company implements Serializable {
      * 有効／無効
      */
     @Column(name="ENABLED")
-    private Boolean enabled;
+    private boolean enabled;
 
     /**
      * 削除
      */
     @Column(name="DELETED")
-    private Boolean deleted;
+    private boolean deleted;
 
     /**
      * 登録日
@@ -75,4 +75,40 @@ public class Company implements Serializable {
      */
     @Column(name="UPDATE_COUNT")
     private int updateCount;
+
+    /**
+     * 文字列形式のID
+     * @param nDigits 0埋め桁数
+     * @return 指定桁で0埋め後のID文字列
+     */
+    public String idToString(int nDigits) {
+        return String.format("%0" + nDigits + "d", id);
+    }
+
+    /**
+     * 文字列形式の有効／無効
+     * @return 「有効」または「無効」文字列
+     */
+    public String enabledToString() {
+        if (enabled) {
+            return "有効";
+        }
+        else {
+            return "無効";
+        }
+    }
+
+    /**
+     * 「有効」／「無効」文字列からの有効／無効設定
+     * @param nDigits 0埋め桁数
+     * @return 指定桁で0埋め後のID文字列
+     */
+    public void setEnabledFromString(String es) {
+        if (es.equals("有効")) {
+            setEnabled(true);
+        }
+        else {
+            setEnabled(false);
+        }
+    }
 }

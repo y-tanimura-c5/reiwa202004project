@@ -1,5 +1,6 @@
 package com.cfiv.sysdev.rrs.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.cfiv.sysdev.rrs.dto.CompanyRequest;
 import com.cfiv.sysdev.rrs.entity.Company;
 import com.cfiv.sysdev.rrs.service.CompanyService;
 
@@ -32,8 +34,16 @@ public class CompanyController {
      */
     @RequestMapping(value = "/company/list", method = RequestMethod.GET)
     public String displayList(Model model) {
+        List<CompanyRequest> req_list = new ArrayList<CompanyRequest>();
+
         List<Company> company_list = companyService.searchAll();
-        model.addAttribute("company_list", company_list);
+
+        for (Company company : company_list) {
+            req_list.add(new CompanyRequest(company.idToString(4), company.getName(), company.enabledToString()));
+        }
+
+        model.addAttribute("company_request_list", req_list);
+
         return "company/list";
     }
 
@@ -44,34 +54,33 @@ public class CompanyController {
      */
     @RequestMapping(value = "/company/add", method = RequestMethod.GET)
     public String displayAdd(Model model) {
-        model.addAttribute("company", new Company());
+        model.addAttribute("company_request", new CompanyRequest("", "", "—LŒø"));
         return "company/add";
     }
 
     @RequestMapping(value = "/company/{id}/edit", method = RequestMethod.GET)
     public String edit(@PathVariable Long id, Model model) {
         Company company = companyService.findOne(id);
-        model.addAttribute("company", company);
+        model.addAttribute("company_request", new CompanyRequest(company.idToString(4), company.getName(), company.enabledToString()));
         return "company/edit";
     }
 
     @RequestMapping(value = "/company/{id}", method = RequestMethod.POST)
-    public String update(@PathVariable Long id, @ModelAttribute Company company) {
-        company.setId(id);
-        companyService.save(company);
+    public String update(@PathVariable Long id, @ModelAttribute CompanyRequest req) {
+        companyService.save(id, req);
         return "redirect:/company/list";
     }
 
     /**
-     * Šé‹ÆV‹K“o˜^
+     * Šé‹Æî•ñV‹K“o˜^
      * @param company ƒŠƒNƒGƒXƒgƒf[ƒ^
      * @param model Model
      * @return Šé‹Æî•ñˆê——‰æ–Ê
      */
     @RequestMapping(value = "/company/create", method = RequestMethod.POST)
-    public String create(@ModelAttribute Company company, Model model) {
+    public String create(@ModelAttribute CompanyRequest req, Model model) {
         // Šé‹Æî•ñ‚Ì“o˜^
-        companyService.create(company);
+        companyService.create(req);
         return "redirect:/company/list";
     }
 
