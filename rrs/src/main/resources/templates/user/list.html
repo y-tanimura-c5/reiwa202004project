@@ -1,35 +1,85 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <title>ユーザー情報一覧</title>
-    <link href="/css/list.css" rel="stylesheet"></link>
-    <meta charset="utf-8" />
-  </head>
-  <body>
-  	<h1>ユーザー情報一覧</h1>
-  	<div><a th:href="@{/user/add}">新規登録はこちら</a></div>
-	<table>
-		<thead>
-			<tr>
-				<th>ID</th>
-				<th>名前</th>
-				<th>住所</th>
-				<th>電話番号</th>
-				<th>更新日時</th>
-				<th>登録日時</th>
-				<th>削除日時</th>
-			</tr>
-		</thead>
-		<tbody>
-		    <tr th:each="user : ${userlist}" th:object="${user}">
-		        <td class="center" th:text="*{id}"></td>
-		        <td th:text="*{name}"></td>
-		        <td th:text="*{address}"></td>
-		        <td class="center" th:text="*{phone}"></td>
-		        <td class="center" th:text="${#dates.format(user.updateDate, 'yyyy/MM/dd')}"></td>
-		        <td class="center" th:text="${#dates.format(user.createDate, 'yyyy/MM/dd')}"></td>
-		        <td class="center" th:text="${#dates.format(user.deleteDate, 'yyyy/MM/dd')}"></td>
-		    </tr>
-	    </tbody>
-	</table>
-  </body>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+	<title>ユーザー情報一覧 - Reiwa Refiner System</title>
+	<link rel="stylesheet" href="/css/bootstrap.css" />
+	<script src="/js/jquery.js"></script>
+	<script src="/js/bootstrap.js"></script>
+	<meta charset="utf-8" />
+</head>
+<body>
+<div class="box">
+	<div class="container-fluid">
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<a class="navbar-brand" href="/">Reiwa Refiner System</a>
+			<button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber"
+			aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="Navber">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item disabled">
+						<a class="nav-link" href="#" aria-disabled="true">面談結果検索</a>
+					</li>
+						<li class="nav-item disabled">
+						<a class="nav-link" href="#" aria-disabled="true">従業員一括登録</a>
+					</li>
+					<li class="nav-item dropdown">
+						<a href="#" class="nav-link dropdown-toggle" id="navbarDropdown" role="button"
+						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							設定
+						</a>
+						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+							<a class="dropdown-item disabled" href="#" aria-disabled="true">従業員情報検索</a>
+							<a class="dropdown-item" href="/user/list">ユーザ情報一覧</a>
+							<a class="dropdown-item" href="/company/list">顧客情報一覧</a>
+							<a class="dropdown-item disabled" href="#" aria-disabled="true">面談結果検索初期表示設定変更</a>
+						</div>
+					</li>
+				</ul>
+				<div sec:authorize="isAuthenticated()">
+					<span sec:authentication="principal.username">userさん</span>
+				</div>
+				<form class="form-inline my-2 my-lg-0" id="logout" th:action="@{/logout}" method="post">
+	       			<button type="submit" class="btn btn-primary">ログアウト</button>
+				</form>
+			</div>
+		</nav>
+	</div>
+
+	<div class="container-fluid">
+		<div class="card mt-2 pt-2">
+			<div class="card-heading"><h2>ユーザー情報一覧</h2></div>
+			<div class="card-body">
+				<div><a class="btn btn-link" th:href="@{/user/add}">新規登録はこちら</a></div>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>ユーザーID</th>
+							<th>表示用名称</th>
+							<th>企業名称</th>
+							<th>権限</th>
+							<th>種別</th>
+						</tr>
+					</thead>
+					<tbody>
+					    <tr th:each="user : ${user_request_list}" th:object="${user}">
+					        <td><a class="btn btn-link" th:href="@{/user/{id}/edit(id=*{id})}" th:text="*{username}"></a></td>
+					        <td th:text="*{displayName}"></td>
+					        <td th:text="*{company}"></td>
+					        <td th:text="*{userRole}"></td>
+					        <td th:text="*{enabled}"></td>
+					    </tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<footer class="fixed-bottom">
+		<div class="container">
+			<p class="text-right">Copyright &copy レイワソリューションズ株式会社</p>
+		</div>
+	</footer>
+</div>
+</body>

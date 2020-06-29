@@ -37,8 +37,8 @@ public class UserService {
      * ユーザー情報新規登録
      * @param user ユーザー情報
      */
-    public void create(UserRequest userRequest) {
-        userRepository.save(CreateUser(userRequest));
+    public void create(UserRequest req) {
+        userRepository.save(CreateUser(req));
     }
 
     /**
@@ -50,9 +50,9 @@ public class UserService {
         Date now = new Date();
 
         User user = new User();
-        user.setName(userRequest.getName());
-        user.setAddress(userRequest.getAddress());
-        user.setPhone(userRequest.getPhone());
+//        user.setName(userRequest.getName());
+//        user.setAddress(userRequest.getAddress());
+//        user.setPhone(userRequest.getPhone());
         user.setCreateDate(now);
         user.setUpdateDate(now);
 

@@ -25,10 +25,10 @@ public class UserAccount implements UserDetails {
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (account.getUserrole() == 0) {
+        if (account.getUserRole() == 0) {
             return AuthorityUtils.createAuthorityList("ROLE_ADMIN", "ROLE_CLIENTADMIN", "ROLE_USER");
         }
-        else if (account.getUserrole() == 1) {
+        else if (account.getUserRole() == 1) {
             return AuthorityUtils.createAuthorityList("ROLE_CLIENTADMIN", "ROLE_USER");
         }
         else {

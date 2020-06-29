@@ -1,7 +1,9 @@
 package com.cfiv.sysdev.rrs.service;
 
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -68,7 +70,13 @@ public class CompanyService {
 
     public Company findOne(Long id) {
         Optional<Company> opt = companyRepository.findById(id);
-        return opt.get();
+
+        try {
+            return opt.get();
+        }
+        catch (Exception e) {
+            return new Company();
+        }
     }
 
     public Company save(Long id, CompanyRequest req) {
@@ -100,5 +108,30 @@ public class CompanyService {
 
     public void delete(Long id) {
         companyRepository.deleteById(id);
+    }
+
+    /**
+     * リスト表示用企業情報(全件)
+     * @return 検索結果
+     */
+    public Map<String, String> getAllCompanyNames() {
+        List<Company> company_list = searchAll();
+        Map<String, String> result = new LinkedHashMap<String, String>();
+
+        for (Company company : company_list) {
+            result.put(company.idToString(4), company.idToString(4) + ":" + company.getName());
+        }
+
+        return result;
+    }
+
+    /**
+     * リスト表示用企業情報(id指定)
+     * @return 検索結果
+     */
+    public String getCompanyName(Long id) {
+        Company company = findOne(id);
+
+        return company.idToString(4) + ":" + company.getName();
     }
 }

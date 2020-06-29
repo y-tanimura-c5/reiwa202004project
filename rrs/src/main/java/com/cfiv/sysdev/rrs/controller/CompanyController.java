@@ -39,7 +39,7 @@ public class CompanyController {
         List<Company> company_list = companyService.searchAll();
 
         for (Company company : company_list) {
-            req_list.add(new CompanyRequest(company.idToString(4), company.getName(), company.enabledToString()));
+            req_list.add(new CompanyRequest(company.idToString(4), company.getName(), company.getEnabledString()));
         }
 
         model.addAttribute("company_request_list", req_list);
@@ -61,7 +61,7 @@ public class CompanyController {
     @RequestMapping(value = "/company/{id}/edit", method = RequestMethod.GET)
     public String edit(@PathVariable Long id, Model model) {
         Company company = companyService.findOne(id);
-        model.addAttribute("company_request", new CompanyRequest(company.idToString(4), company.getName(), company.enabledToString()));
+        model.addAttribute("company_request", new CompanyRequest(company.idToString(4), company.getName(), company.getEnabledString()));
         return "company/edit";
     }
 
@@ -73,7 +73,7 @@ public class CompanyController {
 
     /**
      * 企業情報新規登録
-     * @param company リクエストデータ
+     * @param req リクエストデータ
      * @param model Model
      * @return 企業情報一覧画面
      */
@@ -83,5 +83,4 @@ public class CompanyController {
         companyService.create(req);
         return "redirect:/company/list";
     }
-
 }

@@ -19,28 +19,6 @@ import lombok.Data;
 @Data
 public class Account {
 
-    protected Account() {
-    }
-
-    public Account(String username, String password, String displayname, int userrole,
-            long company_id, boolean enabled, String createuser) {
-        Date now = new Date();
-
-        setId(0L);
-        setUsername(username);
-        setPassword(password);
-        setDisplayname(displayname);
-        setUserrole(userrole);
-        setCompanyID(company_id);
-        setEnabled(enabled);
-        setDeleted(false);
-        setRegistUser(createuser);
-        setRegistTime(now);
-        setUpdateUser(createuser);
-        setUpdateTime(now);
-        setUpdateCount(0);
-    }
-
     /**
      * ID
      */
@@ -65,13 +43,13 @@ public class Account {
      * 表示用ユーザー名
      */
     @Column(name = "DISPLAYNAME", nullable = false)
-    private String displayname;
+    private String displayName;
 
     /**
      * ユーザー権限
      */
     @Column(name = "USERROLE", nullable = false)
-    private int userrole;
+    private int userRole;
 
     /**
      * 企業コード
@@ -120,4 +98,90 @@ public class Account {
      */
     @Column(name = "UPDATE_COUNT", nullable = false)
     private int updateCount;
+
+    /**
+     * 文字列形式のID
+     * @param nDigits 0埋め桁数
+     * @return 指定桁で0埋め後のID文字列
+     */
+    public String idToString(int nDigits) {
+        return String.format("%0" + nDigits + "d", id);
+    }
+
+    /**
+     * 文字列形式の有効／無効
+     * @return 「有効」または「無効」文字列
+     */
+    public String getEnabledString() {
+        if (enabled) {
+            return "有効";
+        }
+        else {
+            return "無効";
+        }
+    }
+
+    /**
+     * 「有効」／「無効」文字列からの有効／無効設定
+     * @param nDigits 0埋め桁数
+     * @return 指定桁で0埋め後のID文字列
+     */
+    public void setEnabledFromString(String es) {
+        if (es.equals("有効")) {
+            setEnabled(true);
+        }
+        else {
+            setEnabled(false);
+        }
+    }
+
+    /**
+     * 文字列形式のユーザー権限
+     * @return ユーザー権限文字列
+     */
+    public String getUserRoleString() {
+        if (userRole == 0) {
+            return "全体管理者";
+        }
+        else if (userRole == 1){
+            return "企業管理者";
+        }
+        else {
+            return "リファイナー";
+        }
+    }
+
+    /**
+     * 文字列からのユーザー権限設定
+     * @param rs ユーザー権限文字列
+     */
+    public void setUserRoleFromString(String rs) {
+        if (rs.equals("全体管理者")) {
+            setUserRole(0);
+        }
+        else if (rs.equals("企業管理者")) {
+            setUserRole(1);
+        }
+        else {
+            setUserRole(10);
+        }
+    }
+
+    /**
+     * 企業名称文字列からの企業コード設定
+     * @param cs 企業名称文字列
+     */
+    public void setCompanyIDFromName(String cs) {
+        String[] cs_list = cs.split(":");
+
+        if (cs_list.length >= 1) {
+
+            try {
+                setCompanyID(Long.parseLong(cs_list[0]));
+            }
+            catch (NumberFormatException e) {
+                // 何もしない
+            }
+        }
+    }
 }

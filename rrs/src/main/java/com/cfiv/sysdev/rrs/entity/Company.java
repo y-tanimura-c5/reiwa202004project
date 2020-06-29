@@ -89,7 +89,7 @@ public class Company implements Serializable {
      * 文字列形式の有効／無効
      * @return 「有効」または「無効」文字列
      */
-    public String enabledToString() {
+    public String getEnabledString() {
         if (enabled) {
             return "有効";
         }
@@ -99,9 +99,8 @@ public class Company implements Serializable {
     }
 
     /**
-     * 「有効」／「無効」文字列からの有効／無効設定
-     * @param nDigits 0埋め桁数
-     * @return 指定桁で0埋め後のID文字列
+     * 文字列からの有効／無効設定
+     * @param es 「有効」／「無効」文字列
      */
     public void setEnabledFromString(String es) {
         if (es.equals("有効")) {
