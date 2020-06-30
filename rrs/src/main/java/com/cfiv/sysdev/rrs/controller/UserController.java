@@ -4,20 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cfiv.sysdev.rrs.LogUtils;
-import com.cfiv.sysdev.rrs.dto.UserRequest;
+import com.cfiv.sysdev.rrs.dto.UserAddRequest;
+import com.cfiv.sysdev.rrs.dto.UserEditRequest;
 import com.cfiv.sysdev.rrs.entity.Account;
-import com.cfiv.sysdev.rrs.form.InputForm;
 import com.cfiv.sysdev.rrs.service.CompanyService;
 import com.cfiv.sysdev.rrs.service.UserAccountService;
 
@@ -46,11 +50,11 @@ public class UserController {
      */
     @RequestMapping(value = "/user/list", method = RequestMethod.GET)
     public String displayList(Model model) {
-        List<UserRequest> req_list = new ArrayList<UserRequest>();
+        List<UserEditRequest> req_list = new ArrayList<UserEditRequest>();
         List<Account> account_list = userAccountService.searchAll();
 
         for (Account account : account_list) {
-            req_list.add(new UserRequest(account.idToString(1), account.getUsername(), account.getPassword(),
+            req_list.add(new UserEditRequest(account.idToString(1), account.getUsername(), account.getPassword(),
                     account.getDisplayName(), account.getUserRoleString(), companyService.getCompanyName(account.getCompanyID()),
                     account.getEnabledString()));
         }
@@ -69,54 +73,101 @@ public class UserController {
     /**
      * ユーザー新規登録画面を表示
      * @param model Model
-     * @return ユーザー情報一覧画面
+     * @return ユーザー新規登録画面
      */
     @RequestMapping(value = "/user/add", method = RequestMethod.GET)
     public String displayAdd(Model model) {
         Map<String, String> company_items = companyService.getAllCompanyNames();
         List<String> keys = new ArrayList<String>(company_items.keySet());
 
-        model.addAttribute("user_request", new UserRequest("", "", "", "", "リファイナー", company_items.get(keys.get(0)), "有効"));
+        model.addAttribute("user_request", new UserAddRequest("", "", "", "", "リファイナー", company_items.get(keys.get(0)), "有効"));
         model.addAttribute("company_items", company_items);
 
         return "user/add";
     }
 
-    @RequestMapping(value = "/user/{id}/edit", method = RequestMethod.GET)
-    public String edit(@PathVariable Long id, Model model) {
-        Account account = userAccountService.findOne(id);
-        Map<String, String> company_items = companyService.getAllCompanyNames();
+    /**
+     * ユーザー情報新規登録
+     * @param req リクエストデータ
+     * @param result バリデーションチェック結果
+     * @param model Model
+     * @return ユーザー情報一覧画面(登録完了時)／新規登録画面(エラー発生時)
+     */
+    @RequestMapping(value = "/user/create", method = RequestMethod.POST)
+    public String create(@ModelAttribute("user_request") @Valid UserAddRequest req, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            for(FieldError err: result.getFieldErrors()) {
+                LogUtils.info("error field  [" + err.getField() + "], error code = [" + err.getCode() + "]");
+            }
 
-        model.addAttribute("user_request", new UserRequest(account.idToString(1), account.getUsername(), account.getPassword(),
-                account.getDisplayName(), account.getUserRoleString(), companyService.getCompanyName(account.getCompanyID()),
-                account.getEnabledString()));
-        model.addAttribute("company_items", company_items);
-
-        return "user/edit";
-    }
-
-    @RequestMapping(value = "/user/{id}", method = RequestMethod.POST)
-    public String update(@PathVariable Long id, @ModelAttribute UserRequest req, @Validated InputForm form, BindingResult result) {
-        if (req.getPassword().isEmpty()) {
-            LogUtils.info("password = " + req.getPassword());
-            LogUtils.info("passwordConf = " + req.getPasswordConf());
+            model.addAttribute("company_items", companyService.getAllCompanyNames());
+            return "/user/add";
         }
 
-        Account account = userAccountService.findOne(id);
-        req.setUsername(account.getUsername());
-        userAccountService.save(id, req);
+        userAccountService.create(req);
         return "redirect:/user/list";
     }
 
     /**
-     * ユーザー情報新規登録
-     * @param req リクエストデータ
+     * ユーザー情報更新画面を表示
+     * @param id ID
      * @param model Model
-     * @return 企業情報一覧画面
+     * @return ユーザー情報更新画面
      */
-    @RequestMapping(value = "/user/create", method = RequestMethod.POST)
-    public String create(@ModelAttribute UserRequest req, Model model) {
-        userAccountService.create(req);
+    @RequestMapping(value = "/user/{id}/edit", method = RequestMethod.GET)
+    public String edit(@PathVariable Long id, ModelMap model) {
+        Account account = userAccountService.findOne(id);
+        Map<String, String> company_items = companyService.getAllCompanyNames();
+
+        model.addAttribute("user_request", new UserEditRequest(account.idToString(1), account.getUsername(), account.getPassword(),
+                account.getDisplayName(), account.getUserRoleString(), companyService.getCompanyName(account.getCompanyID()),
+                account.getEnabledString()));
+        model.addAttribute("company_items", company_items);
+
+        String key = BindingResult.MODEL_KEY_PREFIX + "user_request";
+        if (model.containsKey("errors")) {
+            model.addAttribute(key, model.get("errors"));
+        }
+
+        return "user/edit";
+    }
+
+    /**
+     * ユーザー情報更新
+     * @param attributes リダイレクト先に渡す属性値
+     * @param id ID
+     * @param req リクエストデータ
+     * @param result バリデーションチェック結果
+     * @param model Model
+     * @return ユーザー情報一覧画面(登録完了時)／新規登録画面(エラー発生時)
+     */
+    @RequestMapping(value = "/user/{id}", method = RequestMethod.POST)
+    public String update(RedirectAttributes attributes, @PathVariable Long id,
+            @ModelAttribute("user_request") @Valid UserEditRequest req, BindingResult result, Model model) {
+        boolean error = true;
+
+        if (result.hasErrors()) {
+            for(FieldError err: result.getFieldErrors()) {
+                LogUtils.info("error field = [" + err.getField() + "], error code = [" + err.getCode() + "]");
+
+                // 空パスワードが来た場合は、前回設定パスワードで更新するためエラーにしない(バリデーションチェック外とする)
+                if ((err.getField().equals("password") && err.getCode().equals("Size")) && req.getPassword().isEmpty() ||
+                        (err.getField().equals("passwordCheck") && err.getCode().equals("Size") && req.getPasswordCheck().isEmpty())) {
+                    error = false;
+                }
+                else {
+                    error = true;
+                    break;
+                }
+            }
+
+            if (error) {
+                attributes.addFlashAttribute("errors", result);
+                return "redirect:/user/{id}/edit";
+            }
+        }
+
+        userAccountService.save(id, req);
         return "redirect:/user/list";
     }
 }

@@ -55,7 +55,8 @@
 				<form th:action="@{/user/{id}(id=*{id})}" th:method="post" th:object="${user_request}">
 					<div class="form-group">
 						<label class="control-label">ユーザーID</label>
-						<input class="form-control" type="text" th:field="*{username}" disabled />
+						<input class="form-control" type="text" th:field="*{username}" readonly="readonly" />
+						<label th:if="${#fields.hasErrors('username')}" th:errors="*{username}" style="color: red"></label>
 					</div>
 					<div class="form-group">
 						<label class="control-label">パスワード</label>
@@ -63,11 +64,13 @@
 					</div>
 					<div class="form-group">
 						<label class="control-label">パスワード(確認用)</label>
-						<input class="form-control" type="password" th:field="*{passwordConf}" />
+						<input class="form-control" type="password" th:field="*{passwordCheck}" />
+						<label th:if="${#fields.hasErrors('passwordCheck')}" th:errors="*{passwordCheck}" style="color: red"></label>
 					</div>
 					<div class="form-group">
 						<label class="control-label">表示用名称</label>
 						<input class="form-control" type="text" th:field="*{displayName}" />
+						<label th:if="${#fields.hasErrors('displayName')}" th:errors="*{displayName}" style="color: red"></label>
 					</div>
 					<div class="form-group">
 						<label class="control-label">ユーザー権限</label>

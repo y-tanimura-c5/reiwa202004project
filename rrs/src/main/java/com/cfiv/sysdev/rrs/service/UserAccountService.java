@@ -14,7 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.util.StringUtils;
 
-import com.cfiv.sysdev.rrs.dto.UserRequest;
+import com.cfiv.sysdev.rrs.dto.UserAddRequest;
+import com.cfiv.sysdev.rrs.dto.UserEditRequest;
 import com.cfiv.sysdev.rrs.entity.Account;
 import com.cfiv.sysdev.rrs.entity.UserAccount;
 import com.cfiv.sysdev.rrs.repository.AccountRepository;
@@ -59,12 +60,21 @@ public class UserAccountService implements UserDetailsService {
         return user;
     }
 
+    public Account findByUsername(String username) {
+        return accountRepository.findByUsername(username);
+    }
+
+    public Account findOne(Long id) {
+        Optional<Account> opt = accountRepository.findById(id);
+        return opt.get();
+    }
+
     /**
      * ユーザー情報新規登録
-     * @param user ユーザー情報
+     * @param req ユーザー情報
      */
     @Transactional
-    public void create(UserRequest req) {
+    public void create(UserAddRequest req) {
         Date now = new Date();
         Account account = new Account();
 
@@ -83,38 +93,24 @@ public class UserAccountService implements UserDetailsService {
         accountRepository.save(account);
     }
 
-    public Account findOne(Long id) {
-        Optional<Account> opt = accountRepository.findById(id);
-        return opt.get();
-    }
-
+    /**
+     * ユーザー情報更新
+     * @param id ID
+     * @param req ユーザー情報
+     */
     @Transactional
-    public Account save(Long id, UserRequest req) {
+    public Account save(Long id, UserEditRequest req) {
         Date now = new Date();
         Account account = findOne(id);
 
-        account.setUsername(req.getUsername());
-        account.setPassword(passwordEncoder.encode(req.getPassword()));
+        if (!req.getPassword().isEmpty()) {
+            account.setPassword(passwordEncoder.encode(req.getPassword()));
+        }
+
         account.setDisplayName(req.getDisplayName());
         account.setUserRoleFromString(req.getUserRole());
         account.setCompanyIDFromName(req.getCompany());
         account.setEnabledFromString(req.getEnabled());
-        account.setDeleted(false);
-        account.setRegistTime(now);
-        account.setRegistUser("user");
-        account.setUpdateTime(now);
-        account.setUpdateUser("user");
-
-        return accountRepository.save(account);
-    }
-
-    @Transactional
-    public Account save(Account account) {
-        Date now = new Date();
-
-        account.setDeleted(false);
-        account.setRegistTime(now);
-        account.setRegistUser("user");
         account.setUpdateTime(now);
         account.setUpdateUser("user");
 
