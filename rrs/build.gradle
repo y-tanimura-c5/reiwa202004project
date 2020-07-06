@@ -25,6 +25,7 @@ dependencies {
 	compileOnly('org.springframework.boot:spring-boot-devtools')
     testCompile('org.springframework.boot:spring-boot-starter-test')
     annotationProcessor('org.projectlombok:lombok:1.18.12')
+    implementation group:'com.opencsv', name:'opencsv', version:'4.1'
 }
 
 test {

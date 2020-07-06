@@ -119,7 +119,7 @@ public class CompanyService {
         Map<String, String> result = new LinkedHashMap<String, String>();
 
         for (Company company : company_list) {
-            result.put(company.idToString(4), company.idToString(4) + ":" + company.getName());
+            result.put(company.getIdString(4), company.getIdString(4) + ":" + company.getName());
         }
 
         return result;
@@ -132,6 +132,6 @@ public class CompanyService {
     public String getCompanyName(Long id) {
         Company company = findOne(id);
 
-        return company.idToString(4) + ":" + company.getName();
+        return company.getIdString(4) + ":" + company.getName();
     }
 }

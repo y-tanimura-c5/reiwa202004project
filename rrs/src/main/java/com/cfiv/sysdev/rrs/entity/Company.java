@@ -81,7 +81,7 @@ public class Company implements Serializable {
      * @param nDigits 0–„‚ßŒ…”
      * @return w’èŒ…‚Å0–„‚ßŒã‚ÌID•¶š—ñ
      */
-    public String idToString(int nDigits) {
+    public String getIdString(int nDigits) {
         return String.format("%0" + nDigits + "d", id);
     }
 
