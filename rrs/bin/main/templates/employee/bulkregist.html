@@ -39,8 +39,8 @@
 					<li class="nav-item disabled">
 						<a class="nav-link" href="#" aria-disabled="true">面談結果検索</a>
 					</li>
-						<li class="nav-item disabled">
-						<a class="nav-link" href="#" aria-disabled="true">従業員一括登録</a>
+						<li class="nav-item">
+						<a class="nav-link" href="/employee/bulkregist">従業員一括登録</a>
 					</li>
 					<li class="nav-item dropdown">
 						<a href="#" class="nav-link dropdown-toggle" id="navbarDropdown" role="button"
@@ -48,7 +48,7 @@
 							設定
 						</a>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-							<a class="dropdown-item disabled" href="#" aria-disabled="true">従業員情報検索</a>
+							<a class="dropdown-item" href="/employee/list" >従業員情報検索</a>
 							<a class="dropdown-item" href="/user/list">ユーザー情報一覧</a>
 							<a class="dropdown-item" href="/company/list">顧客情報一覧</a>
 							<a class="dropdown-item disabled" href="#" aria-disabled="true">面談結果検索初期表示設定変更</a>
@@ -69,10 +69,6 @@
 		<div class="card mt-2 pt-2">
 			<div class="card-heading"><h2>従業員情報一括登録</h2></div>
 			<div class="card-body">
-<!-- 				<form action="/employee/upload" th:action="@{/employee/upload}" method="post" enctype="multipart/form-data"> -->
-<!-- 					<input type="file" name="multipartFile" /><br /> -->
-<!-- 					<button type="submit">upload</button> -->
-<!-- 				</form> -->
 				<form action="/employee/upload" th:action="@{/employee/upload}" method="post" enctype="multipart/form-data" th:object="${employeeFileRequest}">
 					<div class="input-group">
 						<label class="input-group-btn">
@@ -82,21 +78,12 @@
 						</label>
 						<input type="text" class="form-control" readonly="readonly">
 					</div>
-					<button class="btn btn-primary" type="submit">ファイルのチェック</button>
-					<br>
 					<span th:if="${#fields.hasErrors('employeeFile')}" class="text-danger" th:errors="*{employeeFile}">Error</span>
-<!-- 						<label th:if="${#fields.hasErrors('employeeFile')}" th:errors="*{employeeFile}" style="color: red"></label> -->
-<!-- 					<ul> -->
-<!-- 						<li th:each="error : ${#fields.detailedErrors()}"> -->
-<!-- 							<span th:text="${error.message}">Error message</span> -->
-<!-- 						</li> -->
-<!-- 					</ul> -->
-				</form>
-				<form th:action="@{/employee/confirm}" th:method="post" th:object="${employee_request}">
-					<br>
+					<span th:if="${regist_result}">登録が完了しました。</span>
 					<div class="col text-center">
 						<button class="btn btn-primary" type="submit">登録</button>
 					</div>
+					<br>
 				</form>
 			</div>
 		</div>

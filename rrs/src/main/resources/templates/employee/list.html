@@ -21,8 +21,8 @@
 					<li class="nav-item disabled">
 						<a class="nav-link" href="#" aria-disabled="true">面談結果検索</a>
 					</li>
-						<li class="nav-item disabled">
-						<a class="nav-link" href="#" aria-disabled="true">従業員一括登録</a>
+						<li class="nav-item">
+						<a class="nav-link" href="/employee/bulkregist">従業員一括登録</a>
 					</li>
 					<li class="nav-item dropdown">
 						<a href="#" class="nav-link dropdown-toggle" id="navbarDropdown" role="button"
@@ -30,7 +30,7 @@
 							設定
 						</a>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-							<a class="dropdown-item disabled" href="#" aria-disabled="true">従業員情報検索</a>
+							<a class="dropdown-item" href="/employee/list" >従業員情報検索</a>
 							<a class="dropdown-item" href="/user/list">ユーザー情報一覧</a>
 							<a class="dropdown-item" href="/company/list">顧客情報一覧</a>
 							<a class="dropdown-item disabled" href="#" aria-disabled="true">面談結果検索初期表示設定変更</a>
@@ -51,23 +51,48 @@
 		<div class="card mt-2 pt-2">
 			<div class="card-heading"><h2>従業員情報検索</h2></div>
 			<div class="card-body">
+				<form th:action="@{/employee/search}" th:method="post" th:object="${employee_request}">
+					<div class="form-group">
+						<label class="control-label">企業コード</label>
+						<input class="form-control" type="text" th:field="*{companyID}" />
+					</div>
+					<div class="form-group">
+						<label class="control-label">社員番号</label>
+						<input class="form-control" type="text" th:field="*{employeeID}" />
+					</div>
+					<div class="col text-center">
+						<button class="btn btn-primary" type="submit">検索</button>
+					</div>
+				</form>
+				<br>
 				<table class="table">
 					<thead>
 						<tr>
-							<th>ユーザーID</th>
-							<th>表示用名称</th>
-							<th>企業名称</th>
-							<th>権限</th>
-							<th>種別</th>
+							<th>企業コード</th>
+							<th>社員番号</th>
+							<th>従業員名字</th>
+							<th>入社年月</th>
+							<th>採用種別</th>
+							<th>扶養有無</th>
+							<th>就業種別</th>
 						</tr>
 					</thead>
 					<tbody>
-					    <tr th:each="user : ${user_request_list}" th:object="${user}">
-					        <td><a class="btn btn-link" th:href="@{/user/{id}/edit(id=*{id})}" th:text="*{username}"></a></td>
-					        <td th:text="*{displayName}"></td>
-					        <td th:text="*{company}"></td>
-					        <td th:text="*{userRole}"></td>
-					        <td th:text="*{enabled}"></td>
+					    <tr th:each="employee : ${employee_request_list}" th:object="${employee}">
+							<td><a class="btn btn-link" th:href="@{/employee/{id}/edit(id=*{id})}" th:text="*{companyID}"></a></td>
+							<td th:text="*{employeeID}"></td>
+							<td th:text="*{employeeFName}"></td>
+							<td th:text="*{hireYM}"></td>
+							<td th:text="*{adoptCode}"></td>
+							<td th:text="*{supportCode}"></td>
+							<td>
+								<div th:if="*{employCode == '退職済'}" class="text-danger">
+									<a th:text="*{employCode}"></a>
+								</div>
+								<div th:if="!*{employCode == '退職済'}">
+									<a th:text="*{employCode}"></a>
+								</div>
+							</td>
 					    </tr>
 					</tbody>
 				</table>

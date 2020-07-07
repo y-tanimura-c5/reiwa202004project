@@ -2,6 +2,8 @@ package com.cfiv.sysdev.rrs.dto;
 
 import java.io.Serializable;
 
+import com.cfiv.sysdev.rrs.entity.Employee;
+
 import lombok.Data;
 
 @Data
@@ -60,4 +62,22 @@ public class EmployeeRequest implements Serializable {
      * A‹Æí•Ê
      */
     private String employCode;
+
+    /**
+     * ]‹Æˆõî•ñ‚ÌŒ^•ÏŠ·(EmployeeRequest¨Employee)
+     * @return ]‹Æˆõî•ñ(Employee)
+     */
+    public Employee toEmployee() {
+        Employee employee = new Employee();
+
+        employee.setCompanyIDFromString(getCompanyID());
+        employee.setEmployeeID(getEmployeeID());
+        employee.setEmployeeFName(getEmployeeFName());
+        employee.setHireYM(getHireYM());
+        employee.setAdoptCodeFromString(getAdoptCode());
+        employee.setSupportCodeFromString(getSupportCode());
+        employee.setEmployCodeFromString(getEmployCode());
+
+        return employee;
+    }
 }

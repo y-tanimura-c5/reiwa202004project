@@ -11,7 +11,7 @@ import javax.validation.ConstraintValidatorContext;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cfiv.sysdev.rrs.annotation.FileRequired;
-import com.cfiv.sysdev.rrs.entity.EmployeeCSV;
+import com.cfiv.sysdev.rrs.dto.EmployeeCSV;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 

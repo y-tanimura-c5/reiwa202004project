@@ -1,5 +1,6 @@
-package com.cfiv.sysdev.rrs.entity;
+package com.cfiv.sysdev.rrs.dto;
 
+import com.cfiv.sysdev.rrs.entity.Employee;
 import com.opencsv.bean.CsvBindByName;
 
 import lombok.Data;
@@ -148,15 +149,20 @@ public class EmployeeCSV {
                 ", “üĞ”NŒ = " + hireYM + ", Ì—pí•Ê = " + adoptCode + ", •}—{—L–³ = " + supportCode;
     }
 
-    public long getCompanyIDLong() {
-        return Long.parseLong(companyID);
-    }
+    /**
+     * ]‹Æˆõî•ñ‚ÌŒ^•ÏŠ·(EmployeeCSV¨Employee)
+     * @return ]‹Æˆõî•ñ(Employee)
+     */
+    public Employee toEmployee() {
+        Employee employee = new Employee();
 
-    public int getAdoptCodeInt() {
-        return Integer.parseInt(adoptCode);
-    }
+        employee.setCompanyIDFromString(getCompanyID());
+        employee.setEmployeeID(getEmployeeID());
+        employee.setEmployeeFName(getEmployeeFName());
+        employee.setHireYM(getHireYM());
+        employee.setAdoptCodeFromString(getAdoptCode());
+        employee.setSupportCodeFromString(getSupportCode());
 
-    public int getSupportCodeInt() {
-        return Integer.parseInt(supportCode);
+        return employee;
     }
 }

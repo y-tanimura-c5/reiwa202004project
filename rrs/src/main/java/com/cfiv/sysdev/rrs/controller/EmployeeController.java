@@ -17,11 +17,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.cfiv.sysdev.rrs.LogUtils;
+import com.cfiv.sysdev.rrs.dto.EmployeeCSV;
 import com.cfiv.sysdev.rrs.dto.EmployeeFileRequest;
 import com.cfiv.sysdev.rrs.dto.EmployeeRequest;
-import com.cfiv.sysdev.rrs.entity.Employee;
-import com.cfiv.sysdev.rrs.entity.EmployeeCSV;
 import com.cfiv.sysdev.rrs.service.EmployeeService;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
@@ -39,41 +37,48 @@ public class EmployeeController {
     EmployeeService employeeService;
 
     /**
-     * ]‹Æˆõî•ñŒŸõ‰æ–Ê‚ğ•\¦
-     * @param model Model
-     * @return ]‹Æˆõî•ñŒŸõ‰æ–Ê
-     */
-    @RequestMapping(value = "/employee/bulkregist", method = RequestMethod.GET)
-    public String bulkRegist(Model model) {
-        model.addAttribute("employeeFileRequest", new EmployeeFileRequest());
-
-        return "employee/bulkregist";
-    }
-
-    /**
-     * ]‹Æˆõî•ñŒŸõ‰æ–Ê‚ğ•\¦
+     * ]‹Æˆõî•ñŒŸõ‰æ–Ê‰Šú•\¦
      * @param model Model
      * @return ]‹Æˆõî•ñŒŸõ‰æ–Ê
      */
     @RequestMapping(value = "/employee/list", method = RequestMethod.GET)
     public String displayList(Model model) {
-        List<EmployeeRequest> req_list = new ArrayList<EmployeeRequest>();
+        model.addAttribute("employee_request_list", new ArrayList<EmployeeRequest>());
+        model.addAttribute("employee_request", new EmployeeRequest());
 
-        List<Employee> employee_list = employeeService.searchAll();
-
-        for (Employee employee : employee_list) {
-            req_list.add(new EmployeeRequest(employee.getIdString(1), employee.getCompanyIDString(1), employee.getEmployeeID(),
-                    employee.getEmployeeFName(), employee.getHireYM(), employee.getAdoptCodeString(), employee.getSupportCodeString(),
-                    employee.getEmployCodeString()));
-        }
-
-        model.addAttribute("employee_request_list", req_list);
-
-        return "company/list";
+        return "employee/list";
     }
 
     /**
-     * ]‹ÆˆõˆêŠ‡“o˜^‰æ–Ê‚ğ•\¦
+     * ]‹Æˆõî•ñŒŸõ‰æ–ÊŒŸõŒ‹‰Ê•\¦
+     * @param model Model
+     * @return ]‹Æˆõî•ñŒŸõ‰æ–Ê
+     */
+    @RequestMapping(value = "/employee/search", method = RequestMethod.POST)
+    public String search(Model model, @ModelAttribute("employee_request") EmployeeRequest req) {
+        List<EmployeeRequest> req_list = employeeService.searchRequestFromID(req.getCompanyID(), req.getEmployeeID());
+
+        model.addAttribute("employee_request_list", req_list);
+        model.addAttribute("employee_request", req);
+
+        return "employee/list";
+    }
+
+    /**
+     * ]‹ÆˆõˆêŠ‡“o˜^‰æ–Ê•\¦
+     * @param model Model
+     * @return ]‹Æˆõî•ñˆêŠ‡“o˜^‰æ–Ê
+     */
+    @RequestMapping(value = "/employee/bulkregist", method = RequestMethod.GET)
+    public String bulkRegist(Model model) {
+        model.addAttribute("employeeFileRequest", new EmployeeFileRequest());
+        model.addAttribute("regist_result", false);
+
+        return "employee/bulkregist";
+    }
+
+    /**
+     * ]‹ÆˆõˆêŠ‡“o˜^î•ñæ‚è‚İ
      * @param model Model
      * @return ]‹ÆˆõˆêŠ‡“o˜^‰æ–Ê
      */
@@ -82,49 +87,24 @@ public class EmployeeController {
         if (result.hasErrors()) {
             return "employee/bulkregist";
         }
-
-        List<EmployeeCSV> items = null;
-        try {
-            Reader reader = new StringReader(new String(employeeFileRequest.getEmployeeFile().getBytes()));
-            CsvToBean<EmployeeCSV> csvToBean = new CsvToBeanBuilder<EmployeeCSV>(reader).withType(EmployeeCSV.class).build();
-            items = csvToBean.parse();
-        }
-        catch (IllegalStateException | IOException e) {
-            return "employee/bulkregist";
-        }
-
-        int row = 2;
-        if (items != null) {
-            LogUtils.info("items = ");
-            for (EmployeeCSV item : items) {
-                LogUtils.info("  " + item.toString());
-                item.check();
-                LogUtils.info("  " + item.isResult());
-                if (!item.isResult()) {
-                    LogUtils.info("  " + item.getReason());
-                    model.addAttribute("check_result", "ƒGƒ‰[‚ ‚è");
-                    model.addAttribute("error_row", row);
-                    model.addAttribute("error_reazon", item.getReason());
-                    break;
-                }
-                row ++;
+        else {
+            try {
+                Reader reader = new StringReader(new String(employeeFileRequest.getEmployeeFile().getBytes()));
+                CsvToBean<EmployeeCSV> csvToBean = new CsvToBeanBuilder<EmployeeCSV>(reader).withType(EmployeeCSV.class).build();
+                employeeService.saveCSV(csvToBean.parse());
+            }
+            catch (IllegalStateException | IOException e) {
             }
         }
+
+        model.addAttribute("regist_result", true);
 
         return "employee/bulkregist";
     }
 
-    @RequestMapping(value = "/employee/confirm", method = RequestMethod.POST)
-    public String confirm(@ModelAttribute EmployeeRequest req) {
-        return "redirect:/";
-    }
-
     @RequestMapping(value = "/employee/{id}/edit", method = RequestMethod.GET)
     public String edit(@PathVariable Long id, Model model) {
-        Employee employee = employeeService.findOne(id);
-        model.addAttribute("employee_request", new EmployeeRequest(employee.getIdString(1), employee.getCompanyIDString(1),
-                employee.getEmployeeID(), employee.getEmployeeFName(), employee.getHireYM(), employee.getAdoptCodeString(),
-                employee.getSupportCodeString(), employee.getEmployCodeString()));
+        model.addAttribute("employee_request", employeeService.findOneRequest(id));
 
         return "employee/edit";
     }

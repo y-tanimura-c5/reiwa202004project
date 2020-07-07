@@ -42,7 +42,7 @@ public class InterviewResult implements Serializable {
     /**
      * é–àıî‘çÜ
      */
-    @Column(name="EMPROYEE_ID")
+    @Column(name="EMPLOYEE_ID")
     private String emproyeeID;
 
     /**

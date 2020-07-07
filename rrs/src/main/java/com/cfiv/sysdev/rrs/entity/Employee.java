@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.cfiv.sysdev.rrs.LogUtils;
+import com.cfiv.sysdev.rrs.dto.EmployeeRequest;
 
 import lombok.Data;
 
@@ -20,7 +21,7 @@ import lombok.Data;
  */
 @Entity
 @Data
-@Table(name="M_EMPROYEE")
+@Table(name="M_EMPLOYEE")
 public class Employee {
 
     /**
@@ -40,13 +41,13 @@ public class Employee {
     /**
      * Ğˆõ”Ô†
      */
-    @Column(name="EMPROYEE_ID")
+    @Column(name="EMPLOYEE_ID")
     private String employeeID;
 
     /**
      * ]‹Æˆõ–¼š
      */
-    @Column(name="EMPROYEE_FNAME")
+    @Column(name="EMPLOYEE_FNAME")
     private String employeeFName;
 
     /**
@@ -70,7 +71,7 @@ public class Employee {
     /**
      * A‹Æí•Ê
      */
-    @Column(name="EMPROY_CODE")
+    @Column(name="EMPLOY_CODE")
     private int employCode;
 
     /**
@@ -124,7 +125,20 @@ public class Employee {
      * @return w’èŒ…‚Å0–„‚ßŒã‚ÌID•¶š—ñ
      */
     public String getCompanyIDString(int nDigits) {
-        return String.format("%0" + nDigits + "d", id);
+        return String.format("%0" + nDigits + "d", companyID);
+    }
+
+    /**
+     * •¶š—ñ‚©‚ç‚ÌŠé‹ÆƒR[ƒhİ’è
+     * @param cs Šé‹ÆƒR[ƒh•¶š—ñ
+     */
+    public void setCompanyIDFromString(String cs) {
+        try {
+            setCompanyID(Long.parseLong(cs));
+        }
+        catch (NumberFormatException e) {
+            setCompanyID(0L);
+        }
     }
 
     /**
@@ -163,7 +177,7 @@ public class Employee {
      * @param as Ì—pí•Ê•¶š—ñ
      */
     public void setAdoptCodeFromString(String as) {
-        if (as.equals("V‘²Ì—p")) {
+        if (as.equals("V‘²Ì—p") || as.equals("0")) {
             setAdoptCode(0);
         }
         else {
@@ -189,7 +203,7 @@ public class Employee {
      * @param ss •}—{—L–³•¶š—ñ
      */
     public void setSupportCodeFromString(String ss) {
-        if (ss.equals("•}—{‚È‚µ")) {
+        if (ss.equals("•}—{‚È‚µ") || ss.equals("0")) {
             setSupportCode(0);
         }
         else {
@@ -215,11 +229,20 @@ public class Employee {
      * @param es A‹Æí•Ê•¶š—ñ
      */
     public void setEmployCodeFromString(String es) {
-        if (es.equals("İĞ’†")) {
+        if (es.equals("İĞ’†") || es.equals("0")) {
             setEmployCode(0);
         }
         else {
             setEmployCode(1);
         }
+    }
+
+    /**
+     * ]‹Æˆõî•ñ‚ÌŒ^•ÏŠ·(Employee¨EmployeeRequest)
+     * @return ]‹Æˆõî•ñ(EmployeeRequest)
+     */
+    public EmployeeRequest toRequest() {
+        return new EmployeeRequest(getIdString(1), getCompanyIDString(4), getEmployeeID(), getEmployeeFName(),
+                getHireYM(), getAdoptCodeString(), getSupportCodeString(), getEmployCodeString());
     }
 }

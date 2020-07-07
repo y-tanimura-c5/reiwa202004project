@@ -21,8 +21,8 @@
 					<li class="nav-item disabled">
 						<a class="nav-link" href="#" aria-disabled="true">面談結果検索</a>
 					</li>
-						<li class="nav-item disabled">
-						<a class="nav-link" href="#" aria-disabled="true">従業員一括登録</a>
+						<li class="nav-item">
+						<a class="nav-link" href="/employee/bulkregist">従業員一括登録</a>
 					</li>
 					<li class="nav-item dropdown">
 						<a href="#" class="nav-link dropdown-toggle" id="navbarDropdown" role="button"
@@ -30,7 +30,7 @@
 							設定
 						</a>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-							<a class="dropdown-item disabled" href="#" aria-disabled="true">従業員情報検索</a>
+							<a class="dropdown-item" href="/employee/list" >従業員情報検索</a>
 							<a class="dropdown-item" href="/user/list">ユーザー情報一覧</a>
 							<a class="dropdown-item" href="/company/list">顧客情報一覧</a>
 							<a class="dropdown-item disabled" href="#" aria-disabled="true">面談結果検索初期表示設定変更</a>
@@ -51,26 +51,31 @@
 		<div class="card mt-2 pt-2">
 			<div class="card-heading"><h2>従業員情報編集</h2></div>
 			<div class="card-body">
-				<div><a class="btn btn-link" href="/user/list">一覧画面へ</a></div>
-				<form th:action="@{/user/{id}(id=*{id})}" th:method="post" th:object="${user_request}">
+				<div><a class="btn btn-link" href="/employee/list">検索画面へ</a></div>
+				<form th:action="@{/employee/{id}(id=*{id})}" th:method="post" th:object="${employee_request}">
 					<div class="form-group">
-						<label class="control-label">ユーザーID</label>
-						<input class="form-control" type="text" th:field="*{username}" readonly="readonly" />
-						<label th:if="${#fields.hasErrors('username')}" th:errors="*{username}" style="color: red"></label>
+						<label class="control-label">企業コード</label>
+						<input class="form-control" type="text" th:field="*{companyID}" readonly="readonly" />
 					</div>
 					<div class="form-group">
-						<label class="control-label">パスワード</label>
-						<input class="form-control" type="password" th:field="*{password}" />
+						<label class="control-label">社員番号</label>
+						<input class="form-control" type="text" th:field="*{employeeID}" readonly="readonly" />
 					</div>
 					<div class="form-group">
-						<label class="control-label">パスワード(確認用)</label>
-						<input class="form-control" type="password" th:field="*{passwordCheck}" />
-						<label th:if="${#fields.hasErrors('passwordCheck')}" th:errors="*{passwordCheck}" style="color: red"></label>
+						<label class="control-label">従業員名字</label>
+						<input class="form-control" type="text" th:field="*{employeeFName}" readonly="readonly" />
 					</div>
 					<div class="form-group">
-						<label class="control-label">表示用名称</label>
-						<input class="form-control" type="text" th:field="*{displayName}" />
-						<label th:if="${#fields.hasErrors('displayName')}" th:errors="*{displayName}" style="color: red"></label>
+						<label class="control-label">入社年月</label>
+						<input class="form-control" type="text" th:field="*{hireYM}" readonly="readonly" />
+					</div>
+					<div class="form-group">
+						<label class="control-label">採用種別</label>
+						<input class="form-control" type="text" th:field="*{adoptCode}" readonly="readonly" />
+					</div>
+					<div class="form-group">
+						<label class="control-label">扶養有無</label>
+						<input class="form-control" type="text" th:field="*{supportCode}" readonly="readonly" />
 					</div>
 					<div class="form-group">
 						<label class="control-label">ユーザー権限</label>
@@ -78,29 +83,8 @@
 						<table class="table table-borderless" style="width:500px;">
 							<tbody>
 								<tr>
-									<td><input type="radio" name="userrole" th:value="全体管理者" th:text="全体管理者" th:field="*{userRole}" /></td>
-									<td><input type="radio" name="userrole" th:value="企業管理者" th:text="企業管理者" th:field="*{userRole}" /></td>
-									<td><input type="radio" name="userrole" th:value="リファイナー" th:text="リファイナー" th:field="*{userRole}" /></td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-					<div class="form-group">
-						<label class="control-label">企業名称</label>
-						<br>
-						<select id="singleSelect" name="company_items" th:field="*{company}">
-							<option th:each="item : ${company_items}" th:value="${item.value}" th:text="${item.value}"
-							th:selected="${item.value} == *{company}">singleSelect</option>
-						</select>
-					</div>
-					<div class="form-group">
-						<label class="control-label">有効／無効</label>
-						<br>
-						<table class="table table-borderless" style="width:300px;">
-							<tbody>
-								<tr>
-									<td><input type="radio" name="enabled" th:value="有効" th:text="有効" th:field="*{enabled}" /></td>
-									<td><input type="radio" name="enabled" th:value="無効" th:text="無効" th:field="*{enabled}" /></td>
+									<td><input type="radio" name="employCode" th:value="在籍中" th:text="在籍中" th:field="*{employCode}" /></td>
+									<td><input type="radio" name="employCode" th:value="退職済" th:text="退職済" th:field="*{employCode}" /></td>
 								</tr>
 							</tbody>
 						</table>

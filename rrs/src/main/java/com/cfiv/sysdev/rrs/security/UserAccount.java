@@ -1,10 +1,12 @@
-package com.cfiv.sysdev.rrs.entity;
+package com.cfiv.sysdev.rrs.security;
 
 import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.cfiv.sysdev.rrs.entity.Account;
 
 public class UserAccount implements UserDetails {
     private Account account;

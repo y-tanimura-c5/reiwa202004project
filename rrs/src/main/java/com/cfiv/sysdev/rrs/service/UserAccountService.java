@@ -17,8 +17,8 @@ import org.thymeleaf.util.StringUtils;
 import com.cfiv.sysdev.rrs.dto.UserAddRequest;
 import com.cfiv.sysdev.rrs.dto.UserEditRequest;
 import com.cfiv.sysdev.rrs.entity.Account;
-import com.cfiv.sysdev.rrs.entity.UserAccount;
 import com.cfiv.sysdev.rrs.repository.AccountRepository;
+import com.cfiv.sysdev.rrs.security.UserAccount;
 
 /**
  * ÉÜÅ[ÉUÅ[èÓïÒ Service
