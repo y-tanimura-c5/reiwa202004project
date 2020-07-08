@@ -21,12 +21,12 @@ public class CompanyRequest implements Serializable {
     private String id;
 
     /**
-     * –¼‘O
+     * åå‰
      */
     private String name;
 
     /**
-     * —LŒø^–³Œø
+     * æœ‰åŠ¹ï¼ç„¡åŠ¹
      */
     private String enabled;
 }

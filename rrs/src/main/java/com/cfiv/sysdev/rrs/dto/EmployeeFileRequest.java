@@ -12,7 +12,7 @@ import lombok.Data;
 public class EmployeeFileRequest implements Serializable {
 
     /**
-     * ]‹Æˆõî•ñƒtƒ@ƒCƒ‹
+     * å¾“æ¥­å“¡æƒ…å ±ãƒ•ã‚¡ã‚¤ãƒ«
      */
     @FileRequired
     private MultipartFile employeeFile;

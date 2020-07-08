@@ -26,27 +26,27 @@ import com.cfiv.sysdev.rrs.service.CompanyService;
 import com.cfiv.sysdev.rrs.service.UserAccountService;
 
 /**
- * ƒ†[ƒU[î•ñ Controller
+ * ãƒ¦ãƒ¼ã‚¶ãƒ¼æƒ…å ± Controller
  */
 @Controller
 public class UserController {
 
     /**
-     * ƒ†[ƒU[î•ñ Service
+     * ãƒ¦ãƒ¼ã‚¶ãƒ¼æƒ…å ± Service
      */
     @Autowired
     UserAccountService userAccountService;
 
     /**
-     * Šé‹Æî•ñ Service
+     * ä¼æ¥­æƒ…å ± Service
      */
     @Autowired
     CompanyService companyService;
 
     /**
-     * ƒ†[ƒU[î•ñˆê——‰æ–Ê‚ğ•\¦
+     * ãƒ¦ãƒ¼ã‚¶ãƒ¼æƒ…å ±ä¸€è¦§ç”»é¢ã‚’è¡¨ç¤º
      * @param model Model
-     * @return ƒ†[ƒU[î•ñˆê——‰æ–Ê
+     * @return ãƒ¦ãƒ¼ã‚¶ãƒ¼æƒ…å ±ä¸€è¦§ç”»é¢
      */
     @RequestMapping(value = "/user/list", method = RequestMethod.GET)
     public String displayList(Model model) {
@@ -71,27 +71,27 @@ public class UserController {
     }
 
     /**
-     * ƒ†[ƒU[V‹K“o˜^‰æ–Ê‚ğ•\¦
+     * ãƒ¦ãƒ¼ã‚¶ãƒ¼æ–°è¦ç™»éŒ²ç”»é¢ã‚’è¡¨ç¤º
      * @param model Model
-     * @return ƒ†[ƒU[V‹K“o˜^‰æ–Ê
+     * @return ãƒ¦ãƒ¼ã‚¶ãƒ¼æ–°è¦ç™»éŒ²ç”»é¢
      */
     @RequestMapping(value = "/user/add", method = RequestMethod.GET)
     public String displayAdd(Model model) {
         Map<String, String> company_items = companyService.getAllCompanyNames();
         List<String> keys = new ArrayList<String>(company_items.keySet());
 
-        model.addAttribute("user_request", new UserAddRequest("", "", "", "", "ƒŠƒtƒ@ƒCƒi[", company_items.get(keys.get(0)), "—LŒø"));
+        model.addAttribute("user_request", new UserAddRequest("", "", "", "", "ãƒªãƒ•ã‚¡ã‚¤ãƒŠãƒ¼", company_items.get(keys.get(0)), "æœ‰åŠ¹"));
         model.addAttribute("company_items", company_items);
 
         return "user/add";
     }
 
     /**
-     * ƒ†[ƒU[î•ñV‹K“o˜^
-     * @param req ƒŠƒNƒGƒXƒgƒf[ƒ^
-     * @param result ƒoƒŠƒf[ƒVƒ‡ƒ“ƒ`ƒFƒbƒNŒ‹‰Ê
+     * ãƒ¦ãƒ¼ã‚¶ãƒ¼æƒ…å ±æ–°è¦ç™»éŒ²
+     * @param req ãƒªã‚¯ã‚¨ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿
+     * @param result ãƒãƒªãƒ‡ãƒ¼ã‚·ãƒ§ãƒ³ãƒã‚§ãƒƒã‚¯çµæœ
      * @param model Model
-     * @return ƒ†[ƒU[î•ñˆê——‰æ–Ê(“o˜^Š®—¹)^V‹K“o˜^‰æ–Ê(ƒGƒ‰[”­¶)
+     * @return ãƒ¦ãƒ¼ã‚¶ãƒ¼æƒ…å ±ä¸€è¦§ç”»é¢(ç™»éŒ²å®Œäº†æ™‚)ï¼æ–°è¦ç™»éŒ²ç”»é¢(ã‚¨ãƒ©ãƒ¼ç™ºç”Ÿæ™‚)
      */
     @RequestMapping(value = "/user/create", method = RequestMethod.POST)
     public String create(@ModelAttribute("user_request") @Valid UserAddRequest req, BindingResult result, Model model) {
@@ -109,10 +109,10 @@ public class UserController {
     }
 
     /**
-     * ƒ†[ƒU[î•ñXV‰æ–Ê‚ğ•\¦
+     * ãƒ¦ãƒ¼ã‚¶ãƒ¼æƒ…å ±æ›´æ–°ç”»é¢ã‚’è¡¨ç¤º
      * @param id ID
      * @param model Model
-     * @return ƒ†[ƒU[î•ñXV‰æ–Ê
+     * @return ãƒ¦ãƒ¼ã‚¶ãƒ¼æƒ…å ±æ›´æ–°ç”»é¢
      */
     @RequestMapping(value = "/user/{id}/edit", method = RequestMethod.GET)
     public String edit(@PathVariable Long id, ModelMap model) {
@@ -133,13 +133,13 @@ public class UserController {
     }
 
     /**
-     * ƒ†[ƒU[î•ñXV
-     * @param attributes ƒŠƒ_ƒCƒŒƒNƒgæ‚É“n‚·‘®«’l
+     * ãƒ¦ãƒ¼ã‚¶ãƒ¼æƒ…å ±æ›´æ–°
+     * @param attributes ãƒªãƒ€ã‚¤ãƒ¬ã‚¯ãƒˆå…ˆã«æ¸¡ã™å±æ€§å€¤
      * @param id ID
-     * @param req ƒŠƒNƒGƒXƒgƒf[ƒ^
-     * @param result ƒoƒŠƒf[ƒVƒ‡ƒ“ƒ`ƒFƒbƒNŒ‹‰Ê
+     * @param req ãƒªã‚¯ã‚¨ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿
+     * @param result ãƒãƒªãƒ‡ãƒ¼ã‚·ãƒ§ãƒ³ãƒã‚§ãƒƒã‚¯çµæœ
      * @param model Model
-     * @return ƒ†[ƒU[î•ñˆê——‰æ–Ê(“o˜^Š®—¹)^V‹K“o˜^‰æ–Ê(ƒGƒ‰[”­¶)
+     * @return ãƒ¦ãƒ¼ã‚¶ãƒ¼æƒ…å ±ä¸€è¦§ç”»é¢(ç™»éŒ²å®Œäº†æ™‚)ï¼æ–°è¦ç™»éŒ²ç”»é¢(ã‚¨ãƒ©ãƒ¼ç™ºç”Ÿæ™‚)
      */
     @RequestMapping(value = "/user/{id}", method = RequestMethod.POST)
     public String update(RedirectAttributes attributes, @PathVariable Long id,
@@ -150,7 +150,7 @@ public class UserController {
             for(FieldError err: result.getFieldErrors()) {
                 LogUtils.info("error field = [" + err.getField() + "], error code = [" + err.getCode() + "]");
 
-                // ‹óƒpƒXƒ[ƒh‚ª—ˆ‚½ê‡‚ÍA‘O‰ñİ’èƒpƒXƒ[ƒh‚ÅXV‚·‚é‚½‚ßƒGƒ‰[‚É‚µ‚È‚¢(ƒoƒŠƒf[ƒVƒ‡ƒ“ƒ`ƒFƒbƒNŠO‚Æ‚·‚é)
+                // ç©ºãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ãŒæ¥ãŸå ´åˆã¯ã€å‰å›è¨­å®šãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã§æ›´æ–°ã™ã‚‹ãŸã‚ã‚¨ãƒ©ãƒ¼ã«ã—ãªã„(ãƒãƒªãƒ‡ãƒ¼ã‚·ãƒ§ãƒ³ãƒã‚§ãƒƒã‚¯å¤–ã¨ã™ã‚‹)
                 if ((err.getField().equals("password") && err.getCode().equals("Size")) && req.getPassword().isEmpty() ||
                         (err.getField().equals("passwordCheck") && err.getCode().equals("Size") && req.getPasswordCheck().isEmpty())) {
                     error = false;

@@ -19,52 +19,52 @@ import com.cfiv.sysdev.rrs.entity.Employee;
 import com.cfiv.sysdev.rrs.repository.EmployeeRepository;
 
 /**
- * ]‹Æˆõî•ñ Service
+ * å¾“æ¥­å“¡æƒ…å ± Service
  */
 @Service
 @Transactional(rollbackOn = Exception.class)
 public class EmployeeService {
     /**
-     * ƒf[ƒ^ƒx[ƒXƒGƒ“ƒeƒBƒeƒBŠÇ—
+     * ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã‚¨ãƒ³ãƒ†ã‚£ãƒ†ã‚£ç®¡ç†
      */
     @PersistenceContext
     private EntityManager entityManager;
 
     /**
-     * ]‹Æˆõî•ñ Repository
+     * å¾“æ¥­å“¡æƒ…å ± Repository
      */
     @Autowired
     EmployeeRepository employeeRepository;
 
     /**
-     * ]‹Æˆõî•ñ‘SŒŸõ
-     * @return ŒŸõŒ‹‰Ê(Employee)
+     * å¾“æ¥­å“¡æƒ…å ±å…¨æ¤œç´¢
+     * @return æ¤œç´¢çµæœ(Employee)
      */
     public List<Employee> searchAll() {
         return employeeRepository.findAll();
     }
 
     /**
-     * ]‹Æˆõî•ñ‘SŒŸõ
-     * @param companyID Šé‹ÆƒR[ƒh
-     * @param employeeID Ğˆõ”Ô†
-     * @return ŒŸõŒ‹‰Ê(EmployeeRequest)
+     * å¾“æ¥­å“¡æƒ…å ±å…¨æ¤œç´¢
+     * @param companyID ä¼æ¥­ã‚³ãƒ¼ãƒ‰
+     * @param employeeID ç¤¾å“¡ç•ªå·
+     * @return æ¤œç´¢çµæœ(EmployeeRequest)
      */
     public List<EmployeeRequest> searchRequestAll() {
         return employeeToRequestList(searchAll());
     }
 
     /**
-     * Šé‹ÆƒR[ƒhAĞˆõ”Ô†‚Å‚Ì]‹Æˆõî•ñŒŸõ
-     * @param companyID Šé‹ÆƒR[ƒh
-     * @param employeeID Ğˆõ”Ô†
-     * @return ŒŸõŒ‹‰Ê(Employee)
+     * ä¼æ¥­ã‚³ãƒ¼ãƒ‰ã€ç¤¾å“¡ç•ªå·ã§ã®å¾“æ¥­å“¡æƒ…å ±æ¤œç´¢
+     * @param companyID ä¼æ¥­ã‚³ãƒ¼ãƒ‰
+     * @param employeeID ç¤¾å“¡ç•ªå·
+     * @return æ¤œç´¢çµæœ(Employee)
      */
     @SuppressWarnings("unchecked")
     public List<Employee> searchFromID(String companyID, String employeeID) {
         List<Employee> result = new ArrayList<Employee>();
 
-        // ‚·‚×‚Äƒuƒ‰ƒ“ƒN‚¾‚Á‚½ê‡‚Í‘SŒŒŸõ‚·‚é
+        // ã™ã¹ã¦ãƒ–ãƒ©ãƒ³ã‚¯ã ã£ãŸå ´åˆã¯å…¨ä»¶æ¤œç´¢ã™ã‚‹
         if (companyID.isEmpty() && employeeID.isEmpty()){
             result = employeeRepository.findAll();
         }
@@ -109,19 +109,19 @@ public class EmployeeService {
     }
 
     /**
-     * Šé‹ÆƒR[ƒhAĞˆõ”Ô†‚Å‚Ì]‹Æˆõî•ñŒŸõ
-     * @param companyID Šé‹ÆƒR[ƒh
-     * @param employeeID Ğˆõ”Ô†
-     * @return ŒŸõŒ‹‰Ê(EmployeeRequest)
+     * ä¼æ¥­ã‚³ãƒ¼ãƒ‰ã€ç¤¾å“¡ç•ªå·ã§ã®å¾“æ¥­å“¡æƒ…å ±æ¤œç´¢
+     * @param companyID ä¼æ¥­ã‚³ãƒ¼ãƒ‰
+     * @param employeeID ç¤¾å“¡ç•ªå·
+     * @return æ¤œç´¢çµæœ(EmployeeRequest)
      */
     public List<EmployeeRequest> searchRequestFromID(String companyID, String employeeID) {
         return employeeToRequestList(searchFromID(companyID, employeeID));
     }
 
     /**
-     * ID‚Å‚Ì]‹Æˆõî•ñŒŸõ
+     * IDã§ã®å¾“æ¥­å“¡æƒ…å ±æ¤œç´¢
      * @param id ID
-     * @return ŒŸõŒ‹‰Ê(Employee)
+     * @return æ¤œç´¢çµæœ(Employee)
      */
     public Employee findOne(Long id) {
         Optional<Employee> opt = employeeRepository.findById(id);
@@ -135,9 +135,9 @@ public class EmployeeService {
     }
 
     /**
-     * ID‚Å‚Ì]‹Æˆõî•ñŒŸõ
+     * IDã§ã®å¾“æ¥­å“¡æƒ…å ±æ¤œç´¢
      * @param id ID
-     * @return ŒŸõŒ‹‰Ê(Employee)
+     * @return æ¤œç´¢çµæœ(Employee)
      */
     public EmployeeRequest findOneRequest(Long id) {
         Employee employee = findOne(id);
@@ -151,9 +151,9 @@ public class EmployeeService {
     }
 
     /**
-     * ]‹Æˆõî•ñˆê——‚ÌŒ^•ÏŠ·(Employee¨EmployeeRequest)
-     * @param list ]‹Æˆõî•ñˆê——(Employee)
-     * @return ]‹Æˆõî•ñˆê——(EmployeeRequest)
+     * å¾“æ¥­å“¡æƒ…å ±ä¸€è¦§ã®å‹å¤‰æ›(Employeeâ†’EmployeeRequest)
+     * @param list å¾“æ¥­å“¡æƒ…å ±ä¸€è¦§(Employee)
+     * @return å¾“æ¥­å“¡æƒ…å ±ä¸€è¦§(EmployeeRequest)
      */
     public List<EmployeeRequest> employeeToRequestList(List<Employee> list) {
         List<EmployeeRequest> result = new ArrayList<EmployeeRequest>();
@@ -165,8 +165,8 @@ public class EmployeeService {
     }
 
     /**
-     * ]‹Æˆõî•ñCSV“o˜^
-     * @param list ]‹Æˆõî•ñˆê——(EmployeeCSV)
+     * å¾“æ¥­å“¡æƒ…å ±CSVç™»éŒ²
+     * @param list å¾“æ¥­å“¡æƒ…å ±ä¸€è¦§(EmployeeCSV)
      */
     public void saveCSV(List<EmployeeCSV> list) {
         for (EmployeeCSV csv : list) {
@@ -182,8 +182,8 @@ public class EmployeeService {
     }
 
     /**
-     * ]‹Æˆõî•ñV‹K“o˜^
-     * @param employee ]‹Æˆõî•ñ(Employee)
+     * å¾“æ¥­å“¡æƒ…å ±æ–°è¦ç™»éŒ²
+     * @param employee å¾“æ¥­å“¡æƒ…å ±(Employee)
      */
     public void create(Employee employee) {
         Date now = new Date();
@@ -199,8 +199,8 @@ public class EmployeeService {
     }
 
     /**
-     * ]‹Æˆõî•ñV‹K“o˜^
-     * @param employee ]‹Æˆõî•ñ(EmployeeRequest)
+     * å¾“æ¥­å“¡æƒ…å ±æ–°è¦ç™»éŒ²
+     * @param employee å¾“æ¥­å“¡æƒ…å ±(EmployeeRequest)
      */
     public void create(EmployeeRequest req) {
         Date now = new Date();
@@ -217,8 +217,8 @@ public class EmployeeService {
     }
 
     /**
-     * ]‹Æˆõî•ñV‹K“o˜^
-     * @param employee ]‹Æˆõî•ñ(EmployeeCSV)
+     * å¾“æ¥­å“¡æƒ…å ±æ–°è¦ç™»éŒ²
+     * @param employee å¾“æ¥­å“¡æƒ…å ±(EmployeeCSV)
      */
     public void create(EmployeeCSV req) {
         Date now = new Date();
@@ -236,9 +236,9 @@ public class EmployeeService {
     }
 
     /**
-     * ]‹Æˆõî•ñ•Û‘¶
-     * @param req ]‹Æˆõî•ñ(Employee)
-     * @return •Û‘¶Œ‹‰Ê(Employee)
+     * å¾“æ¥­å“¡æƒ…å ±ä¿å­˜
+     * @param req å¾“æ¥­å“¡æƒ…å ±(Employee)
+     * @return ä¿å­˜çµæœ(Employee)
      */
     public Employee save(Employee employee) {
         Date now = new Date();
@@ -251,10 +251,10 @@ public class EmployeeService {
     }
 
     /**
-     * ]‹Æˆõî•ñ•Û‘¶
+     * å¾“æ¥­å“¡æƒ…å ±ä¿å­˜
      * @param id ID
-     * @param req ]‹Æˆõî•ñ(EmployeeRequest)
-     * @return •Û‘¶Œ‹‰Ê(Employee)
+     * @param req å¾“æ¥­å“¡æƒ…å ±(EmployeeRequest)
+     * @return ä¿å­˜çµæœ(Employee)
      */
     public Employee save(Long id, EmployeeRequest req) {
         Employee employee = findOne(id);
@@ -279,10 +279,10 @@ public class EmployeeService {
     }
 
     /**
-     * ]‹Æˆõî•ñ•Û‘¶
+     * å¾“æ¥­å“¡æƒ…å ±ä¿å­˜
      * @param id ID
-     * @param req ]‹Æˆõî•ñ(EmployeeCSV)
-     * @return •Û‘¶Œ‹‰Ê(Employee)
+     * @param req å¾“æ¥­å“¡æƒ…å ±(EmployeeCSV)
+     * @return ä¿å­˜çµæœ(Employee)
      */
     public Employee save(Long id, EmployeeCSV req) {
         Employee employee = findOne(id);
@@ -306,7 +306,7 @@ public class EmployeeService {
     }
 
     /**
-     * ]‹Æˆõî•ñ˜_—íœ
+     * å¾“æ¥­å“¡æƒ…å ±è«–ç†å‰Šé™¤
      * @param id ID
      */
     public void deleteLogical(Long id) {
@@ -321,7 +321,7 @@ public class EmployeeService {
     }
 
     /**
-     * ]‹Æˆõî•ñ•¨—íœ
+     * å¾“æ¥­å“¡æƒ…å ±ç‰©ç†å‰Šé™¤
      * @param id ID
      */
     public void deletePhisical(Long id) {

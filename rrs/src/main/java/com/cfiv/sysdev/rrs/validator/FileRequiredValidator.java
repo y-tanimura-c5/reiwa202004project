@@ -25,7 +25,7 @@ public class FileRequiredValidator implements ConstraintValidator<FileRequired, 
         String message = "";
 
         if (multipartFile == null || multipartFile.getOriginalFilename().isEmpty()) {
-            message = "ƒtƒ@ƒCƒ‹‚ÌŽæ“¾‚ÉŽ¸”s‚µ‚Ü‚µ‚½B";
+            message = "ãƒ•ã‚¡ã‚¤ãƒ«ã®å–å¾—ã«å¤±æ•—ã—ã¾ã—ãŸã€‚";
         }
 
         List<EmployeeCSV> items = null;
@@ -35,7 +35,7 @@ public class FileRequiredValidator implements ConstraintValidator<FileRequired, 
             items = csvToBean.parse();
         }
         catch (IllegalStateException | IOException e) {
-            message = "CSVƒtƒ@ƒCƒ‹‚Å‚Í‚È‚¢‰Â”\«‚ª‚ ‚è‚Ü‚·B";
+            message = "CSVãƒ•ã‚¡ã‚¤ãƒ«ã§ã¯ãªã„å¯èƒ½æ€§ãŒã‚ã‚Šã¾ã™ã€‚";
         }
 
         int row = 2;
@@ -43,7 +43,7 @@ public class FileRequiredValidator implements ConstraintValidator<FileRequired, 
             for (EmployeeCSV item : items) {
                 item.check();
                 if (!item.isResult()) {
-                    message = row + "s–ÚF"+ item.getReason();
+                    message = row + "è¡Œç›®ï¼š"+ item.getReason();
                     break;
                 }
                 row ++;

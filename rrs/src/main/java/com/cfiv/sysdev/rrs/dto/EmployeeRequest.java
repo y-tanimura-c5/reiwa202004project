@@ -29,43 +29,43 @@ public class EmployeeRequest implements Serializable {
     private String id;
 
     /**
-     * Šé‹ÆƒR[ƒh
+     * ä¼æ¥­ã‚³ãƒ¼ãƒ‰
      */
     private String companyID;
 
     /**
-     * Ğˆõ”Ô†
+     * ç¤¾å“¡ç•ªå·
      */
     private String employeeID;
 
     /**
-     * ]‹Æˆõ–¼š
+     * å¾“æ¥­å“¡åå­—
      */
     private String employeeFName;
 
     /**
-     * “üĞ”NŒ
+     * å…¥ç¤¾å¹´æœˆ
      */
     private String hireYM;
 
     /**
-     * Ì—pí•Ê
+     * æ¡ç”¨ç¨®åˆ¥
      */
     private String adoptCode;
 
     /**
-     * •}—{—L–³
+     * æ‰¶é¤Šæœ‰ç„¡
      */
     private String supportCode;
 
     /**
-     * A‹Æí•Ê
+     * å°±æ¥­ç¨®åˆ¥
      */
     private String employCode;
 
     /**
-     * ]‹Æˆõî•ñ‚ÌŒ^•ÏŠ·(EmployeeRequest¨Employee)
-     * @return ]‹Æˆõî•ñ(Employee)
+     * å¾“æ¥­å“¡æƒ…å ±ã®å‹å¤‰æ›(EmployeeRequestâ†’Employee)
+     * @return å¾“æ¥­å“¡æƒ…å ±(Employee)
      */
     public Employee toEmployee() {
         Employee employee = new Employee();

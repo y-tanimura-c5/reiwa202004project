@@ -16,29 +16,29 @@ import com.cfiv.sysdev.rrs.entity.Company;
 import com.cfiv.sysdev.rrs.repository.CompanyRepository;
 
 /**
- * Šé‹Æî•ñ Service
+ * ä¼æ¥­æƒ…å ± Service
  */
 @Service
 @Transactional(rollbackOn = Exception.class)
 public class CompanyService {
 
     /**
-     * Šé‹Æî•ñ Repository
+     * ä¼æ¥­æƒ…å ± Repository
      */
     @Autowired
     CompanyRepository companyRepository;
 
     /**
-     * Šé‹Æî•ñ ‘SŒŸõ
-     * @return ŒŸõŒ‹‰Ê
+     * ä¼æ¥­æƒ…å ± å…¨æ¤œç´¢
+     * @return æ¤œç´¢çµæœ
      */
     public List<Company> searchAll() {
         return companyRepository.findAll();
     }
 
     /**
-     * Šé‹Æî•ñV‹K“o˜^
-     * @param company Šé‹Æî•ñ
+     * ä¼æ¥­æƒ…å ±æ–°è¦ç™»éŒ²
+     * @param company ä¼æ¥­æƒ…å ±
      */
     public void create(Company company) {
         Date now = new Date();
@@ -111,23 +111,25 @@ public class CompanyService {
     }
 
     /**
-     * ƒŠƒXƒg•\¦—pŠé‹Æî•ñ(‘SŒ)
-     * @return ŒŸõŒ‹‰Ê
+     * ãƒªã‚¹ãƒˆè¡¨ç¤ºç”¨ä¼æ¥­æƒ…å ±(å…¨ä»¶)
+     * @return æ¤œç´¢çµæœ
      */
     public Map<String, String> getAllCompanyNames() {
         List<Company> company_list = searchAll();
         Map<String, String> result = new LinkedHashMap<String, String>();
 
         for (Company company : company_list) {
-            result.put(company.getIdString(4), company.getIdString(4) + ":" + company.getName());
+            if (company.isEnabled()) {
+                result.put(company.getIdString(4), company.getIdString(4) + ":" + company.getName());
+            }
         }
 
         return result;
     }
 
     /**
-     * ƒŠƒXƒg•\¦—pŠé‹Æî•ñ(idw’è)
-     * @return ŒŸõŒ‹‰Ê
+     * ãƒªã‚¹ãƒˆè¡¨ç¤ºç”¨ä¼æ¥­æƒ…å ±(idæŒ‡å®š)
+     * @return æ¤œç´¢çµæœ
      */
     public String getCompanyName(Long id) {
         Company company = findOne(id);

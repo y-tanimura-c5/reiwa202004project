@@ -12,7 +12,7 @@ import javax.persistence.Table;
 import lombok.Data;
 
 /**
- * ƒ†[ƒU[î•ñ Entity
+ * ãƒ¦ãƒ¼ã‚¶ãƒ¼æƒ…å ± Entity
  */
 @Entity
 @Table(name = "M_ACCOUNT")
@@ -28,106 +28,106 @@ public class Account {
     private Long id;
 
     /**
-     * ƒ†[ƒU[–¼
+     * ãƒ¦ãƒ¼ã‚¶ãƒ¼å
      */
     @Column(name = "USERNAME", nullable = false, unique = true)
     private String username;
 
     /**
-     * ƒpƒXƒ[ƒh
+     * ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰
      */
     @Column(name = "PASSWORD", nullable = false)
     private String password;
 
     /**
-     * •\¦—pƒ†[ƒU[–¼
+     * è¡¨ç¤ºç”¨ãƒ¦ãƒ¼ã‚¶ãƒ¼å
      */
     @Column(name = "DISPLAYNAME", nullable = false)
     private String displayName;
 
     /**
-     * ƒ†[ƒU[Œ ŒÀ
+     * ãƒ¦ãƒ¼ã‚¶ãƒ¼æ¨©é™
      */
     @Column(name = "USERROLE", nullable = false)
     private int userRole;
 
     /**
-     * Šé‹ÆƒR[ƒh
+     * ä¼æ¥­ã‚³ãƒ¼ãƒ‰
      */
     @Column(name = "COMPANY_ID", nullable = false)
     private Long companyID;
 
     /**
-     * —LŒø^–³Œø
+     * æœ‰åŠ¹ï¼ç„¡åŠ¹
      */
     @Column(name = "ENABLED", nullable = false)
     private boolean enabled;
 
     /**
-     * íœ
+     * å‰Šé™¤
      */
     @Column(name = "DELETED", nullable = false)
     private boolean deleted;
 
     /**
-     * “o˜^“ú
+     * ç™»éŒ²æ—¥
      */
     @Column(name = "REGIST_TIME", nullable = false)
     private Date registTime;
 
     /**
-     * “o˜^Ò
+     * ç™»éŒ²è€…
      */
     @Column(name = "REGIST_USER", nullable = false)
     private String registUser;
 
     /**
-     * XV“ú
+     * æ›´æ–°æ—¥
      */
     @Column(name = "UPDATE_TIME", nullable = false)
     private Date updateTime;
 
     /**
-     * XVÒ
+     * æ›´æ–°è€…
      */
     @Column(name = "UPDATE_USER", nullable = false)
     private String updateUser;
 
     /**
-     * XV‰ñ”
+     * æ›´æ–°å›æ•°
      */
     @Column(name = "UPDATE_COUNT", nullable = false)
     private int updateCount;
 
     /**
-     * •¶š—ñŒ`®‚ÌID
-     * @param nDigits 0–„‚ßŒ…”
-     * @return w’èŒ…‚Å0–„‚ßŒã‚ÌID•¶š—ñ
+     * æ–‡å­—åˆ—å½¢å¼ã®ID
+     * @param nDigits 0åŸ‹ã‚æ¡æ•°
+     * @return æŒ‡å®šæ¡ã§0åŸ‹ã‚å¾Œã®IDæ–‡å­—åˆ—
      */
     public String idToString(int nDigits) {
         return String.format("%0" + nDigits + "d", id);
     }
 
     /**
-     * •¶š—ñŒ`®‚Ì—LŒø^–³Œø
-     * @return u—LŒøv‚Ü‚½‚Íu–³Œøv•¶š—ñ
+     * æ–‡å­—åˆ—å½¢å¼ã®æœ‰åŠ¹ï¼ç„¡åŠ¹
+     * @return ã€Œæœ‰åŠ¹ã€ã¾ãŸã¯ã€Œç„¡åŠ¹ã€æ–‡å­—åˆ—
      */
     public String getEnabledString() {
         if (enabled) {
-            return "—LŒø";
+            return "æœ‰åŠ¹";
         }
         else {
-            return "–³Œø";
+            return "ç„¡åŠ¹";
         }
     }
 
     /**
-     * u—LŒøv^u–³Œøv•¶š—ñ‚©‚ç‚Ì—LŒø^–³Œøİ’è
-     * @param nDigits 0–„‚ßŒ…”
-     * @return w’èŒ…‚Å0–„‚ßŒã‚ÌID•¶š—ñ
+     * ã€Œæœ‰åŠ¹ã€ï¼ã€Œç„¡åŠ¹ã€æ–‡å­—åˆ—ã‹ã‚‰ã®æœ‰åŠ¹ï¼ç„¡åŠ¹è¨­å®š
+     * @param nDigits 0åŸ‹ã‚æ¡æ•°
+     * @return æŒ‡å®šæ¡ã§0åŸ‹ã‚å¾Œã®IDæ–‡å­—åˆ—
      */
     public void setEnabledFromString(String es) {
-        if (es.equals("—LŒø")) {
+        if (es.equals("æœ‰åŠ¹")) {
             setEnabled(true);
         }
         else {
@@ -136,30 +136,30 @@ public class Account {
     }
 
     /**
-     * •¶š—ñŒ`®‚Ìƒ†[ƒU[Œ ŒÀ
-     * @return ƒ†[ƒU[Œ ŒÀ•¶š—ñ
+     * æ–‡å­—åˆ—å½¢å¼ã®ãƒ¦ãƒ¼ã‚¶ãƒ¼æ¨©é™
+     * @return ãƒ¦ãƒ¼ã‚¶ãƒ¼æ¨©é™æ–‡å­—åˆ—
      */
     public String getUserRoleString() {
         if (userRole == 0) {
-            return "‘S‘ÌŠÇ—Ò";
+            return "å…¨ä½“ç®¡ç†è€…";
         }
         else if (userRole == 1){
-            return "Šé‹ÆŠÇ—Ò";
+            return "ä¼æ¥­ç®¡ç†è€…";
         }
         else {
-            return "ƒŠƒtƒ@ƒCƒi[";
+            return "ãƒªãƒ•ã‚¡ã‚¤ãƒŠãƒ¼";
         }
     }
 
     /**
-     * •¶š—ñ‚©‚ç‚Ìƒ†[ƒU[Œ ŒÀİ’è
-     * @param rs ƒ†[ƒU[Œ ŒÀ•¶š—ñ
+     * æ–‡å­—åˆ—ã‹ã‚‰ã®ãƒ¦ãƒ¼ã‚¶ãƒ¼æ¨©é™è¨­å®š
+     * @param rs ãƒ¦ãƒ¼ã‚¶ãƒ¼æ¨©é™æ–‡å­—åˆ—
      */
     public void setUserRoleFromString(String rs) {
-        if (rs.equals("‘S‘ÌŠÇ—Ò")) {
+        if (rs.equals("å…¨ä½“ç®¡ç†è€…")) {
             setUserRole(0);
         }
-        else if (rs.equals("Šé‹ÆŠÇ—Ò")) {
+        else if (rs.equals("ä¼æ¥­ç®¡ç†è€…")) {
             setUserRole(1);
         }
         else {
@@ -168,8 +168,8 @@ public class Account {
     }
 
     /**
-     * Šé‹Æ–¼Ì•¶š—ñ‚©‚ç‚ÌŠé‹ÆƒR[ƒhİ’è
-     * @param cs Šé‹Æ–¼Ì•¶š—ñ
+     * ä¼æ¥­åç§°æ–‡å­—åˆ—ã‹ã‚‰ã®ä¼æ¥­ã‚³ãƒ¼ãƒ‰è¨­å®š
+     * @param cs ä¼æ¥­åç§°æ–‡å­—åˆ—
      */
     public void setCompanyIDFromName(String cs) {
         String[] cs_list = cs.split(":");
@@ -180,7 +180,7 @@ public class Account {
                 setCompanyID(Long.parseLong(cs_list[0]));
             }
             catch (NumberFormatException e) {
-                // ‰½‚à‚µ‚È‚¢
+                // ä½•ã‚‚ã—ãªã„
             }
         }
     }

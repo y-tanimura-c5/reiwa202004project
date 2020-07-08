@@ -12,8 +12,8 @@ public class UserAccount implements UserDetails {
     private Account account;
 
     /**
-     * ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-     * (‹óƒ†[ƒU[‚Íì¬•s‰Â)
+     * ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+     * (ç©ºãƒ¦ãƒ¼ã‚¶ãƒ¼ã¯ä½œæˆä¸å¯)
      */
     protected UserAccount(){}
 
@@ -22,8 +22,8 @@ public class UserAccount implements UserDetails {
     }
 
     /**
-     * ƒ†[ƒU[Œ ŒÀƒŠƒXƒg
-     * @return ƒ†[ƒU[Œ ŒÀƒŠƒXƒg
+     * ãƒ¦ãƒ¼ã‚¶ãƒ¼æ¨©é™ãƒªã‚¹ãƒˆ
+     * @return ãƒ¦ãƒ¼ã‚¶ãƒ¼æ¨©é™ãƒªã‚¹ãƒˆ
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

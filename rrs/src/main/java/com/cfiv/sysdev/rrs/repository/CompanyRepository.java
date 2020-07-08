@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import com.cfiv.sysdev.rrs.entity.Company;
 
 /**
- * Šé‹Æî•ñ Repository
+ * ä¼æ¥­æƒ…å ± Repository
  */
 @Repository
 public interface CompanyRepository extends JpaRepository<Company, Long> {}

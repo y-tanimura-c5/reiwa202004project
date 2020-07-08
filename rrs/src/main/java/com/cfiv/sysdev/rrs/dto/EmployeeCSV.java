@@ -6,45 +6,45 @@ import com.opencsv.bean.CsvBindByName;
 import lombok.Data;
 
 /**
- * ]‹Æˆõî•ñ Entity(CSV—p)
+ * å¾“æ¥­å“¡æƒ…å ± Entity(CSVç”¨)
  */
 @Data
 public class EmployeeCSV {
 
     /**
-     * Šé‹ÆƒR[ƒh
+     * ä¼æ¥­ã‚³ãƒ¼ãƒ‰
      */
-    @CsvBindByName(column = "Šé‹ÆƒR[ƒh", required = true)
+    @CsvBindByName(column = "ä¼æ¥­ã‚³ãƒ¼ãƒ‰", required = true)
     private String companyID;
 
     /**
-     * Ğˆõ”Ô†
+     * ç¤¾å“¡ç•ªå·
      */
-    @CsvBindByName(column = "]‹Æˆõ”Ô†", required = true)
+    @CsvBindByName(column = "å¾“æ¥­å“¡ç•ªå·", required = true)
     private String employeeID;
 
     /**
-     * ]‹Æˆõ–¼š
+     * å¾“æ¥­å“¡åå­—
      */
-    @CsvBindByName(column = "]‹Æˆõ–¼š", required = true)
+    @CsvBindByName(column = "å¾“æ¥­å“¡åå­—", required = true)
     private String employeeFName;
 
     /**
-     * “üĞ”NŒ
+     * å…¥ç¤¾å¹´æœˆ
      */
-    @CsvBindByName(column = "“üĞ”NŒ", required = true)
+    @CsvBindByName(column = "å…¥ç¤¾å¹´æœˆ", required = true)
     private String hireYM;
 
     /**
-     * Ì—pí•Ê
+     * æ¡ç”¨ç¨®åˆ¥
      */
-    @CsvBindByName(column = "Ì—pí•Ê", required = true)
+    @CsvBindByName(column = "æ¡ç”¨ç¨®åˆ¥", required = true)
     private String adoptCode;
 
     /**
-     * •}—{—L–³
+     * æ‰¶é¤Šæœ‰ç„¡
      */
-    @CsvBindByName(column = "•}—{—L–³", required = true)
+    @CsvBindByName(column = "æ‰¶é¤Šæœ‰ç„¡", required = true)
     private String supportCode;
 
 
@@ -62,96 +62,96 @@ public class EmployeeCSV {
     }
 
     private void checkCompanyID() {
-        // ”š‚Ì‚İ‚©
+        // æ•°å­—ã®ã¿ã‹
         if (!companyID.matches("^[0-9]*$")) {
             result = false;
-            reason += "Šé‹ÆƒR[ƒh‚É”šˆÈŠO‚Ì•¶š‚ªŠÜ‚Ü‚ê‚Ä‚¢‚Ü‚·B";
+            reason += "ä¼æ¥­ã‚³ãƒ¼ãƒ‰ã«æ•°å­—ä»¥å¤–ã®æ–‡å­—ãŒå«ã¾ã‚Œã¦ã„ã¾ã™ã€‚";
         }
     }
 
     private void checkEmployeeID() {
-        // 50•¶šˆÈ“à‚©
+        // 50æ–‡å­—ä»¥å†…ã‹
         if (employeeID.length() > 50) {
             result = false;
-            reason += "]‹Æˆõ”Ô†‚ª50•¶š‚ğ’´‚¦‚Ä‚¢‚Ü‚·B";
+            reason += "å¾“æ¥­å“¡ç•ªå·ãŒ50æ–‡å­—ã‚’è¶…ãˆã¦ã„ã¾ã™ã€‚";
         }
 
-        // ”šAƒAƒ‹ƒtƒ@ƒxƒbƒgA‹L†‚Ì‚İ‚©
+        // æ•°å­—ã€ã‚¢ãƒ«ãƒ•ã‚¡ãƒ™ãƒƒãƒˆã€è¨˜å·ã®ã¿ã‹
         if (!employeeID.matches("^[a-zA-Z0-9!-/:-@\\[-`{-~]*$")) {
             result = false;
-            reason += "]‹Æˆõ”Ô†‚É”šAƒAƒ‹ƒtƒ@ƒxƒbƒgA‹L†ˆÈŠO‚Ì•¶š‚ªŠÜ‚Ü‚ê‚Ä‚¢‚Ü‚·B";
+            reason += "å¾“æ¥­å“¡ç•ªå·ã«æ•°å­—ã€ã‚¢ãƒ«ãƒ•ã‚¡ãƒ™ãƒƒãƒˆã€è¨˜å·ä»¥å¤–ã®æ–‡å­—ãŒå«ã¾ã‚Œã¦ã„ã¾ã™ã€‚";
         }
     }
 
     private void checkEmployeeFName() {
-        // 20•¶šˆÈ“à‚©
+        // 20æ–‡å­—ä»¥å†…ã‹
         if (employeeFName.length() > 20) {
             result = false;
-            reason += "]‹Æˆõ–¼š‚ª20•¶š‚ğ’´‚¦‚Ä‚¢‚Ü‚·B";
+            reason += "å¾“æ¥­å“¡åå­—ãŒ20æ–‡å­—ã‚’è¶…ãˆã¦ã„ã¾ã™ã€‚";
         }
 
-        // ‘SŠpƒJƒ^ƒJƒi‚Ì‚İ‚©
-        if (!employeeFName.matches("^[ƒ@-ƒ“ƒ”[]*$")) {
+        // å…¨è§’ã‚«ã‚¿ã‚«ãƒŠã®ã¿ã‹
+        if (!employeeFName.matches("^[ã‚¡-ãƒ³ãƒ´ãƒ¼]*$")) {
             result = false;
-            reason += "]‹Æˆõ–¼š‚É‘SŠpƒJƒ^ƒJƒiˆÈŠO‚Ì•¶š‚ªŠÜ‚Ü‚ê‚Ä‚¢‚Ü‚·B";
+            reason += "å¾“æ¥­å“¡åå­—ã«å…¨è§’ã‚«ã‚¿ã‚«ãƒŠä»¥å¤–ã®æ–‡å­—ãŒå«ã¾ã‚Œã¦ã„ã¾ã™ã€‚";
         }
     }
 
     private void checkHireYM() {
-        // 6•¶š‚©
+        // 6æ–‡å­—ã‹
         if (hireYM.length() != 6) {
             result = false;
-            reason += "“üĞ”NŒ‚ª”N(4Œ…){Œ(2Œ…)‚ÌŒ`®‚É‚È‚Á‚Ä‚¢‚Ü‚¹‚ñB";
+            reason += "å…¥ç¤¾å¹´æœˆãŒå¹´(4æ¡)ï¼‹æœˆ(2æ¡)ã®å½¢å¼ã«ãªã£ã¦ã„ã¾ã›ã‚“ã€‚";
         }
 
-        // ”š‚Ì‚İ‚©
+        // æ•°å­—ã®ã¿ã‹
         if (!hireYM.matches("^[0-9]*$")) {
             result = false;
-            reason += "“üĞ”NŒ‚É”šˆÈŠO‚Ì•¶š‚ªŠÜ‚Ü‚ê‚Ä‚¢‚Ü‚·B";
+            reason += "å…¥ç¤¾å¹´æœˆã«æ•°å­—ä»¥å¤–ã®æ–‡å­—ãŒå«ã¾ã‚Œã¦ã„ã¾ã™ã€‚";
         }
     }
 
     private void checkAdoptCode() {
-        // ”š‚Ì‚İ‚©
+        // æ•°å­—ã®ã¿ã‹
         try {
             int code = Integer.parseInt(adoptCode);
             if (code != 0 && code != 1) {
                 result = false;
-                reason += "Ì—pí•Ê‚É0‚Ü‚½‚Í1ˆÈŠO‚Ì•¶š‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚·B";
+                reason += "æ¡ç”¨ç¨®åˆ¥ã«0ã¾ãŸã¯1ä»¥å¤–ã®æ–‡å­—ãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã™ã€‚";
             }
         }
         catch (NumberFormatException e) {
             result = false;
-            reason += "Ì—pí•Ê‚É0‚Ü‚½‚Í1ˆÈŠO‚Ì•¶š‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚·B";
+            reason += "æ¡ç”¨ç¨®åˆ¥ã«0ã¾ãŸã¯1ä»¥å¤–ã®æ–‡å­—ãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã™ã€‚";
         }
     }
 
     private void checkSupportCode() {
-        // ”š‚Ì‚İ‚©
+        // æ•°å­—ã®ã¿ã‹
         try {
             int code = Integer.parseInt(supportCode);
             if (code != 0 && code != 1) {
                 result = false;
-                reason += "•}—{—L–³‚É0‚Ü‚½‚Í1ˆÈŠO‚Ì•¶š‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚·B";
+                reason += "æ‰¶é¤Šæœ‰ç„¡ã«0ã¾ãŸã¯1ä»¥å¤–ã®æ–‡å­—ãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã™ã€‚";
             }
         }
         catch (NumberFormatException e) {
             result = false;
-            reason += "•}—{—L–³‚É0‚Ü‚½‚Í1ˆÈŠO‚Ì•¶š‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚·B";
+            reason += "æ‰¶é¤Šæœ‰ç„¡ã«0ã¾ãŸã¯1ä»¥å¤–ã®æ–‡å­—ãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã™ã€‚";
         }
     }
 
     /**
-     * ƒNƒ‰ƒX‚Ì•¶š—ñ•\Œ»
+     * ã‚¯ãƒ©ã‚¹ã®æ–‡å­—åˆ—è¡¨ç¾
      */
     public String toString() {
-        return "Šé‹ÆƒR[ƒh = " + companyID + ", ]‹Æˆõ”Ô† = " + employeeID + ", ]‹Æˆõ–¼š = " + employeeFName +
-                ", “üĞ”NŒ = " + hireYM + ", Ì—pí•Ê = " + adoptCode + ", •}—{—L–³ = " + supportCode;
+        return "ä¼æ¥­ã‚³ãƒ¼ãƒ‰ = " + companyID + ", å¾“æ¥­å“¡ç•ªå· = " + employeeID + ", å¾“æ¥­å“¡åå­— = " + employeeFName +
+                ", å…¥ç¤¾å¹´æœˆ = " + hireYM + ", æ¡ç”¨ç¨®åˆ¥ = " + adoptCode + ", æ‰¶é¤Šæœ‰ç„¡ = " + supportCode;
     }
 
     /**
-     * ]‹Æˆõî•ñ‚ÌŒ^•ÏŠ·(EmployeeCSV¨Employee)
-     * @return ]‹Æˆõî•ñ(Employee)
+     * å¾“æ¥­å“¡æƒ…å ±ã®å‹å¤‰æ›(EmployeeCSVâ†’Employee)
+     * @return å¾“æ¥­å“¡æƒ…å ±(Employee)
      */
     public Employee toEmployee() {
         Employee employee = new Employee();

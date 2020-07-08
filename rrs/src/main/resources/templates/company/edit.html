@@ -1,51 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
-<head>
-	<title>企業情報編集 - Reiwa Refiner System</title>
-	<link rel="stylesheet" href="/css/bootstrap.css" />
-	<script src="/js/jquery.js"></script>
-	<script src="/js/bootstrap.js"></script>
-	<meta charset="utf-8" />
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common :: meta_header('企業情報編集',~{::link},~{::script})">
 </head>
 <body>
 <div class="box">
-	<div class="container-fluid">
-		<nav class="navbar navbar-expand-lg navbar-light bg-light">
-			<a class="navbar-brand" href="/">Reiwa Refiner System</a>
-			<button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber"
-			aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse" id="Navber">
-				<ul class="navbar-nav mr-auto">
-					<li class="nav-item disabled">
-						<a class="nav-link" href="#" aria-disabled="true">面談結果検索</a>
-					</li>
-						<li class="nav-item">
-						<a class="nav-link" href="/employee/bulkregist">従業員一括登録</a>
-					</li>
-					<li class="nav-item dropdown">
-						<a href="#" class="nav-link dropdown-toggle" id="navbarDropdown" role="button"
-						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							設定
-						</a>
-						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-							<a class="dropdown-item" href="/employee/list" >従業員情報検索</a>
-							<a class="dropdown-item" href="/user/list">ユーザー情報一覧</a>
-							<a class="dropdown-item" href="/company/list">顧客情報一覧</a>
-							<a class="dropdown-item disabled" href="#" aria-disabled="true">面談結果検索初期表示設定変更</a>
-						</div>
-					</li>
-				</ul>
-				<div sec:authorize="isAuthenticated()">
-					<span sec:authentication="principal.username">userさん</span>
-				</div>
-				<form class="form-inline my-2 my-lg-0" id="logout" th:action="@{/logout}" method="post">
-	       			<button type="submit" class="btn btn-primary">ログアウト</button>
-				</form>
-			</div>
-		</nav>
-	</div>
+	<div th:replace="common :: header"></div>
 
 	<div class="container-fluid">
 		<div class="card mt-2 pt-2">
@@ -72,15 +31,6 @@
 								</tr>
 							</tbody>
 						</table>
-<!-- 						<div class="custom-control custom-radio"> -->
-<!-- 							<input id="customRadio1" name="enabled" type="radio" class="custom-control-input" th:field="*{enabled}"> -->
-<!-- 							<label class="custom-control-label" for="customRadio1">有効</label> -->
-<!-- 						</div> -->
-<!-- 						<div class="custom-control custom-radio"> -->
-<!-- 							<input id="customRadio2" name="enabled" type="radio" class="custom-control-input" th:field="*{enabled}"> -->
-<!-- 							<label class="custom-control-label" for="customRadio2">無効</label> -->
-<!-- 						</div> -->
-<!-- 						<input class="form-control" type="text" th:field="*{enabled}" /> -->
 					</div>
 					<br>
 					<div class="col text-center">
@@ -91,11 +41,7 @@
 		</div>
 	</div>
 
-	<footer class="fixed-bottom">
-		<div class="container">
-			<p class="text-right">Copyright &copy レイワソリューションズ株式会社</p>
-		</div>
-	</footer>
+	<div th:replace="common :: footer"></div>
 </div>
 </body>
 </html>

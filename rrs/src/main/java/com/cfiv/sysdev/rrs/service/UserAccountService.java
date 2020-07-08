@@ -21,7 +21,7 @@ import com.cfiv.sysdev.rrs.repository.AccountRepository;
 import com.cfiv.sysdev.rrs.security.UserAccount;
 
 /**
- * ƒ†[ƒU[î•ñ Service
+ * ãƒ¦ãƒ¼ã‚¶ãƒ¼æƒ…å ± Service
  */
 @Service
 public class UserAccountService implements UserDetailsService {
@@ -33,8 +33,8 @@ public class UserAccountService implements UserDetailsService {
     private PasswordEncoder passwordEncoder;
 
     /**
-     * ƒ†[ƒU[î•ñ ‘SŒŸõ
-     * @return ŒŸõŒ‹‰Ê
+     * ãƒ¦ãƒ¼ã‚¶ãƒ¼æƒ…å ± å…¨æ¤œç´¢
+     * @return æ¤œç´¢çµæžœ
      */
     public List<Account> searchAll() {
         return accountRepository.findAll();
@@ -70,8 +70,8 @@ public class UserAccountService implements UserDetailsService {
     }
 
     /**
-     * ƒ†[ƒU[î•ñV‹K“o˜^
-     * @param req ƒ†[ƒU[î•ñ
+     * ãƒ¦ãƒ¼ã‚¶ãƒ¼æƒ…å ±æ–°è¦ç™»éŒ²
+     * @param req ãƒ¦ãƒ¼ã‚¶ãƒ¼æƒ…å ±
      */
     @Transactional
     public void create(UserAddRequest req) {
@@ -94,9 +94,9 @@ public class UserAccountService implements UserDetailsService {
     }
 
     /**
-     * ƒ†[ƒU[î•ñXV
+     * ãƒ¦ãƒ¼ã‚¶ãƒ¼æƒ…å ±æ›´æ–°
      * @param id ID
-     * @param req ƒ†[ƒU[î•ñ
+     * @param req ãƒ¦ãƒ¼ã‚¶ãƒ¼æƒ…å ±
      */
     @Transactional
     public Account save(Long id, UserEditRequest req) {

@@ -18,7 +18,7 @@ import javax.persistence.Table;
 import lombok.Data;
 
 /**
- * –Ê’kŒ‹‰Ê Entity
+ * é¢è«‡çµæœ Entity
  */
 @Entity
 @Data
@@ -26,7 +26,7 @@ import lombok.Data;
 public class InterviewResult implements Serializable {
 
     /**
-     * –Ê’k”Ô†
+     * é¢è«‡ç•ªå·
      */
     @Id
     @Column(name="INTERVIEW_NO")
@@ -34,98 +34,98 @@ public class InterviewResult implements Serializable {
     private String interviewNo;
 
     /**
-     * Šé‹ÆƒR[ƒh
+     * ä¼æ¥­ã‚³ãƒ¼ãƒ‰
      */
     @Column(name="COMPANY_ID")
     private int companyID;
 
     /**
-     * Ğˆõ”Ô†
+     * ç¤¾å“¡ç•ªå·
      */
     @Column(name="EMPLOYEE_ID")
     private String emproyeeID;
 
     /**
-     * –Ê’k“ú
+     * é¢è«‡æ—¥
      */
     @Column(name="INTERVIEW_DATETIME")
     private Date interviewDateTime;
 
     /**
-     * ƒŠƒtƒ@ƒCƒi[
+     * ãƒªãƒ•ã‚¡ã‚¤ãƒŠãƒ¼
      */
     @Column(name="REFINER_USER_ID")
     private String refinerUserID;
 
     /**
-     * –Ê’kŠÔƒR[ƒh
+     * é¢è«‡æ™‚é–“ã‚³ãƒ¼ãƒ‰
      */
     @Column(name="INTERVIEWTIME_CODE")
     private int interviewTimeCode;
 
     /**
-     * ‘Š’k“à—e
+     * ç›¸è«‡å†…å®¹
      */
     @Column(name="INTERVIEWER_COMMENT")
     private String interviewComment;
 
     /**
-     * î•ñŠJ¦ƒR[ƒh
+     * æƒ…å ±é–‹ç¤ºã‚³ãƒ¼ãƒ‰
      */
     @Column(name="DISCLOSE_CODE")
     private int discloseCode;
 
     /**
-     * ŠÇ—ÒƒRƒƒ“ƒg
+     * ç®¡ç†è€…ã‚³ãƒ¡ãƒ³ãƒˆ
      */
     @Column(name="ADMIN_COMMENT")
     private String adminComment;
 
     /**
-     * íœ
+     * å‰Šé™¤
      */
     @Column(name="DELETED")
     private Boolean deleted;
 
     /**
-     * “o˜^“ú
+     * ç™»éŒ²æ—¥
      */
     @Column(name="REGIST_TIME")
     private Date registTime;
 
     /**
-     * “o˜^Ò
+     * ç™»éŒ²è€…
      */
     @Column(name="REGIST_USER")
     private String registUser;
 
     /**
-     * XV“ú
+     * æ›´æ–°æ—¥
      */
     @Column(name="UPDATE_TIME")
     private Date updateTime;
 
     /**
-     * XVÒ
+     * æ›´æ–°è€…
      */
     @Column(name="UPDATE_USER")
     private String updateUser;
 
     /**
-     * XV‰ñ”
+     * æ›´æ–°å›æ•°
      */
     @Column(name="UPDATE_COUNT")
     private int updateCount;
 
     /**
-     * –Ê’k“à—eƒŠƒXƒg
+     * é¢è«‡å†…å®¹ãƒªã‚¹ãƒˆ
      */
     @OneToMany(fetch = FetchType.EAGER, cascade= CascadeType.ALL)
     @JoinColumn(name = "INTERVIEW_NO")
     private Set<InterviewContent> interviewContentList;
 
     /**
-     * “Y•tƒtƒ@ƒCƒ‹ƒŠƒXƒg
+     * æ·»ä»˜ãƒ•ã‚¡ã‚¤ãƒ«ãƒªã‚¹ãƒˆ
      */
     @OneToMany(fetch = FetchType.EAGER, cascade= CascadeType.ALL)
     @JoinColumn(name = "INTERVIEW_NO")

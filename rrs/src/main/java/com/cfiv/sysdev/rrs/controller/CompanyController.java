@@ -16,21 +16,21 @@ import com.cfiv.sysdev.rrs.entity.Company;
 import com.cfiv.sysdev.rrs.service.CompanyService;
 
 /**
- * ��Ə�� Controller
+ * 企業情報 Controller
  */
 @Controller
 public class CompanyController {
 
     /**
-     * ��Ə�� Service
+     * 企業情報 Service
      */
     @Autowired
     CompanyService companyService;
 
     /**
-     * ��Ə��ꗗ��ʂ�\��
+     * 企業情報一覧画面を表示
      * @param model Model
-     * @return ��Ə��ꗗ���
+     * @return 企業情報一覧画面
      */
     @RequestMapping(value = "/company/list", method = RequestMethod.GET)
     public String displayList(Model model) {
@@ -48,13 +48,13 @@ public class CompanyController {
     }
 
     /**
-     * ��ƐV�K�o�^��ʂ�\��
+     * 企業新規登録画面を表示
      * @param model Model
-     * @return ��Ə��ꗗ���
+     * @return 企業情報一覧画面
      */
     @RequestMapping(value = "/company/add", method = RequestMethod.GET)
     public String displayAdd(Model model) {
-        model.addAttribute("company_request", new CompanyRequest("", "", "�L��"));
+        model.addAttribute("company_request", new CompanyRequest("", "", "有効"));
         return "company/add";
     }
 
@@ -72,14 +72,14 @@ public class CompanyController {
     }
 
     /**
-     * ��Ə��V�K�o�^
-     * @param req ���N�G�X�g�f�[�^
+     * 企業情報新規登録
+     * @param req リクエストデータ
      * @param model Model
-     * @return ��Ə��ꗗ���
+     * @return 企業情報一覧画面
      */
     @RequestMapping(value = "/company/create", method = RequestMethod.POST)
     public String create(@ModelAttribute CompanyRequest req, Model model) {
-        // ��Ə��̓o�^
+        // 企業情報の登録
         companyService.create(req);
         return "redirect:/company/list";
     }

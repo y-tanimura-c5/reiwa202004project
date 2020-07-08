@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import lombok.Data;
 
 /**
- * “Y•tƒtƒ@ƒCƒ‹ Entity
+ * æ·»ä»˜ãƒ•ã‚¡ã‚¤ãƒ« Entity
  */
 @Entity
 @Data
@@ -21,7 +21,7 @@ import lombok.Data;
 public class InterviewAttach implements Serializable {
 
     /**
-     * “Y•tƒtƒ@ƒCƒ‹”Ô†
+     * æ·»ä»˜ãƒ•ã‚¡ã‚¤ãƒ«ç•ªå·
      */
     @Id
     @Column(name="ATTACH_NO")
@@ -29,49 +29,49 @@ public class InterviewAttach implements Serializable {
     private String attachNo;
 
     /**
-     * –Ê’k”Ô†
+     * é¢è«‡ç•ªå·
      */
     @Column(name="INTERVIEW_NO")
     private String interviewNo;
 
     /**
-     * “Y•tƒtƒ@ƒCƒ‹URL
+     * æ·»ä»˜ãƒ•ã‚¡ã‚¤ãƒ«URL
      */
     @Column(name="ATTACH_URL")
     private String attachURL;
 
     /**
-     * íœ
+     * å‰Šé™¤
      */
     @Column(name="DELETED")
     private Boolean deleted;
 
     /**
-     * “o˜^“ú
+     * ç™»éŒ²æ—¥
      */
     @Column(name="REGIST_TIME")
     private Date registTime;
 
     /**
-     * “o˜^ŽÒ
+     * ç™»éŒ²è€…
      */
     @Column(name="REGIST_USER")
     private String registUser;
 
     /**
-     * XV“ú
+     * æ›´æ–°æ—¥
      */
     @Column(name="UPDATE_TIME")
     private Date updateTime;
 
     /**
-     * XVŽÒ
+     * æ›´æ–°è€…
      */
     @Column(name="UPDATE_USER")
     private String updateUser;
 
     /**
-     * XV‰ñ”
+     * æ›´æ–°å›žæ•°
      */
     @Column(name="UPDATE_COUNT")
     private int updateCount;

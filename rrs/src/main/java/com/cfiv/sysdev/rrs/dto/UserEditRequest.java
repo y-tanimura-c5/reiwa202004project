@@ -10,7 +10,7 @@ import com.cfiv.sysdev.rrs.annotation.PasswordConfirm;
 import lombok.Data;
 
 /**
- * ƒ†[ƒU[î•ñ ƒŠƒNƒGƒXƒgƒf[ƒ^
+ * ãƒ¦ãƒ¼ã‚¶ãƒ¼æƒ…å ± ãƒªã‚¯ã‚¨ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿
  */
 @Data
 @PasswordConfirm
@@ -36,42 +36,42 @@ public class UserEditRequest implements Serializable {
     private String id;
 
     /**
-     * ƒ†[ƒU[ID
+     * ãƒ¦ãƒ¼ã‚¶ãƒ¼ID
      */
     @NotBlank
     @Size(min=1, max=30)
     private String username;
 
     /**
-     * ƒpƒXƒ[ƒh
+     * ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰
      */
     @Size(min=8, max=50)
     private String password;
 
     /**
-     * ƒpƒXƒ[ƒh(Šm”F—p)
+     * ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰(ç¢ºèªç”¨)
      */
     @Size(min=8, max=50)
     private String passwordCheck;
 
     /**
-     * •\¦—p–¼Ì
+     * è¡¨ç¤ºç”¨åç§°
      */
     @Size(max=100)
     private String displayName;
 
     /**
-     * ƒ†[ƒU[Œ ŒÀ
+     * ãƒ¦ãƒ¼ã‚¶ãƒ¼æ¨©é™
      */
     private String userRole;
 
     /**
-     * Šé‹Æ–¼Ì(ƒŠƒXƒg‘I‘ğ)
+     * ä¼æ¥­åç§°(ãƒªã‚¹ãƒˆé¸æŠ)
      */
     private String company;
 
     /**
-     * —LŒø^–³Œø
+     * æœ‰åŠ¹ï¼ç„¡åŠ¹
      */
     private String enabled;
 }

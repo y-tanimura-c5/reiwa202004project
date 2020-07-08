@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import lombok.Data;
 
 /**
- * Šé‹Æî•ñ Entity
+ * ä¼æ¥­æƒ…å ± Entity
  */
 @Entity
 @Data
@@ -29,81 +29,81 @@ public class Company implements Serializable {
     private Long id;
 
     /**
-     * –¼‘O
+     * åå‰
      */
     @Column(name="NAME")
     private String name;
 
     /**
-     * —LŒø^–³Œø
+     * æœ‰åŠ¹ï¼ç„¡åŠ¹
      */
     @Column(name="ENABLED")
     private boolean enabled;
 
     /**
-     * íœ
+     * å‰Šé™¤
      */
     @Column(name="DELETED")
     private boolean deleted;
 
     /**
-     * “o˜^“ú
+     * ç™»éŒ²æ—¥
      */
     @Column(name="REGIST_TIME")
     private Date registTime;
 
     /**
-     * “o˜^Ò
+     * ç™»éŒ²è€…
      */
     @Column(name="REGIST_USER")
     private String registUser;
 
     /**
-     * XV“ú
+     * æ›´æ–°æ—¥
      */
     @Column(name="UPDATE_TIME")
     private Date updateTime;
 
     /**
-     * XVÒ
+     * æ›´æ–°è€…
      */
     @Column(name="UPDATE_USER")
     private String updateUser;
 
     /**
-     * XV‰ñ”
+     * æ›´æ–°å›æ•°
      */
     @Column(name="UPDATE_COUNT")
     private int updateCount;
 
     /**
-     * •¶š—ñŒ`®‚ÌID
-     * @param nDigits 0–„‚ßŒ…”
-     * @return w’èŒ…‚Å0–„‚ßŒã‚ÌID•¶š—ñ
+     * æ–‡å­—åˆ—å½¢å¼ã®ID
+     * @param nDigits 0åŸ‹ã‚æ¡æ•°
+     * @return æŒ‡å®šæ¡ã§0åŸ‹ã‚å¾Œã®IDæ–‡å­—åˆ—
      */
     public String getIdString(int nDigits) {
         return String.format("%0" + nDigits + "d", id);
     }
 
     /**
-     * •¶š—ñŒ`®‚Ì—LŒø^–³Œø
-     * @return u—LŒøv‚Ü‚½‚Íu–³Œøv•¶š—ñ
+     * æ–‡å­—åˆ—å½¢å¼ã®æœ‰åŠ¹ï¼ç„¡åŠ¹
+     * @return ã€Œæœ‰åŠ¹ã€ã¾ãŸã¯ã€Œç„¡åŠ¹ã€æ–‡å­—åˆ—
      */
     public String getEnabledString() {
         if (enabled) {
-            return "—LŒø";
+            return "æœ‰åŠ¹";
         }
         else {
-            return "–³Œø";
+            return "ç„¡åŠ¹";
         }
     }
 
     /**
-     * •¶š—ñ‚©‚ç‚Ì—LŒø^–³Œøİ’è
-     * @param es u—LŒøv^u–³Œøv•¶š—ñ
+     * æ–‡å­—åˆ—ã‹ã‚‰ã®æœ‰åŠ¹ï¼ç„¡åŠ¹è¨­å®š
+     * @param es ã€Œæœ‰åŠ¹ã€ï¼ã€Œç„¡åŠ¹ã€æ–‡å­—åˆ—
      */
     public void setEnabledFromString(String es) {
-        if (es.equals("—LŒø")) {
+        if (es.equals("æœ‰åŠ¹")) {
             setEnabled(true);
         }
         else {

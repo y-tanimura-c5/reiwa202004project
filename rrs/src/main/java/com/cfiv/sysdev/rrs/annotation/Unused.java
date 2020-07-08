@@ -14,7 +14,7 @@ import com.cfiv.sysdev.rrs.validator.UnusedValidator;
 
 @Documented
 @Constraint(validatedBy = {UnusedValidator.class})
-@Target({FIELD}) // 項目に対してバリデーションをかける場合はFIELDを選びます。
+@Target({FIELD})
 @Retention(RUNTIME)
 public @interface Unused {
 

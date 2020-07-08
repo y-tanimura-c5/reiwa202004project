@@ -17,7 +17,7 @@ import com.cfiv.sysdev.rrs.dto.EmployeeRequest;
 import lombok.Data;
 
 /**
- * ]‹Æˆõî•ñ Entity
+ * å¾“æ¥­å“¡æƒ…å ± Entity
  */
 @Entity
 @Data
@@ -33,104 +33,104 @@ public class Employee {
     private Long id;
 
     /**
-     * Šé‹ÆƒR[ƒh
+     * ä¼æ¥­ã‚³ãƒ¼ãƒ‰
      */
     @Column(name="COMPANY_ID")
     private Long companyID;
 
     /**
-     * Ğˆõ”Ô†
+     * ç¤¾å“¡ç•ªå·
      */
     @Column(name="EMPLOYEE_ID")
     private String employeeID;
 
     /**
-     * ]‹Æˆõ–¼š
+     * å¾“æ¥­å“¡åå­—
      */
     @Column(name="EMPLOYEE_FNAME")
     private String employeeFName;
 
     /**
-     * “üĞ”NŒ
+     * å…¥ç¤¾å¹´æœˆ
      */
     @Column(name="HIRE_YM")
     private String hireYM;
 
     /**
-     * Ì—pí•Ê
+     * æ¡ç”¨ç¨®åˆ¥
      */
     @Column(name="ADOPT_CODE")
     private int adoptCode;
 
     /**
-     * •}—{—L–³
+     * æ‰¶é¤Šæœ‰ç„¡
      */
     @Column(name="SUPPORT_CODE")
     private int supportCode;
 
     /**
-     * A‹Æí•Ê
+     * å°±æ¥­ç¨®åˆ¥
      */
     @Column(name="EMPLOY_CODE")
     private int employCode;
 
     /**
-     * íœ
+     * å‰Šé™¤
      */
     @Column(name="DELETED")
     private boolean deleted;
 
     /**
-     * “o˜^“ú
+     * ç™»éŒ²æ—¥
      */
     @Column(name="REGIST_TIME")
     private Date registTime;
 
     /**
-     * “o˜^Ò
+     * ç™»éŒ²è€…
      */
     @Column(name="REGIST_USER")
     private String registUser;
 
     /**
-     * XV“ú
+     * æ›´æ–°æ—¥
      */
     @Column(name="UPDATE_TIME")
     private Date updateTime;
 
     /**
-     * XVÒ
+     * æ›´æ–°è€…
      */
     @Column(name="UPDATE_USER")
     private String updateUser;
 
     /**
-     * XV‰ñ”
+     * æ›´æ–°å›æ•°
      */
     @Column(name="UPDATE_COUNT")
     private int updateCount;
 
     /**
-     * •¶š—ñŒ`®‚ÌID
-     * @param nDigits 0–„‚ßŒ…”
-     * @return w’èŒ…‚Å0–„‚ßŒã‚ÌID•¶š—ñ
+     * æ–‡å­—åˆ—å½¢å¼ã®ID
+     * @param nDigits 0åŸ‹ã‚æ¡æ•°
+     * @return æŒ‡å®šæ¡ã§0åŸ‹ã‚å¾Œã®IDæ–‡å­—åˆ—
      */
     public String getIdString(int nDigits) {
         return String.format("%0" + nDigits + "d", id);
     }
 
     /**
-     * •¶š—ñŒ`®‚ÌŠé‹ÆƒR[ƒh
-     * @param nDigits 0–„‚ßŒ…”
-     * @return w’èŒ…‚Å0–„‚ßŒã‚ÌID•¶š—ñ
+     * æ–‡å­—åˆ—å½¢å¼ã®ä¼æ¥­ã‚³ãƒ¼ãƒ‰
+     * @param nDigits 0åŸ‹ã‚æ¡æ•°
+     * @return æŒ‡å®šæ¡ã§0åŸ‹ã‚å¾Œã®IDæ–‡å­—åˆ—
      */
     public String getCompanyIDString(int nDigits) {
         return String.format("%0" + nDigits + "d", companyID);
     }
 
     /**
-     * •¶š—ñ‚©‚ç‚ÌŠé‹ÆƒR[ƒhİ’è
-     * @param cs Šé‹ÆƒR[ƒh•¶š—ñ
+     * æ–‡å­—åˆ—ã‹ã‚‰ã®ä¼æ¥­ã‚³ãƒ¼ãƒ‰è¨­å®š
+     * @param cs ä¼æ¥­ã‚³ãƒ¼ãƒ‰æ–‡å­—åˆ—
      */
     public void setCompanyIDFromString(String cs) {
         try {
@@ -142,8 +142,8 @@ public class Employee {
     }
 
     /**
-     * DateŒ`®‚Ì“üĞ”NŒ
-     * @return “üĞ”NŒDateƒNƒ‰ƒX
+     * Dateå½¢å¼ã®å…¥ç¤¾å¹´æœˆ
+     * @return å…¥ç¤¾å¹´æœˆDateã‚¯ãƒ©ã‚¹
      */
     public Date getHireYMDate() {
         Date hireDate = new Date(0);
@@ -153,31 +153,31 @@ public class Employee {
             hireDate = sdf.parse(hireYM);
         }
         catch (ParseException e) {
-            LogUtils.info("“üĞ”NŒ‚ª³‚µ‚­‚ ‚è‚Ü‚¹‚ñB(" + hireYM + ")");
+            LogUtils.info("å…¥ç¤¾å¹´æœˆãŒæ­£ã—ãã‚ã‚Šã¾ã›ã‚“ã€‚(" + hireYM + ")");
         }
 
         return hireDate;
     }
 
     /**
-     * •¶š—ñŒ`®‚ÌÌ—pí•Ê
-     * @return Ì—pí•Ê•¶š—ñ
+     * æ–‡å­—åˆ—å½¢å¼ã®æ¡ç”¨ç¨®åˆ¥
+     * @return æ¡ç”¨ç¨®åˆ¥æ–‡å­—åˆ—
      */
     public String getAdoptCodeString() {
         if (adoptCode == 0) {
-            return "V‘²Ì—p";
+            return "æ–°å’æ¡ç”¨";
         }
         else {
-            return "’†“rÌ—p";
+            return "ä¸­é€”æ¡ç”¨";
         }
     }
 
     /**
-     * •¶š—ñ‚©‚ç‚ÌÌ—pí•Êİ’è
-     * @param as Ì—pí•Ê•¶š—ñ
+     * æ–‡å­—åˆ—ã‹ã‚‰ã®æ¡ç”¨ç¨®åˆ¥è¨­å®š
+     * @param as æ¡ç”¨ç¨®åˆ¥æ–‡å­—åˆ—
      */
     public void setAdoptCodeFromString(String as) {
-        if (as.equals("V‘²Ì—p") || as.equals("0")) {
+        if (as.equals("æ–°å’æ¡ç”¨") || as.equals("0")) {
             setAdoptCode(0);
         }
         else {
@@ -186,24 +186,24 @@ public class Employee {
     }
 
     /**
-     * •¶š—ñŒ`®‚Ì•}—{—L–³
-     * @return •}—{—L–³•¶š—ñ
+     * æ–‡å­—åˆ—å½¢å¼ã®æ‰¶é¤Šæœ‰ç„¡
+     * @return æ‰¶é¤Šæœ‰ç„¡æ–‡å­—åˆ—
      */
     public String getSupportCodeString() {
         if (supportCode == 0) {
-            return "•}—{‚È‚µ";
+            return "æ‰¶é¤Šãªã—";
         }
         else {
-            return "•}—{‚ ‚è";
+            return "æ‰¶é¤Šã‚ã‚Š";
         }
     }
 
     /**
-     * •¶š—ñ‚©‚ç‚Ì•}—{—L–³İ’è
-     * @param ss •}—{—L–³•¶š—ñ
+     * æ–‡å­—åˆ—ã‹ã‚‰ã®æ‰¶é¤Šæœ‰ç„¡è¨­å®š
+     * @param ss æ‰¶é¤Šæœ‰ç„¡æ–‡å­—åˆ—
      */
     public void setSupportCodeFromString(String ss) {
-        if (ss.equals("•}—{‚È‚µ") || ss.equals("0")) {
+        if (ss.equals("æ‰¶é¤Šãªã—") || ss.equals("0")) {
             setSupportCode(0);
         }
         else {
@@ -212,24 +212,24 @@ public class Employee {
     }
 
     /**
-     * •¶š—ñŒ`®‚ÌA‹Æí•Ê
-     * @return A‹Æí•Ê•¶š—ñ
+     * æ–‡å­—åˆ—å½¢å¼ã®å°±æ¥­ç¨®åˆ¥
+     * @return å°±æ¥­ç¨®åˆ¥æ–‡å­—åˆ—
      */
     public String getEmployCodeString() {
         if (employCode == 0) {
-            return "İĞ’†";
+            return "åœ¨ç±ä¸­";
         }
         else {
-            return "‘ŞEÏ";
+            return "é€€è·æ¸ˆ";
         }
     }
 
     /**
-     * •¶š—ñ‚©‚ç‚ÌA‹Æí•Êİ’è
-     * @param es A‹Æí•Ê•¶š—ñ
+     * æ–‡å­—åˆ—ã‹ã‚‰ã®å°±æ¥­ç¨®åˆ¥è¨­å®š
+     * @param es å°±æ¥­ç¨®åˆ¥æ–‡å­—åˆ—
      */
     public void setEmployCodeFromString(String es) {
-        if (es.equals("İĞ’†") || es.equals("0")) {
+        if (es.equals("åœ¨ç±ä¸­") || es.equals("0")) {
             setEmployCode(0);
         }
         else {
@@ -238,8 +238,8 @@ public class Employee {
     }
 
     /**
-     * ]‹Æˆõî•ñ‚ÌŒ^•ÏŠ·(Employee¨EmployeeRequest)
-     * @return ]‹Æˆõî•ñ(EmployeeRequest)
+     * å¾“æ¥­å“¡æƒ…å ±ã®å‹å¤‰æ›(Employeeâ†’EmployeeRequest)
+     * @return å¾“æ¥­å“¡æƒ…å ±(EmployeeRequest)
      */
     public EmployeeRequest toRequest() {
         return new EmployeeRequest(getIdString(1), getCompanyIDString(4), getEmployeeID(), getEmployeeFName(),

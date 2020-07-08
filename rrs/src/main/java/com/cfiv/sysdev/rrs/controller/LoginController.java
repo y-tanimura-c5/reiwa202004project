@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * ÉçÉOÉCÉì Controller
+ * „É≠„Ç∞„Ç§„É≥ Controller
  */
 @Controller
 public class LoginController {

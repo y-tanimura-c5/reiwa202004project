@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import com.cfiv.sysdev.rrs.entity.InterviewResult;
 
 /**
- * –Ê’kŒ‹‰Ê Repository
+ * é¢è«‡çµæœ Repository
  */
 @Repository
 public interface InterviewResultRepository extends JpaRepository<InterviewResult, Long> {}
