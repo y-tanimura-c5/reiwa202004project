@@ -10,6 +10,7 @@ import javax.validation.ConstraintValidatorContext;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cfiv.sysdev.rrs.LogUtils;
 import com.cfiv.sysdev.rrs.annotation.FileRequired;
 import com.cfiv.sysdev.rrs.dto.EmployeeCSV;
 import com.opencsv.bean.CsvToBean;
@@ -30,12 +31,17 @@ public class FileRequiredValidator implements ConstraintValidator<FileRequired, 
 
         List<EmployeeCSV> items = null;
         try {
-            Reader reader = new StringReader(new String(multipartFile.getBytes()));
+            String csvStr = new String(multipartFile.getBytes(), "MS932");
+            Reader reader = new StringReader(csvStr);
+            LogUtils.info(csvStr);
             CsvToBean<EmployeeCSV> csvToBean = new CsvToBeanBuilder<EmployeeCSV>(reader).withType(EmployeeCSV.class).build();
             items = csvToBean.parse();
         }
         catch (IllegalStateException | IOException e) {
             message = "CSVファイルではない可能性があります。";
+        }
+        catch (Exception e) {
+            message = "CSVファイルのフォーマットまたは文字コードが異なります。";
         }
 
         int row = 2;

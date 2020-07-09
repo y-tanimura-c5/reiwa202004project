@@ -1,6 +1,5 @@
 package com.cfiv.sysdev.rrs.controller;
 
-import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -89,11 +88,12 @@ public class EmployeeController {
         }
         else {
             try {
-                Reader reader = new StringReader(new String(employeeFileRequest.getEmployeeFile().getBytes()));
+                String csvStr = new String(employeeFileRequest.getEmployeeFile().getBytes(), "MS932");
+                Reader reader = new StringReader(csvStr);
                 CsvToBean<EmployeeCSV> csvToBean = new CsvToBeanBuilder<EmployeeCSV>(reader).withType(EmployeeCSV.class).build();
                 employeeService.saveCSV(csvToBean.parse());
             }
-            catch (IllegalStateException | IOException e) {
+            catch (Exception e) {
             }
         }
 

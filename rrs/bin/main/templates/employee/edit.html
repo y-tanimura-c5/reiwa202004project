@@ -4,10 +4,10 @@
 </head>
 <body>
 <div class="box">
-	<div th:replace="common :: header"></div>
+	<div th:replace="header :: header"></div>
 
-	<div class="container-fluid">
-		<div class="card mt-2 pt-2">
+	<div class="container">
+		<div class="card mt-2 p-3">
 			<div class="card-heading"><h2>従業員情報編集</h2></div>
 			<div class="card-body">
 				<div><a class="btn btn-link" href="/employee/list">検索画面へ</a></div>
@@ -57,7 +57,7 @@
 		</div>
 	</div>
 
-	<div th:replace="common :: footer"></div>
+	<div th:replace="footer :: footer"></div>
 </div>
 </body>
 </html>

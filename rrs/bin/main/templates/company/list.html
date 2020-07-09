@@ -4,10 +4,10 @@
 </head>
 <body>
 <div class="box">
-	<div th:replace="common :: header"></div>
+	<div th:replace="header :: header"></div>
 
-	<div class="container-fluid">
-		<div class="card mt-2 pt-2">
+	<div class="container">
+		<div class="card mt-2 p-3">
 			<div class="card-heading"><h2>企業情報一覧</h2></div>
 			<div class="card-body">
 				<div><a class="btn btn-link" th:href="@{/company/add}">新規登録はこちら</a></div>
@@ -31,6 +31,6 @@
 		</div>
 	</div>
 
-	<div th:replace="common :: footer"></div>
+	<div th:replace="footer :: footer"></div>
 </div>
 </body>
