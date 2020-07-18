@@ -74,7 +74,7 @@
 				<div class="accordion" id="accordion-4">
 					<div class="card">
 						<div class="card-header" id="header-4a">
-							<button class="btn btn-info" type="button" data-toggle="collapse" data-target="#card-4a"
+							<button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#card-4a"
 								aria-expanded="true" aria-controls="card-4a">
 								2020/1/15 面談結果
 							</button>
@@ -96,7 +96,7 @@
 				</div>
 
 				<form th:action="@{/interview/create}" th:method="post" th:object="${interview_request}">
-					<div class="my-box mb-3"></div>
+					<div class="my-box mb-5"></div>
 					<div class="row align-items-center">
 						<div class="col-sm-4 col-md-2">
 							面談日：
@@ -314,7 +314,7 @@
 
 					<div class="my-box mb-3"></div>
 					<div class="col text-center">
-						<button class="btn btn-primary" type="submit">登録</button>
+						<button class="btn btn-primary btn-block" type="submit">登録</button>
 					</div>
 
 				</form>
