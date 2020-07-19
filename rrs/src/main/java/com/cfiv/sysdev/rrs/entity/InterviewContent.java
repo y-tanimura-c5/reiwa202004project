@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.Data;
@@ -19,20 +21,29 @@ import lombok.Data;
 @Data
 @Table(name="D_INTERVIEW_CONTENT")
 public class InterviewContent implements Serializable {
+    @ManyToOne
+    @JoinColumn(name="RESULT_ID")
+    private InterviewResult result;
 
     /**
-     * 面談内容番号
+     * ID
      */
     @Id
-    @Column(name="CONTENT_NO")
+    @Column(name="ID")
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private String contentNo;
+    private Long id;
 
     /**
-     * 面談番号
+     * 面談結果ID
      */
-    @Column(name="INTERVIEW_NO")
-    private String interviewNo;
+//    @Column(name="RESULT_ID")
+//    private Long resultID;
+
+    /**
+     *  面談内容種別
+     */
+    @Column(name="CONTENT_KIND")
+    private int contentKind;
 
     /**
      *  面談内容コード

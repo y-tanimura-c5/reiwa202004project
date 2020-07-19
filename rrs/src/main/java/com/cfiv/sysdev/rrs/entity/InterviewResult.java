@@ -2,7 +2,7 @@ package com.cfiv.sysdev.rrs.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,7 +11,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -26,24 +25,24 @@ import lombok.Data;
 public class InterviewResult implements Serializable {
 
     /**
-     * 面談番号
+     * ID
      */
     @Id
-    @Column(name="INTERVIEW_NO")
+    @Column(name="ID")
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private String interviewNo;
+    private Long id;
 
     /**
      * 企業コード
      */
     @Column(name="COMPANY_ID")
-    private int companyID;
+    private Long companyID;
 
     /**
      * 社員番号
      */
     @Column(name="EMPLOYEE_ID")
-    private String emproyeeID;
+    private String employeeID;
 
     /**
      * 面談日
@@ -67,7 +66,7 @@ public class InterviewResult implements Serializable {
      * 相談内容
      */
     @Column(name="INTERVIEWER_COMMENT")
-    private String interviewComment;
+    private String interviewerComment;
 
     /**
      * 情報開示コード
@@ -120,14 +119,13 @@ public class InterviewResult implements Serializable {
     /**
      * 面談内容リスト
      */
-    @OneToMany(fetch = FetchType.EAGER, cascade= CascadeType.ALL)
-    @JoinColumn(name = "INTERVIEW_NO")
-    private Set<InterviewContent> interviewContentList;
+    @OneToMany(mappedBy="result", fetch = FetchType.EAGER, cascade= CascadeType.ALL)
+    private List<InterviewContent> interviewContentList;
 
     /**
      * 添付ファイルリスト
      */
-    @OneToMany(fetch = FetchType.EAGER, cascade= CascadeType.ALL)
-    @JoinColumn(name = "INTERVIEW_NO")
-    private Set<InterviewAttach> interviewAttachList;
+//    @OneToMany(fetch = FetchType.EAGER, cascade= CascadeType.ALL)
+//    @JoinColumn(name = "INTERVIEW_NO")
+//    private Set<InterviewAttach> interviewAttachList;
 }

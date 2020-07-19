@@ -2,20 +2,22 @@ package com.cfiv.sysdev.rrs.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.cfiv.sysdev.rrs.LogUtils;
 import com.cfiv.sysdev.rrs.dto.EmployeeRequest;
 import com.cfiv.sysdev.rrs.dto.InterviewRequest;
-import com.cfiv.sysdev.rrs.dto.InterviewSearchRequest;
 import com.cfiv.sysdev.rrs.entity.Company;
 import com.cfiv.sysdev.rrs.service.CompanyService;
 import com.cfiv.sysdev.rrs.service.EmployeeService;
+import com.cfiv.sysdev.rrs.service.InterviewService;
 
 /**
  * 面談結果 Controller
@@ -25,6 +27,12 @@ public class InterviewController {
 
     /**
      * 面談結果 Service
+     */
+    @Autowired
+    InterviewService interviewService;
+
+    /**
+     * 従業員情報 Service
      */
     @Autowired
     EmployeeService employeeService;
@@ -43,7 +51,6 @@ public class InterviewController {
      */
     @RequestMapping(value = "/interview/add", method = RequestMethod.GET)
     public String add(Model model) {
-        model.addAttribute("interview_search_request", new InterviewSearchRequest());
         model.addAttribute("interview_request", new InterviewRequest());
 
         return "/interview/add";
@@ -54,11 +61,9 @@ public class InterviewController {
      * @param model Model
      * @return 面談結果新規登録画面
      */
-    @RequestMapping(value = "/interview/search", method = RequestMethod.POST)
-    public String search(Model model, @ModelAttribute("interview_search_request") InterviewSearchRequest req) {
-        LogUtils.info("req.getCompanyID(), = " + req.getCompanyID() + ", req.getEmployeeID() = " + req.getEmployeeID());
-
-        if (!req.getCompanyID().isEmpty() || !req.getEmployeeID().isEmpty()){
+    @RequestMapping(value = "/interview/submit", params = "search", method = RequestMethod.POST)
+    public String search(Model model, @ModelAttribute("interview_request") @Valid InterviewRequest req, BindingResult result) {
+        if (!result.hasErrors()) {
             List<EmployeeRequest> req_list = employeeService.searchRequestFromID(req.getCompanyID(), req.getEmployeeID());
             Company company = companyService.findOne(req.getCompanyIDLong());
 
@@ -72,8 +77,7 @@ public class InterviewController {
             }
         }
 
-        model.addAttribute("interview_search_request", req);
-        model.addAttribute("interview_request", new InterviewRequest());
+        model.addAttribute("interview_request", req);
 
         return "/interview/add";
     }
@@ -83,25 +87,13 @@ public class InterviewController {
      * @param model Model
      * @return 面談結果新規登録画面
      */
-    @RequestMapping(value = "/interview/create", method = RequestMethod.POST)
-    public String create(Model model, @ModelAttribute("interview_request") InterviewRequest ireq, @ModelAttribute("interview_search_request") InterviewSearchRequest sreq) {
-        LogUtils.info("InterviewDate = " + ireq.getInterviewDate());
-        LogUtils.info("InterviewTimeCode = " + ireq.getInterviewTimeCode());
-        LogUtils.info("DiscloseCode = " + ireq.getDiscloseCode());
-        LogUtils.info("InterviewerComment = " + ireq.getInterviewerComment());
-        LogUtils.info("AdminComment = " + ireq.getAdminComment());
-        LogUtils.info("Check/Memo1 = " + ireq.getInterviewContentCheck1() + ", "+ ireq.getInterviewContentMemo1());
-        LogUtils.info("Check/Memo2 = " + ireq.getInterviewContentCheck2() + ", "+ ireq.getInterviewContentMemo2());
-        LogUtils.info("Check/Memo3 = " + ireq.getInterviewContentCheck3() + ", "+ ireq.getInterviewContentMemo3());
-        LogUtils.info("Check/Memo4 = " + ireq.getInterviewContentCheck4() + ", "+ ireq.getInterviewContentMemo4());
-        LogUtils.info("Check/Memo5 = " + ireq.getInterviewContentCheck5() + ", "+ ireq.getInterviewContentMemo5());
-        LogUtils.info("Check/Memo6 = " + ireq.getInterviewContentCheck6() + ", "+ ireq.getInterviewContentMemo6());
-        LogUtils.info("Check/Memo7 = " + ireq.getInterviewContentCheck7() + ", "+ ireq.getInterviewContentMemo7());
-        LogUtils.info("Check/Memo8 = " + ireq.getInterviewContentCheck8() + ", "+ ireq.getInterviewContentMemo8());
-        LogUtils.info("Check/Memo9 = " + ireq.getInterviewContentCheck9() + ", "+ ireq.getInterviewContentMemo9());
+    @RequestMapping(value = "/interview/submit", params = "create", method = RequestMethod.POST)
+    public String create(Model model, @ModelAttribute("interview_request") @Valid InterviewRequest req, BindingResult result) {
+        if (!result.hasErrors()) {
+            interviewService.create(req);
+        }
 
-        model.addAttribute("interview_request", ireq);
-        model.addAttribute("interview_search_request", sreq);
+        model.addAttribute("interview_request", req);
 
         return "/interview/add";
     }

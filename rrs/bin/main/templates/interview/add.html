@@ -6,120 +6,125 @@
 <div class="box">
 	<div th:replace="header :: header"></div>
 
-	<div class="container">
+	<div class="container-fluid">
 		<div class="card mt-2 p-3">
 			<div class="card-heading"><h2>面談結果新規登録</h2></div>
 			<div class="card-body">
-				<form th:action="@{/interview/search}" th:method="post" th:object="${interview_search_request}">
+				<form th:action="@{/interview/submit}" th:method="post" th:object="${interview_request}">
 					<div class="row align-items-center">
-						<div class="col-sm-4 col-md-2">
+						<div class="col-md-2 col-lg-2">
 							企業コード：
 						</div>
-						<div class="col-sm-4 col-md-3">
+						<div class="col-md-3 col-lg-3">
 							<input class="form-control" type="text" th:field="*{companyID}" />
+							<label th:if="${#fields.hasErrors('companyID')}" th:errors="*{companyID}" style="color: red"></label>
 						</div>
-						<div class="col-sm-4 col-md-5">
+						<div class="col-md-7 col-lg-5">
 							<input class="form-control" type="text" th:field="*{companyName}" readonly="readonly" />
 						</div>
 					</div>
 
 					<div class="row align-items-center">
-						<div class="col-sm-4 col-md-2">
+						<div class="col-md-2 col-lg-2">
 							社員番号：
 						</div>
-						<div class="col-sm-4 col-md-3">
+						<div class="col-md-3 col-lg-3">
 							<input class="form-control" type="text" th:field="*{employeeID}" />
+							<label th:if="${#fields.hasErrors('employeeID')}" th:errors="*{employeeID}" style="color: red"></label>
 						</div>
-						<div class="col-sm-4 col-md-5">
+						<div class="col-md-7 col-lg-5">
 							<input class="form-control" type="text" th:field="*{employeeFName}" readonly="readonly" />
 						</div>
-						<div class="col-sm-4 col-md-2">
-							<button class="btn btn-primary" type="submit">情報表示</button>
-						</div>
-					</div>
-
-					<div class="my-box mb-3"></div>
-					<div class="card">
-						<div class="card-heading p-2">従業員情報</div>
-						<div class="card-body">
-							<div class="row align-items-center">
-								<div class="col-sm-4 col-md-2">
-									入社年月：
-								</div>
-								<div class="col-sm-4 col-md-6">
-									<input class="form-control" type="text" th:field="*{hireYM}" readonly="readonly" />
-								</div>
-							</div>
-							<div class="row align-items-center">
-								<div class="col-sm-4 col-md-2">
-									採用種別：
-								</div>
-								<div class="col-sm-4 col-md-6">
-									<input class="form-control" type="text" th:field="*{adoptCode}" readonly="readonly" />
-								</div>
-							</div>
-							<div class="row align-items-center">
-								<div class="col-sm-4 col-md-2">
-									扶養有無：
-								</div>
-								<div class="col-sm-4 col-md-6">
-									<input class="form-control" type="text" th:field="*{supportCode}" readonly="readonly" />
-								</div>
-							</div>
-						</div>
-					</div>
-				</form>
-
-				<div class="my-box mb-3"></div>
-				<div class="accordion" id="accordion-4">
-					<div class="card">
-						<div class="card-header" id="header-4a">
-							<button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#card-4a"
-								aria-expanded="true" aria-controls="card-4a">
-								2020/1/15 面談結果
-							</button>
-						</div>
-						<div id="card-4a" class="collapse" aria-labelledby="header-4a" data-parent="#accordion-4">
-							<div class="card-body">
-								<div class="my-box mb-3"></div>
-								<div class="row align-items-start">
-									<div class="col-sm-4 col-md-2">
-										面談時間：
-									</div>
-									<div class="col-sm-4 col-md-10">
-										<input class="form-control" type="text" readonly="readonly" />
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<form th:action="@{/interview/create}" th:method="post" th:object="${interview_request}">
-					<div class="my-box mb-5"></div>
-					<div class="row align-items-center">
-						<div class="col-sm-4 col-md-2">
-							面談日：
-						</div>
-						<div class="col-sm-4 col-md-4">
-							<input class="form-control" type="date" th:field="*{interviewDate}" />
+						<div class="col-md-4 col-lg-2">
+							<button class="btn btn-primary" type="submit" name="search">情報表示</button>
 						</div>
 					</div>
 
 					<div class="my-box mb-3"></div>
 					<div class="row align-items-start">
-						<div class="col-sm-4 col-md-2">
+						<div class="col-md-2 col-lg-2">
+							従業員情報：
+						</div>
+					</div>
+					<div class="card">
+						<div class="card-body">
+							<div class="row align-items-center">
+								<div class="col-md-2 col-lg-2">
+									入社年月：
+								</div>
+								<div class="col-md-10 col-lg-6">
+									<input class="form-control" type="text" th:field="*{hireYM}" readonly="readonly" />
+								</div>
+							</div>
+							<div class="row align-items-center">
+								<div class="col-md-2 col-lg-2">
+									採用種別：
+								</div>
+								<div class="col-md-10 col-lg-6">
+									<input class="form-control" type="text" th:field="*{adoptCode}" readonly="readonly" />
+								</div>
+							</div>
+							<div class="row align-items-center">
+								<div class="col-md-2 col-lg-2">
+									扶養有無：
+								</div>
+								<div class="col-md-10 col-lg-6">
+									<input class="form-control" type="text" th:field="*{supportCode}" readonly="readonly" />
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="my-box mb-3"></div>
+					<div class="accordion" id="accordion-4">
+						<div class="card">
+							<div class="card-header" id="header-4a">
+								<button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#card-4a"
+									aria-expanded="true" aria-controls="card-4a">
+									2020/1/15 面談結果
+								</button>
+							</div>
+							<div id="card-4a" class="collapse" aria-labelledby="header-4a" data-parent="#accordion-4">
+								<div class="card-body">
+									<div class="my-box mb-3"></div>
+									<div class="row align-items-start">
+										<div class="col-md-4 col-lg-2">
+											面談時間：
+										</div>
+										<div class="col-md-4 col-lg-10">
+											<input class="form-control" type="text" readonly="readonly" />
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="my-box mb-5"></div>
+					<div class="row align-items-center">
+						<div class="col-md-2 col-lg-2">
+							面談日：
+						</div>
+						<div class="col-md-6 col-lg-4">
+							<input class="form-control" type="date" th:field="*{interviewDate}" />
+							<label th:if="${#fields.hasErrors('interviewDate')}" th:errors="*{interviewDate}" style="color: red"></label>
+						</div>
+					</div>
+
+					<div class="my-box mb-3"></div>
+					<div class="row align-items-start">
+						<div class="col-md-2 col-lg-2">
 							面談時間：
 						</div>
-						<div class="col-sm-4 col-md-10">
+						<div class="col-md-8 col-lg-10">
 							<div class="row align-items-center">
-								<div class="col-sm-4 col-md-12">
+								<div class="col-md-12 col-lg-12">
 									<input type="radio" name="interviewTimeCode" th:value="0" th:text="1時間未満" th:field="*{interviewTimeCode}" />
 								</div>
-								<div class="col-sm-4 col-md-12">
+								<div class="col-md-12 col-lg-12">
 									<input type="radio" name="interviewTimeCode" th:value="1" th:text="1時間から2時間" th:field="*{interviewTimeCode}" />
 								</div>
-								<div class="col-sm-4 col-md-12">
+								<div class="col-md-12 col-lg-12">
 									<input type="radio" name="interviewTimeCode" th:value="2" th:text="2時間超" th:field="*{interviewTimeCode}" />
 								</div>
 							</div>
@@ -127,135 +132,55 @@
 					</div>
 
 					<div class="my-box mb-3"></div>
+					<div class="row align-items-start">
+						<div class="col-md-2 col-lg-2">
+							面談内容：
+						</div>
+					</div>
 					<div class="card">
-						<div class="card-heading p-2">面談内容</div>
 						<div class="card-body">
 							<div class="row align-items-start">
-								<div class="col-sm-6 col-md-3">
+								<div class="col-md-2 col-lg-3">
 									会社関連について
 								</div>
-								<div class="col-sm-6 col-md-9">
-									<div class="row align-items-center">
-										<div class="col-sm-6 col-md-3">
-											<input type="checkbox" name="inputMultiCheck" th:value="人間関係の相談" th:text="人間関係の相談" th:field="*{interviewContentCheck1}" />
+								<div class="col-md-10 col-lg-9">
+									<div th:each="jobitem, stat : *{contentJobCheckItems}">
+    									<div class="row align-items-center no-gutters">
+										<div class="col-md-12 col-lg-3 mt-1">
+									        <input type="checkbox" name="inputMultiCheck" th:value="${jobitem.key}" th:text="${jobitem.value}" th:field="*{contentJobCheckedList}" />
 										</div>
-										<div class="col-sm-6 col-md-9">
-											<div class="row align-items-center">
-												<div class="col-sm-6 col-md-2">
+										<div class="col-md-12 col-lg-9">
+											<div class="row align-items-center no-gutters">
+												<div class="col-md-2 col-lg-2">
 													メモ：
 												</div>
-												<div class="col-sm-6 col-md-10">
-													<input class="form-control" type="text" th:field="*{interviewContentMemo1}" />
+												<div class="col-md-10 col-lg-10">
+													<input class="form-control" type="text" th:field="*{contentJobMemos[__${stat.index}__]}" />
 												</div>
 											</div>
 										</div>
 									</div>
-									<div class="row align-items-center">
-										<div class="col-sm-6 col-md-3">
-											<input type="checkbox" name="inputMultiCheck" th:value="給与面の相談" th:text="給与面の相談" th:field="*{interviewContentCheck2}" />
-										</div>
-										<div class="col-sm-6 col-md-9">
-											<div class="row align-items-center">
-												<div class="col-sm-6 col-md-2">
-													メモ：
-												</div>
-												<div class="col-sm-6 col-md-10">
-													<input class="form-control" type="text" th:field="*{interviewContentMemo2}" />
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="row align-items-center">
-										<div class="col-sm-6 col-md-3">
-											<input type="checkbox" name="inputMultiCheck" th:value="経済面の相談" th:text="経済面の相談" th:field="*{interviewContentCheck3}" />
-										</div>
-										<div class="col-sm-6 col-md-9">
-											<div class="row align-items-center">
-												<div class="col-sm-6 col-md-2">
-													メモ：
-												</div>
-												<div class="col-sm-6 col-md-10">
-													<input class="form-control" type="text" th:field="*{interviewContentMemo3}" />
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="row align-items-center">
-										<div class="col-sm-6 col-md-3">
-											<input type="checkbox" name="inputMultiCheck" th:value="業務関連の相談" th:text="業務関連の相談" th:field="*{interviewContentCheck4}" />
-										</div>
-										<div class="col-sm-6 col-md-9">
-											<div class="row align-items-center">
-												<div class="col-sm-6 col-md-2">
-													メモ：
-												</div>
-												<div class="col-sm-6 col-md-10">
-													<input class="form-control" type="text" th:field="*{interviewContentMemo4}" />
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="row align-items-center">
-										<div class="col-sm-6 col-md-3">
-											<input type="checkbox" name="inputMultiCheck" th:value="職場環境の相談" th:text="職場環境の相談" th:field="*{interviewContentCheck5}" />
-										</div>
-										<div class="col-sm-6 col-md-9">
-											<div class="row align-items-center">
-												<div class="col-sm-6 col-md-2">
-													メモ：
-												</div>
-												<div class="col-sm-6 col-md-10">
-													<input class="form-control" type="text" th:field="*{interviewContentMemo5}" />
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="row align-items-center">
-										<div class="col-sm-6 col-md-3">
-											<input type="checkbox" name="inputMultiCheck" th:value="社内への要望" th:text="社内への要望" th:field="*{interviewContentCheck6}" />
-										</div>
-										<div class="col-sm-6 col-md-9">
-											<div class="row align-items-center">
-												<div class="col-sm-6 col-md-2">
-													メモ：
-												</div>
-												<div class="col-sm-6 col-md-10">
-													<input class="form-control" type="text" th:field="*{interviewContentMemo6}" />
-												</div>
-											</div>
-										</div>
-									</div>
+								</div>
+
+
 								</div>
 							</div>
 
 							<div class="my-box mb-3"></div>
 							<div class="row align-items-start">
-								<div class="col-sm-6 col-md-3">
+								<div class="col-md-2 col-lg-3">
 									プライベートについて
 								</div>
-								<div class="col-sm-6 col-md-9">
-									<div class="row align-items-center">
-										<div class="col-sm-6 col-md-2">
-											メモ：
-										</div>
-										<div class="col-sm-6 col-md-10">
-											<input class="form-control" type="text" th:field="*{interviewContentMemo7}" />
-										</div>
-									</div>
-									<div class="row align-items-center">
-										<div class="col-sm-6 col-md-2">
-											メモ：
-										</div>
-										<div class="col-sm-6 col-md-10">
-											<input class="form-control" type="text" th:field="*{interviewContentMemo8}" />
-										</div>
-									</div>
-									<div class="row align-items-center">
-										<div class="col-sm-6 col-md-2">
-											メモ：
-										</div>
-										<div class="col-sm-6 col-md-10">
-											<input class="form-control" type="text" th:field="*{interviewContentMemo9}" />
+								<div class="col-md-10 col-lg-9">
+									<div th:each="privateitem, stat : *{contentPrivateCheckItems}">
+										<div class="row align-items-center no-gutters">
+											<div class="col-md-2 col-lg-2">
+												メモ：
+											</div>
+											<div class="col-md-10 col-lg-10">
+												<input class="form-control" type="text" th:field="*{contentPrivateMemos[__${stat.index}__]}" />
+												<label th:if="${#fields.hasErrors('adminComment')}" th:errors="*{contentPrivateMemos[__${stat.index}__]}" style="color: red"></label>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -265,11 +190,12 @@
 
 					<div class="my-box mb-3"></div>
 					<div class="row align-items-center">
-						<div class="col-sm-4 col-md-12">
+						<div class="col-md-12 col-lg-12">
 							相談内容【自由記述】(リファイナー所感)：
 						</div>
-						<div class="col-sm-4 col-md-12">
+						<div class="col-md-12 col-lg-12">
 							<textarea id="textarea1" class="form-control" th:field="*{interviewerComment}"></textarea>
+							<label th:if="${#fields.hasErrors('interviewerComment')}" th:errors="*{interviewerComment}" style="color: red"></label>
 						</div>
 					</div>
 
@@ -284,18 +210,18 @@
 
 					<div class="my-box mb-3"></div>
 					<div class="row align-items-start">
-						<div class="col-sm-4 col-md-2">
+						<div class="col-md-2 col-lg-2">
 							情報開示：
 						</div>
-						<div class="col-sm-4 col-md-10">
+						<div class="col-md-10 col-lg-10">
 							<div class="row align-items-center">
-								<div class="col-sm-4 col-md-12">
+								<div class="col-md-12 col-lg-12">
 									<input type="radio" name="discloseCode" th:value="0" th:text="勤務先への情報開示を認める" th:field="*{discloseCode}" />
 								</div>
-								<div class="col-sm-4 col-md-12">
+								<div class="col-md-12 col-lg-12">
 									<input type="radio" name="discloseCode" th:value="1" th:text="勤務先へ一部情報については開示して欲しくない" th:field="*{discloseCode}" />
 								</div>
-								<div class="col-sm-4 col-md-12">
+								<div class="col-md-12 col-lg-12">
 									<input type="radio" name="discloseCode" th:value="2" th:text="勤務先へ全ての情報を開示して欲しくない" th:field="*{discloseCode}" />
 								</div>
 							</div>
@@ -304,17 +230,18 @@
 
 					<div class="my-box mb-3"></div>
 					<div class="row align-items-center">
-						<div class="col-sm-4 col-md-12">
+						<div class="col-md-12 col-lg-12">
 							管理者記入欄：
 						</div>
-						<div class="col-sm-4 col-md-12">
+						<div class="col-md-12 col-lg-12">
 							<textarea id="textarea1" class="form-control" th:field="*{adminComment}"></textarea>
+							<label th:if="${#fields.hasErrors('adminComment')}" th:errors="*{adminComment}" style="color: red"></label>
 						</div>
 					</div>
 
 					<div class="my-box mb-3"></div>
 					<div class="col text-center">
-						<button class="btn btn-primary btn-block" type="submit">登録</button>
+						<button class="btn btn-primary btn-block" type="submit" name="create">登録</button>
 					</div>
 
 				</form>
