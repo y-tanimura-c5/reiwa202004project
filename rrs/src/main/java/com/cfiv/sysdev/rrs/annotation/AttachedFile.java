@@ -9,13 +9,13 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-import com.cfiv.sysdev.rrs.validator.FileRequiredValidator;
+import com.cfiv.sysdev.rrs.validator.AttachedFileValidator;
 
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = FileRequiredValidator.class)
-public @interface FileRequired {
-    String message() default "{com.cfiv.sysdev.rrs.annotation.FileRequired.message}";
+@Constraint(validatedBy = AttachedFileValidator.class)
+public @interface AttachedFile {
+    String message() default "{com.cfiv.sysdev.rrs.annotation.AttachedFile.message}";
 
     Class<?>[] groups() default {};
 
@@ -25,6 +25,6 @@ public @interface FileRequired {
     @Retention(RetentionPolicy.RUNTIME)
     @Documented
     @interface List {
-        FileRequired[] value();
+        AttachedFile[] value();
     }
 }

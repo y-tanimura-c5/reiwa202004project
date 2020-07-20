@@ -10,7 +10,7 @@
 		<div class="card mt-2 p-3">
 			<div class="card-heading"><h2>面談結果新規登録</h2></div>
 			<div class="card-body">
-				<form th:action="@{/interview/submit}" th:method="post" th:object="${interview_request}">
+				<form th:action="@{/interview/submit}" enctype="multipart/form-data" th:method="post" th:object="${interview_request}">
 					<div class="row align-items-center">
 						<div class="col-md-2 col-lg-2">
 							企業コード：
@@ -75,30 +75,84 @@
 						</div>
 					</div>
 
-					<div class="my-box mb-3"></div>
-					<div class="accordion" id="accordion-4">
-						<div class="card">
-							<div class="card-header" id="header-4a">
-								<button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#card-4a"
-									aria-expanded="true" aria-controls="card-4a">
-									2020/1/15 面談結果
-								</button>
-							</div>
-							<div id="card-4a" class="collapse" aria-labelledby="header-4a" data-parent="#accordion-4">
-								<div class="card-body">
-									<div class="my-box mb-3"></div>
-									<div class="row align-items-start">
-										<div class="col-md-4 col-lg-2">
-											面談時間：
-										</div>
-										<div class="col-md-4 col-lg-10">
-											<input class="form-control" type="text" readonly="readonly" />
-										</div>
+					<div class="my-box mb-2"></div>
+					<div th:each="past, stat : *{pastInterviews}">
+						<div class="my-box mb-1"></div>
+						<a class="btn btn-primary" data-toggle="collapse" th:href="'#pastInterview' + ${stat.index}" role="button" aria-expand="false"
+							 th:aria-controls="'pastInterview' + ${stat.index}"
+							 th:text="*{pastInterviews[__${stat.index}__].interviewDate}+' 面談結果'"></a>
+						<div class="collapse" th:id="'pastInterview' + ${stat.index}">
+							<div class="card card-body">
+										<div class="my-box mb-3"></div>
+								<div class="row align-items-start">
+									<div class="col-md-4 col-lg-2">
+										面談時間：
+									</div>
+									<div class="col-md-4 col-lg-10">
+										<input class="form-control" type="text"  th:field="*{pastInterviews[__${stat.index}__].interviewTime}" readonly="readonly" />
+									</div>
+								</div>
+
+								<div class="my-box mb-3"></div>
+								<div class="row align-items-center">
+									<div class="col-md-12 col-lg-12">
+										相談内容【自由記述】(リファイナー所感)：
+									</div>
+									<div class="col-md-12 col-lg-12">
+										<textarea id="textarea1" class="form-control" th:field="*{pastInterviews[__${stat.index}__].interviewerComment}" readonly="readonly"></textarea>
+									</div>
+								</div>
+
+								<div class="my-box mb-3"></div>
+								<div class="row align-items-start">
+									<div class="col-md-4 col-lg-2">
+										添付ファイル：
+									</div>
+									<div class="col-md-4 col-lg-10">
+										<input class="form-control" type="text"  th:field="*{pastInterviews[__${stat.index}__].attachedFilename}" readonly="readonly" />
+									</div>
+								</div>
+
+								<div class="my-box mb-3"></div>
+								<div class="row align-items-start">
+									<div class="col-md-4 col-lg-2">
+										情報開示：
+									</div>
+									<div class="col-md-4 col-lg-10">
+										<input class="form-control" type="text"  th:field="*{pastInterviews[__${stat.index}__].disclose}" readonly="readonly" />
+									</div>
+								</div>
+
+								<div class="my-box mb-3"></div>
+								<div class="row align-items-center">
+									<div class="col-md-12 col-lg-12">
+										管理者記入欄：
+									</div>
+									<div class="col-md-12 col-lg-12">
+										<textarea id="textarea1" class="form-control" th:field="*{pastInterviews[__${stat.index}__].adminComment}" readonly="readonly"></textarea>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
+
+<!-- 					<div class="my-box mb-3"></div> -->
+<!-- 					<div th:each="past, stat : *{pastInterviews}"> -->
+<!-- 						<div class="accordion" id="accordion"> -->
+<!-- 							<div class="card"> -->
+<!-- 								<div class="card-header" id="header"> -->
+<!-- 									<button class="btn btn-outline-primary" type="button" data-toggle="collapse" th:data-target="'#pastInterview' + ${stat.index}" -->
+<!-- 										aria-expanded="false" th:aria-controls="'pastInterview' + ${stat.index}" -->
+<!-- 										th:text="*{pastInterviews[__${stat.index}__].interviewDate}+' 面談結果'"> -->
+<!-- 									</button> -->
+<!-- 								</div> -->
+<!-- 								<div th:id="'pastInterview' + ${stat.index}" class="collapse" aria-labelledby="header" data-parent="#accordion"> -->
+<!-- 									<div class="card-body"> -->
+<!-- 									</div> -->
+<!-- 								</div> -->
+<!-- 							</div> -->
+<!-- 						</div> -->
+<!-- 					</div> -->
 
 					<div class="my-box mb-5"></div>
 					<div class="row align-items-center">
@@ -146,23 +200,21 @@
 								<div class="col-md-10 col-lg-9">
 									<div th:each="jobitem, stat : *{contentJobCheckItems}">
     									<div class="row align-items-center no-gutters">
-										<div class="col-md-12 col-lg-3 mt-1">
-									        <input type="checkbox" name="inputMultiCheck" th:value="${jobitem.key}" th:text="${jobitem.value}" th:field="*{contentJobCheckedList}" />
-										</div>
-										<div class="col-md-12 col-lg-9">
-											<div class="row align-items-center no-gutters">
-												<div class="col-md-2 col-lg-2">
-													メモ：
-												</div>
-												<div class="col-md-10 col-lg-10">
-													<input class="form-control" type="text" th:field="*{contentJobMemos[__${stat.index}__]}" />
+											<div class="col-md-12 col-lg-3 mt-1">
+										        <input type="checkbox" name="inputMultiCheck" th:value="${jobitem.key}" th:text="${jobitem.value}" th:field="*{contentJobCheckedList}" />
+											</div>
+											<div class="col-md-12 col-lg-9">
+												<div class="row align-items-center no-gutters">
+													<div class="col-md-2 col-lg-2">
+														メモ：
+													</div>
+													<div class="col-md-10 col-lg-10">
+														<input class="form-control" type="text" th:field="*{contentJobMemos[__${stat.index}__]}" />
+													</div>
 												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-
-
 								</div>
 							</div>
 
@@ -203,8 +255,9 @@
 					<div class="form-group">
 						<label for="inputFile">添付ファイル：</label>
 						<div class="custom-file">
-							<input type="file" class="custom-file-input" id="inputFile">
+							<input th:field="*{attachedFile}" type="file" class="custom-file-input" id="inputFile">
 							<label class="custom-file-label" for="inputFile" data-browse="参照">ファイルを選択(ここにドロップすることもできます)</label>
+							<label th:if="${#fields.hasErrors('attachedFile')}" th:errors="*{attachedFile}" style="color: red"></label>
 						</div>
 					</div>
 

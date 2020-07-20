@@ -1,6 +1,7 @@
 package com.cfiv.sysdev.rrs.dto;
 
 import java.io.Serializable;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -9,6 +10,10 @@ import java.util.Map;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import com.cfiv.sysdev.rrs.annotation.AttachedFile;
 
 import lombok.Data;
 
@@ -117,6 +122,7 @@ public class InterviewRequest implements Serializable {
      * 面談内容(会社関連)チェックメモリスト
      */
     private List<String> contentJobMemos;
+
     /**
      * 面談内容(プライベート)チェックボックス表示内容(ダミー)
      */
@@ -131,6 +137,17 @@ public class InterviewRequest implements Serializable {
      * 面談内容(プライベート)チェックメモリスト
      */
     private List<String> contentPrivateMemos;
+
+    /**
+     * 添付ファイル
+     */
+    @AttachedFile
+    private MultipartFile attachedFile;
+
+    /**
+     * 過去面談結果リスト
+     */
+    private List<PastInterviewRequest> pastInterviews;
 
     /**
      * 企業コードLong値
@@ -161,5 +178,17 @@ public class InterviewRequest implements Serializable {
         }
 
         return false;
+    }
+
+    public Date getInterviewDateDate() {
+        Date result;
+        try {
+            result = new SimpleDateFormat("yyyy-MM-dd").parse(interviewDate);
+        }
+        catch (ParseException e) {
+            result = new Date(0);
+        }
+
+        return result;
     }
 }

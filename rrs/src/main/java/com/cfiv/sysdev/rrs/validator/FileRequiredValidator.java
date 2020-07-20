@@ -28,31 +28,32 @@ public class FileRequiredValidator implements ConstraintValidator<FileRequired, 
         if (multipartFile == null || multipartFile.getOriginalFilename().isEmpty()) {
             message = "ファイルの取得に失敗しました。";
         }
+        else {
+            List<EmployeeCSV> items = null;
+            try {
+                String csvStr = new String(multipartFile.getBytes(), "MS932");
+                Reader reader = new StringReader(csvStr);
+                LogUtils.info(csvStr);
+                CsvToBean<EmployeeCSV> csvToBean = new CsvToBeanBuilder<EmployeeCSV>(reader).withType(EmployeeCSV.class).build();
+                items = csvToBean.parse();
+            }
+            catch (IllegalStateException | IOException e) {
+                message = "CSVファイルではない可能性があります。";
+            }
+            catch (Exception e) {
+                message = "CSVファイルのフォーマットまたは文字コードが異なります。";
+            }
 
-        List<EmployeeCSV> items = null;
-        try {
-            String csvStr = new String(multipartFile.getBytes(), "MS932");
-            Reader reader = new StringReader(csvStr);
-            LogUtils.info(csvStr);
-            CsvToBean<EmployeeCSV> csvToBean = new CsvToBeanBuilder<EmployeeCSV>(reader).withType(EmployeeCSV.class).build();
-            items = csvToBean.parse();
-        }
-        catch (IllegalStateException | IOException e) {
-            message = "CSVファイルではない可能性があります。";
-        }
-        catch (Exception e) {
-            message = "CSVファイルのフォーマットまたは文字コードが異なります。";
-        }
-
-        int row = 2;
-        if (items != null) {
-            for (EmployeeCSV item : items) {
-                item.check();
-                if (!item.isResult()) {
-                    message = row + "行目："+ item.getReason();
-                    break;
+            int row = 2;
+            if (items != null) {
+                for (EmployeeCSV item : items) {
+                    item.check();
+                    if (!item.isResult()) {
+                        message = row + "行目："+ item.getReason();
+                        break;
+                    }
+                    row ++;
                 }
-                row ++;
             }
         }
 

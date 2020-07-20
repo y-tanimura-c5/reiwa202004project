@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.cfiv.sysdev.rrs.LogUtils;
 import com.cfiv.sysdev.rrs.dto.EmployeeRequest;
 import com.cfiv.sysdev.rrs.dto.InterviewRequest;
+import com.cfiv.sysdev.rrs.dto.PastInterviewRequest;
 import com.cfiv.sysdev.rrs.entity.Company;
 import com.cfiv.sysdev.rrs.service.CompanyService;
 import com.cfiv.sysdev.rrs.service.EmployeeService;
@@ -64,16 +66,28 @@ public class InterviewController {
     @RequestMapping(value = "/interview/submit", params = "search", method = RequestMethod.POST)
     public String search(Model model, @ModelAttribute("interview_request") @Valid InterviewRequest req, BindingResult result) {
         if (!result.hasErrors()) {
-            List<EmployeeRequest> req_list = employeeService.searchRequestFromID(req.getCompanyID(), req.getEmployeeID());
+            List<EmployeeRequest> emp_list = employeeService.searchRequestFromID(req.getCompanyID(), req.getEmployeeID());
             Company company = companyService.findOne(req.getCompanyIDLong());
+            List<PastInterviewRequest> past_list = interviewService.searchFromID(req.getCompanyIDLong(), req.getEmployeeID());
 
-            if (req_list.size() >= 1) {
+            if (emp_list.size() >= 1) {
                 req.setCompanyName(company.getName());
-                req.setEmployeeFName(req_list.get(0).getEmployeeFName());
-                req.setHireYM(req_list.get(0).getHireYM());
-                req.setAdoptCode(req_list.get(0).getAdoptCode());
-                req.setSupportCode(req_list.get(0).getSupportCode());
-                req.setEmployCode(req_list.get(0).getEmployCode());
+                req.setEmployeeFName(emp_list.get(0).getEmployeeFName());
+                req.setHireYM(emp_list.get(0).getHireYM());
+                req.setAdoptCode(emp_list.get(0).getAdoptCode());
+                req.setSupportCode(emp_list.get(0).getSupportCode());
+                req.setEmployCode(emp_list.get(0).getEmployCode());
+                req.setPastInterviews(past_list);
+
+                LogUtils.info("Count = " + past_list.size());
+                for (PastInterviewRequest past : past_list) {
+                    LogUtils.info("InterviewDate = " + past.getInterviewDate());
+                    LogUtils.info("InterviewTime = " + past.getInterviewTime());
+                    LogUtils.info("Disclose = " + past.getDisclose());
+                    LogUtils.info("InterviewerComment = " + past.getInterviewerComment());
+                    LogUtils.info("AdminComment = " + past.getAdminComment());
+                    LogUtils.info("AttachedFilename = " + past.getAttachedFilename());
+                }
             }
         }
 

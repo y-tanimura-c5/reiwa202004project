@@ -1,6 +1,7 @@
 package com.cfiv.sysdev.rrs.entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -81,6 +82,18 @@ public class InterviewResult implements Serializable {
     private String adminComment;
 
     /**
+     *  添付ファイル名
+     */
+    @Column (name="FILENAME")
+    private String filename;
+
+    /**
+     *  添付ファイルデータ
+     */
+    @Column (name="FILEDATA")
+    private byte filedata[];
+
+    /**
      * 削除
      */
     @Column(name="DELETED")
@@ -123,9 +136,42 @@ public class InterviewResult implements Serializable {
     private List<InterviewContent> interviewContentList;
 
     /**
-     * 添付ファイルリスト
+     * 文字列形式の面談時間
+     * @return 面談時間文字列
      */
-//    @OneToMany(fetch = FetchType.EAGER, cascade= CascadeType.ALL)
-//    @JoinColumn(name = "INTERVIEW_NO")
-//    private Set<InterviewAttach> interviewAttachList;
+    public String getInterviewTimeString() {
+        if (interviewTimeCode == 0) {
+            return "1時間未満";
+        }
+        else if (interviewTimeCode == 1) {
+            return "1時間から2時間";
+        }
+        else {
+            return "2時間超";
+        }
+    }
+
+    /**
+     * 文字列形式の情報開示
+     * @return 情報開示文字列
+     */
+    public String getDiscloseString() {
+        if (discloseCode == 0) {
+            return "勤務先への情報開示を認める";
+        }
+        else if (discloseCode == 1) {
+            return "勤務先へ一部情報については開示して欲しくない";
+        }
+        else {
+            return "勤務先へ全ての情報を開示して欲しくない";
+        }
+    }
+
+    /**
+     * 文字列形式の面談日
+     * @return 面談日文字列
+     */
+    public String getInterviewDateTimeString() {
+        return new SimpleDateFormat("yyyy/MM/dd").format(interviewDateTime);
+    }
 }
