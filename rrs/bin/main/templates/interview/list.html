@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common :: meta_header('面談結果検索',~{::link},~{::script})">
+</head>
+<body>
+<div class="box">
+	<div th:replace="header :: header"></div>
+
+	<div class="container">
+		<div class="card mt-2 p-3">
+			<div class="card-heading"><h2>面談結果検索</h2></div>
+			<div class="card-body">
+				<form th:action="@{/interview/search}" th:method="post" th:object="${interview_request}">
+					<div class="form-group">
+						<label class="control-label">企業コード</label>
+						<input class="form-control" type="text" th:field="*{companyID}" />
+					</div>
+					<div class="form-group">
+						<label class="control-label">社員番号</label>
+						<input class="form-control" type="text" th:field="*{employeeID}" />
+					</div>
+					<div class="col text-center">
+						<button class="btn btn-primary" type="submit">検索</button>
+					</div>
+				</form>
+				<br>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>企業コード</th>
+							<th>社員番号</th>
+							<th>従業員名字</th>
+							<th>面談日</th>
+							<th>面談時間</th>
+							<th>情報開示</th>
+							<th>面談内容</th>
+						</tr>
+					</thead>
+					<tbody>
+					    <tr th:each="interview : ${interview_request_list}" th:object="${interview}">
+<!-- 							<td><a class="btn btn-link" th:href="@{/interview/{id}/edit(id=*{id})}" th:text="*{companyID}"></a></td> -->
+							<td th:text="*{id}"></td>
+							<td th:text="*{companyID}"></td>
+							<td th:text="*{employeeID}"></td>
+							<td th:text="*{employeeFName}"></td>
+							<td th:text="*{interviewDate}"></td>
+							<td th:text="*{interviewTimeShort}"></td>
+							<td>
+								<div th:if="*{discloseCode == 0}">
+									<a th:text="*{discloseShort}"></a>
+								</div>
+								<div th:if="*{discloseCode == 1 || discloseCode == 2}" class="text-danger">
+									<a th:text="*{discloseShort}"></a>
+								</div>
+							</td>
+							<td th:text="*{contentJobNamesShort}"></td>
+					    </tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<div th:replace="footer :: footer"></div>
+</div>
+</body>

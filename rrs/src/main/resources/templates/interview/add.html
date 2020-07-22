@@ -36,7 +36,7 @@
 							<input class="form-control" type="text" th:field="*{employeeFName}" readonly="readonly" />
 						</div>
 						<div class="col-md-4 col-lg-2">
-							<button class="btn btn-primary" type="submit" name="search">情報表示</button>
+							<button class="btn btn-primary" type="submit" name="info">情報表示</button>
 						</div>
 					</div>
 
@@ -83,13 +83,52 @@
 							 th:text="*{pastInterviews[__${stat.index}__].interviewDate}+' 面談結果'"></a>
 						<div class="collapse" th:id="'pastInterview' + ${stat.index}">
 							<div class="card card-body">
-										<div class="my-box mb-3"></div>
 								<div class="row align-items-start">
 									<div class="col-md-4 col-lg-2">
 										面談時間：
 									</div>
 									<div class="col-md-4 col-lg-10">
 										<input class="form-control" type="text"  th:field="*{pastInterviews[__${stat.index}__].interviewTime}" readonly="readonly" />
+									</div>
+								</div>
+
+								<div class="my-box mb-3"></div>
+									<div class="row align-items-start">
+										<div class="col-md-2 col-lg-2">
+											面談内容：
+										</div>
+									</div>
+								<div class="card">
+									<div class="card-body">
+										<div class="row align-items-start">
+											<div class="col-md-2 col-lg-3">
+												会社関連について
+											</div>
+											<div class="col-md-10 col-lg-9">
+												<div th:each="jobitem, stat2 : *{pastInterviews[__${stat.index}__].contentJobNames}">
+    												<div class="row align-items-center no-gutters">
+														<div class="col-md-12 col-lg-3 mt-1">
+															 [[*{pastInterviews[__${stat.index}__].contentJobNames[__${stat2.index}__]}]]
+														</div>
+														<div class="col-md-12 col-lg-9">
+															<input class="form-control" type="text" th:field="*{pastInterviews[__${stat.index}__].contentJobMemos[__${stat2.index}__]}"  readonly="readonly" />
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<div class="my-box mb-3"></div>
+										<div class="row align-items-start">
+											<div class="col-md-2 col-lg-3">
+												プライベートについて
+											</div>
+											<div class="col-md-10 col-lg-9">
+												<div th:each="privateitem, stat3 : *{pastInterviews[__${stat.index}__].contentPrivateMemos}">
+													<input class="form-control" type="text" th:field="*{pastInterviews[__${stat.index}__].contentPrivateMemos[__${stat3.index}__]}"  readonly="readonly" />
+												</div>
+											</div>
+										</div>
 									</div>
 								</div>
 
@@ -105,20 +144,33 @@
 
 								<div class="my-box mb-3"></div>
 								<div class="row align-items-start">
-									<div class="col-md-4 col-lg-2">
+									<div class="col-md-12 col-lg-2">
 										添付ファイル：
 									</div>
-									<div class="col-md-4 col-lg-10">
-										<input class="form-control" type="text"  th:field="*{pastInterviews[__${stat.index}__].attachedFilename}" readonly="readonly" />
+									<div class="col-md-12 col-lg-4">
+										<div th:if="*{pastInterviews[__${stat.index}__].attachedFilename == null}">
+											なし
+<!-- 											<input class="form-control" type="text" th:field="*{pastInterviews[__${stat.index}__].attachedFilename}" readonly="readonly" /> -->
+										</div>
+										<div th:unless="*{pastInterviews[__${stat.index}__].attachedFilename == null}">
+											<input class="form-control" type="text" th:field="*{pastInterviews[__${stat.index}__].attachedFilename}" readonly="readonly" />
+										</div>
+									</div>
+									<div class="col-md-12 col-lg-2">
+										<div th:unless="*{pastInterviews[__${stat.index}__].attachedFilename == null}">
+											<a class="btn btn-primary"
+												th:href="@{/interview/{id}/{filename}(id=*{pastInterviews[__${stat.index}__].id}, filename=*{pastInterviews[__${stat.index}__].attachedFilename})}"
+												target="_blank" rel="noopener noreferrer">表示</a>
+										</div>
 									</div>
 								</div>
 
 								<div class="my-box mb-3"></div>
 								<div class="row align-items-start">
-									<div class="col-md-4 col-lg-2">
+									<div class="col-md-12 col-lg-2">
 										情報開示：
 									</div>
-									<div class="col-md-4 col-lg-10">
+									<div class="col-md-12 col-lg-10">
 										<input class="form-control" type="text"  th:field="*{pastInterviews[__${stat.index}__].disclose}" readonly="readonly" />
 									</div>
 								</div>
@@ -135,24 +187,6 @@
 							</div>
 						</div>
 					</div>
-
-<!-- 					<div class="my-box mb-3"></div> -->
-<!-- 					<div th:each="past, stat : *{pastInterviews}"> -->
-<!-- 						<div class="accordion" id="accordion"> -->
-<!-- 							<div class="card"> -->
-<!-- 								<div class="card-header" id="header"> -->
-<!-- 									<button class="btn btn-outline-primary" type="button" data-toggle="collapse" th:data-target="'#pastInterview' + ${stat.index}" -->
-<!-- 										aria-expanded="false" th:aria-controls="'pastInterview' + ${stat.index}" -->
-<!-- 										th:text="*{pastInterviews[__${stat.index}__].interviewDate}+' 面談結果'"> -->
-<!-- 									</button> -->
-<!-- 								</div> -->
-<!-- 								<div th:id="'pastInterview' + ${stat.index}" class="collapse" aria-labelledby="header" data-parent="#accordion"> -->
-<!-- 									<div class="card-body"> -->
-<!-- 									</div> -->
-<!-- 								</div> -->
-<!-- 							</div> -->
-<!-- 						</div> -->
-<!-- 					</div> -->
 
 					<div class="my-box mb-5"></div>
 					<div class="row align-items-center">
@@ -171,17 +205,24 @@
 							面談時間：
 						</div>
 						<div class="col-md-8 col-lg-10">
-							<div class="row align-items-center">
-								<div class="col-md-12 col-lg-12">
-									<input type="radio" name="interviewTimeCode" th:value="0" th:text="1時間未満" th:field="*{interviewTimeCode}" />
-								</div>
-								<div class="col-md-12 col-lg-12">
-									<input type="radio" name="interviewTimeCode" th:value="1" th:text="1時間から2時間" th:field="*{interviewTimeCode}" />
-								</div>
-								<div class="col-md-12 col-lg-12">
-									<input type="radio" name="interviewTimeCode" th:value="2" th:text="2時間超" th:field="*{interviewTimeCode}" />
+							<div th:each="interviewTime, stat : *{interviewTimeItems}">
+								<div class="row align-items-center">
+									<div class="col-md-12 col-lg-12">
+										<input type="radio" name="interviewTimeCode" th:value="${stat.index}" th:text="*{interviewTimeItems[__${stat.index}__]}" th:field="*{interviewTimeCode}" />
+									</div>
 								</div>
 							</div>
+<!-- 							<div class="row align-items-center"> -->
+<!-- 								<div class="col-md-12 col-lg-12"> -->
+<!-- 									<input type="radio" name="interviewTimeCode" th:value="0" th:text="1時間未満" th:field="*{interviewTimeCode}" /> -->
+<!-- 								</div> -->
+<!-- 								<div class="col-md-12 col-lg-12"> -->
+<!-- 									<input type="radio" name="interviewTimeCode" th:value="1" th:text="1時間から2時間" th:field="*{interviewTimeCode}" /> -->
+<!-- 								</div> -->
+<!-- 								<div class="col-md-12 col-lg-12"> -->
+<!-- 									<input type="radio" name="interviewTimeCode" th:value="2" th:text="2時間超" th:field="*{interviewTimeCode}" /> -->
+<!-- 								</div> -->
+<!-- 							</div> -->
 						</div>
 					</div>
 
@@ -201,7 +242,7 @@
 									<div th:each="jobitem, stat : *{contentJobCheckItems}">
     									<div class="row align-items-center no-gutters">
 											<div class="col-md-12 col-lg-3 mt-1">
-										        <input type="checkbox" name="inputMultiCheck" th:value="${jobitem.key}" th:text="${jobitem.value}" th:field="*{contentJobCheckedList}" />
+										        <input type="checkbox" name="inputMultiCheck" th:value="${stat.index}" th:text="*{contentJobCheckItems[__${stat.index}__]}" th:field="*{contentJobCheckedList}" />
 											</div>
 											<div class="col-md-12 col-lg-9">
 												<div class="row align-items-center no-gutters">
@@ -267,15 +308,11 @@
 							情報開示：
 						</div>
 						<div class="col-md-10 col-lg-10">
-							<div class="row align-items-center">
-								<div class="col-md-12 col-lg-12">
-									<input type="radio" name="discloseCode" th:value="0" th:text="勤務先への情報開示を認める" th:field="*{discloseCode}" />
-								</div>
-								<div class="col-md-12 col-lg-12">
-									<input type="radio" name="discloseCode" th:value="1" th:text="勤務先へ一部情報については開示して欲しくない" th:field="*{discloseCode}" />
-								</div>
-								<div class="col-md-12 col-lg-12">
-									<input type="radio" name="discloseCode" th:value="2" th:text="勤務先へ全ての情報を開示して欲しくない" th:field="*{discloseCode}" />
+							<div th:each="disclose, stat : *{discloseItems}">
+								<div class="row align-items-center">
+									<div class="col-md-12 col-lg-12">
+										<input type="radio" name="discloseCode" th:value="${stat.index}" th:text="*{discloseItems[__${stat.index}__]}" th:field="*{discloseCode}" />
+									</div>
 								</div>
 							</div>
 						</div>

@@ -20,18 +20,11 @@ public class AttachedFileValidator implements ConstraintValidator<AttachedFile, 
 
         if (multipartFile != null && !multipartFile.getOriginalFilename().isEmpty()) {
             // 拡張子チェック
-            int dot = multipartFile.getOriginalFilename().lastIndexOf(".");
-
-            String ext = "";
-            if (dot > 0) {
-              ext = multipartFile.getOriginalFilename().substring(dot).toLowerCase();
-            }
-
-            if (!ext.equals(".jpg") &&
-                    !ext.equals(".jpeg") &&
-                    !ext.equals(".jpe") &&
-                    !ext.equals(".png") &&
-                    !ext.equals(".pdf")) {
+            if (!multipartFile.getOriginalFilename().endsWith(".jpg") &&
+                    !multipartFile.getOriginalFilename().endsWith(".jpeg") &&
+                    !multipartFile.getOriginalFilename().endsWith(".jpe") &&
+                    !multipartFile.getOriginalFilename().endsWith(".png") &&
+                    !multipartFile.getOriginalFilename().endsWith(".pdf")) {
                 message = "登録可能な添付ファイルはJPGファイル、PNGファイル、PDFファイルのみです。";
            }
 

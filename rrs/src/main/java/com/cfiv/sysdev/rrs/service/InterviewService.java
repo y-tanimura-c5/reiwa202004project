@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -16,8 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cfiv.sysdev.rrs.LogUtils;
+import com.cfiv.sysdev.rrs.dto.EmployeeRequest;
 import com.cfiv.sysdev.rrs.dto.InterviewRequest;
-import com.cfiv.sysdev.rrs.dto.PastInterviewRequest;
 import com.cfiv.sysdev.rrs.entity.InterviewContent;
 import com.cfiv.sysdev.rrs.entity.InterviewResult;
 import com.cfiv.sysdev.rrs.repository.InterviewContentRepository;
@@ -36,6 +37,12 @@ public class InterviewService {
     private EntityManager entityManager;
 
     /**
+     * 従業員情報 Service
+     */
+    @Autowired
+    EmployeeService employeeService;
+
+    /**
      * 面談結果 Repository
      */
     @Autowired
@@ -48,30 +55,131 @@ public class InterviewService {
     private InterviewContentRepository interviewContentRepository;
 
     /**
+     * IDでの面談結果検索
+     * @param id ID
+     * @return 検索結果(InterviewResult)
+     */
+    public InterviewResult findOne(Long id) {
+        Optional<InterviewResult> opt = interviewResultRepository.findById(id);
+
+        try {
+            return opt.get();
+        }
+        catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
      * 企業コード、社員番号での面談結果検索
      * @param companyID 企業コード
      * @param employeeID 社員番号
      * @return 検索結果(Employee)
      */
     @SuppressWarnings("unchecked")
-    public List<PastInterviewRequest> searchFromID(Long companyID, String employeeID) {
-        List<PastInterviewRequest> req_list = new ArrayList<PastInterviewRequest>();
+    public List<InterviewRequest> search() {
+        List<InterviewRequest> req_list = new ArrayList<InterviewRequest>();
+
+//        String sql = "FROM InterviewResult r";
+        String sql = "SELECT DISTINCT r FROM InterviewResult r LEFT JOIN r.interviewContents ORDER BY r.interviewDateTime DESC";
+        Query query = entityManager.createQuery(sql);
+        List<InterviewResult> result_list = (List<InterviewResult>) query.getResultList();
+
+        LogUtils.info("result_list.size = " + result_list.size());
+
+        for (InterviewResult result : result_list) {
+            InterviewRequest req = new InterviewRequest();
+
+            req.setIdFromNumeric(result.getId(), 1);
+            req.setCompanyIDFromNumeric(result.getCompanyID(), 4);
+            req.setEmployeeID(result.getEmployeeID());
+
+            List<EmployeeRequest> emp_list = employeeService.searchRequestFromID(req.getCompanyID(), req.getEmployeeID());
+            req.setEmployeeFName(emp_list.get(0).getEmployeeFName());
+
+            req.setInterviewDateFromDate(result.getInterviewDateTime());
+            req.setInterviewTimeCode(result.getInterviewTimeCode());
+            req.setDiscloseCode(result.getDiscloseCode());
+            req.setInterviewerComment(result.getInterviewerComment());
+            req.setAdminComment(result.getAdminComment());
+            req.setAttachedFilename(result.getFilename());
+
+            List<Integer> job_checked = new ArrayList<Integer>();
+            List<String> job_memos = new ArrayList<String>();
+            List<String> pri_memos = new ArrayList<String>();
+            for (InterviewContent content : result.getInterviewContents()) {
+                if (content.getContentKind() == 0) {
+                    job_checked.add(content.getContentCode());
+                    job_memos.add(content.getContentComment());
+                }
+                else {
+                    pri_memos.add(content.getContentComment());
+                }
+            }
+            req.setContentJobCheckedList(job_checked);
+            req.setContentJobMemos(job_memos);
+            req.setContentPrivateMemos(pri_memos);
+
+            req_list.add(req);
+        }
+
+        return req_list;
+    }
+
+    /**
+     * 企業コード、社員番号での面談結果検索
+     * @param companyID 企業コード
+     * @param employeeID 社員番号
+     * @return 検索結果(Employee)
+     */
+    @SuppressWarnings("unchecked")
+    public List<InterviewRequest> searchFromID(Long companyID, String employeeID, int limit) {
+        List<InterviewRequest> req_list = new ArrayList<InterviewRequest>();
 
         String sql = "FROM InterviewResult r WHERE r.companyID = :companyID AND r.employeeID = :employeeID ORDER BY r.interviewDateTime DESC";
         Query query = entityManager.createQuery(sql);
         query.setParameter("companyID", companyID);
         query.setParameter("employeeID", employeeID);
-        query.setMaxResults(3);
+
+        if (limit > 0) {
+            query.setMaxResults(limit);
+        }
 
         List<InterviewResult> result_list = (List<InterviewResult>) query.getResultList();
         for (InterviewResult result : result_list) {
-            PastInterviewRequest req = new PastInterviewRequest();
-            req.setInterviewDate(result.getInterviewDateTimeString());
-            req.setInterviewTime(result.getInterviewTimeString());
-            req.setDisclose(result.getDiscloseString());
+            InterviewRequest req = new InterviewRequest();
+
+            req.setIdFromNumeric(result.getId(), 1);
+            req.setCompanyIDFromNumeric(result.getCompanyID(), 4);
+            req.setEmployeeID(result.getEmployeeID());
+
+            List<EmployeeRequest> emp_list = employeeService.searchRequestFromID(req.getCompanyID(), req.getEmployeeID());
+            req.setEmployeeFName(emp_list.get(0).getEmployeeFName());
+
+            req.setInterviewDateFromDate(result.getInterviewDateTime());
+            req.setInterviewTimeCode(result.getInterviewTimeCode());
+            req.setDiscloseCode(result.getDiscloseCode());
             req.setInterviewerComment(result.getInterviewerComment());
             req.setAdminComment(result.getAdminComment());
             req.setAttachedFilename(result.getFilename());
+
+            List<InterviewContent> content_list = interviewContentRepository.findByResultID(result.getId());
+            List<Integer> job_checked = new ArrayList<Integer>();
+            List<String> job_memos = new ArrayList<String>();
+            List<String> pri_memos = new ArrayList<String>();
+            for (InterviewContent content : content_list) {
+                if (content.getContentKind() == 0) {
+                    job_checked.add(content.getContentCode());
+                    job_memos.add(content.getContentComment());
+                }
+                else {
+                    pri_memos.add(content.getContentComment());
+                }
+            }
+            req.setContentJobCheckedList(job_checked);
+            req.setContentJobMemos(job_memos);
+            req.setContentPrivateMemos(pri_memos);
+
             req_list.add(req);
         }
 
@@ -114,16 +222,16 @@ public class InterviewService {
         result = interviewResultRepository.save(result);
 
         Map<Integer, String> contentJobItems = new LinkedHashMap<Integer, String>();
-        for (int key : req.getContentJobCheckItems().keySet()) {
-            if (req.containsContentJobChecked(key) || !req.getContentJobMemos().get(key).isEmpty()) {
-                contentJobItems.put(key, req.getContentJobMemos().get(key));
+        for (int i = 0; i < req.getContentJobCheckItems().size(); i ++) {
+            if (req.containsContentJobChecked(i) || !req.getContentJobMemos().get(i).isEmpty()) {
+                contentJobItems.put(i, req.getContentJobMemos().get(i));
             }
         }
 
         Map<Integer, String> contentPrivateItems = new LinkedHashMap<Integer, String>();
-        for (int key : req.getContentPrivateCheckItems().keySet()) {
-            if (!req.getContentPrivateMemos().get(key).isEmpty()) {
-                contentPrivateItems.put(key, req.getContentPrivateMemos().get(key));
+        for (int i = 0; i < req.getContentPrivateCheckItems().size(); i ++) {
+            if (!req.getContentPrivateMemos().get(i).isEmpty()) {
+                contentPrivateItems.put(i, req.getContentPrivateMemos().get(i));
             }
         }
 
@@ -132,7 +240,7 @@ public class InterviewService {
             LogUtils.info("key = " + key + ", value = " + contentJobItems.get(key));
 
             InterviewContent content = new InterviewContent();
-            content.setResult(result);
+            content.setResultID(result.getId());
             content.setContentKind(0);
             content.setContentCode(key);
             content.setContentComment(contentJobItems.get(key));
@@ -148,7 +256,7 @@ public class InterviewService {
             LogUtils.info("key = " + key + ", value = " + contentPrivateItems.get(key));
 
             InterviewContent content = new InterviewContent();
-            content.setResult(result);
+            content.setResultID(result.getId());
             content.setContentKind(1);
             content.setContentCode(key);
             content.setContentComment(contentPrivateItems.get(key));
