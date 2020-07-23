@@ -26,11 +26,11 @@
 
 					<div class="row align-items-center">
 						<div class="col-md-2 col-lg-2">
-							社員番号：
+							従業員番号：
 						</div>
 						<div class="col-md-3 col-lg-3">
-							<input class="form-control" type="text" th:field="*{employeeID}" />
-							<label th:if="${#fields.hasErrors('employeeID')}" th:errors="*{employeeID}" style="color: red"></label>
+							<input class="form-control" type="text" th:field="*{employeeCode}" />
+							<label th:if="${#fields.hasErrors('employeeCode')}" th:errors="*{employeeCode}" style="color: red"></label>
 						</div>
 						<div class="col-md-7 col-lg-5">
 							<input class="form-control" type="text" th:field="*{employeeFName}" readonly="readonly" />
@@ -212,17 +212,6 @@
 									</div>
 								</div>
 							</div>
-<!-- 							<div class="row align-items-center"> -->
-<!-- 								<div class="col-md-12 col-lg-12"> -->
-<!-- 									<input type="radio" name="interviewTimeCode" th:value="0" th:text="1時間未満" th:field="*{interviewTimeCode}" /> -->
-<!-- 								</div> -->
-<!-- 								<div class="col-md-12 col-lg-12"> -->
-<!-- 									<input type="radio" name="interviewTimeCode" th:value="1" th:text="1時間から2時間" th:field="*{interviewTimeCode}" /> -->
-<!-- 								</div> -->
-<!-- 								<div class="col-md-12 col-lg-12"> -->
-<!-- 									<input type="radio" name="interviewTimeCode" th:value="2" th:text="2時間超" th:field="*{interviewTimeCode}" /> -->
-<!-- 								</div> -->
-<!-- 							</div> -->
 						</div>
 					</div>
 
@@ -272,7 +261,6 @@
 											</div>
 											<div class="col-md-10 col-lg-10">
 												<input class="form-control" type="text" th:field="*{contentPrivateMemos[__${stat.index}__]}" />
-												<label th:if="${#fields.hasErrors('adminComment')}" th:errors="*{contentPrivateMemos[__${stat.index}__]}" style="color: red"></label>
 											</div>
 										</div>
 									</div>

@@ -1,6 +1,7 @@
 package com.cfiv.sysdev.rrs.dto;
 
 import java.io.Serializable;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,64 +14,20 @@ import javax.validation.constraints.Size;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cfiv.sysdev.rrs.Const;
 import com.cfiv.sysdev.rrs.annotation.AttachedFile;
 
 import lombok.Data;
 
 @Data
 public class InterviewRequest implements Serializable {
-    public static final String[] JOB_NAMES = {
-            "人間関係の相談",
-            "給与面の相談",
-            "経済面の相談",
-            "業務関連の相談",
-            "職場環境の相談",
-            "社内への要望"
-            };
 
-    public static final String[] JOB_SHORTNAMES = {
-            "人間関係",
-            "給与面",
-            "経済面",
-            "業務関連",
-            "職場環境",
-            "社内要望"
-            };
-
-    public static final String[] PRIVATE_NAMES = {
-            "ダミー",
-            "ダミー",
-            "ダミー"
-            };
-
-    public static final String[] INTERVIEWTIME_NAMES = {
-            "1時間未満",
-            "1時間から2時間",
-            "2時間超"
-            };
-
-    public static final String[] INTERVIEWTIME_SHORTNAMES= {
-            "1H未満",
-            "1H-2H",
-            "2H超"
-            };
-
-    public static final String[] DISCLOSE_NAMES = {
-            "勤務先への情報開示を認める",
-            "勤務先へ一部情報については開示して欲しくない",
-            "勤務先へ全ての情報を開示して欲しくない"};
-
-    public static final String[] DISCLOSE_SHORTNAMES = {
-            "OK",
-            "一部NG",
-            "全てNG"
-            };
 
     public InterviewRequest() {
-        contentJobCheckItems = Arrays.asList(JOB_NAMES);
-        contentPrivateCheckItems = Arrays.asList(PRIVATE_NAMES);
-        interviewTimeItems = Arrays.asList(INTERVIEWTIME_NAMES);
-        discloseItems = Arrays.asList(DISCLOSE_NAMES);
+        contentJobCheckItems = Arrays.asList(Const.JOB_NAMES);
+        contentPrivateCheckItems = Arrays.asList(Const.PRIVATE_NAMES);
+        interviewTimeItems = Arrays.asList(Const.INTERVIEWTIME_NAMES);
+        discloseItems = Arrays.asList(Const.DISCLOSE_NAMES);
         interviewDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
     }
 
@@ -91,10 +48,10 @@ public class InterviewRequest implements Serializable {
     private String companyName;
 
     /**
-     * 社員番号
+     * 従業員番号
      */
     @NotBlank
-    private String employeeID;
+    private String employeeCode;
 
     /**
      * 従業員名字
@@ -104,7 +61,7 @@ public class InterviewRequest implements Serializable {
     /**
      * 入社年月
      */
-    private String hireYM;
+    private Date hireYMDate;
 
     /**
      * 採用種別
@@ -280,10 +237,10 @@ public class InterviewRequest implements Serializable {
      */
     public String getInterviewTime() {
         try {
-            return INTERVIEWTIME_NAMES[interviewTimeCode];
+            return Const.INTERVIEWTIME_NAMES[interviewTimeCode];
         }
         catch (Exception e) {
-            return INTERVIEWTIME_NAMES[0];
+            return Const.INTERVIEWTIME_NAMES[0];
         }
     }
 
@@ -293,10 +250,10 @@ public class InterviewRequest implements Serializable {
      */
     public String getDisclose() {
         try {
-            return DISCLOSE_NAMES[discloseCode];
+            return Const.DISCLOSE_NAMES[discloseCode];
         }
         catch (Exception e) {
-            return DISCLOSE_NAMES[0];
+            return Const.DISCLOSE_NAMES[0];
         }
     }
 
@@ -306,10 +263,10 @@ public class InterviewRequest implements Serializable {
      */
     public String getInterviewTimeShort() {
         try {
-            return INTERVIEWTIME_SHORTNAMES[interviewTimeCode];
+            return Const.INTERVIEWTIME_SHORTNAMES[interviewTimeCode];
         }
         catch (Exception e) {
-            return INTERVIEWTIME_SHORTNAMES[0];
+            return Const.INTERVIEWTIME_SHORTNAMES[0];
         }
     }
 
@@ -319,10 +276,10 @@ public class InterviewRequest implements Serializable {
      */
     public String getDiscloseShort() {
         try {
-            return DISCLOSE_SHORTNAMES[discloseCode];
+            return Const.DISCLOSE_SHORTNAMES[discloseCode];
         }
         catch (Exception e) {
-            return DISCLOSE_SHORTNAMES[0];
+            return Const.DISCLOSE_SHORTNAMES[0];
         }
     }
 
@@ -331,10 +288,10 @@ public class InterviewRequest implements Serializable {
 
         for (int code : contentJobCheckedList) {
             try {
-                names.add(JOB_NAMES[code]);
+                names.add(Const.JOB_NAMES[code]);
             }
             catch (Exception e) {
-                names.add(JOB_NAMES[0]);
+                names.add(Const.JOB_NAMES[0]);
             }
         }
 
@@ -345,7 +302,7 @@ public class InterviewRequest implements Serializable {
         StringBuilder names = new StringBuilder();
 
         for (int i = 0; i < contentJobCheckedList.size(); i ++) {
-            names.append(JOB_SHORTNAMES[i]);
+            names.append(Const.JOB_SHORTNAMES[i]);
 
             if (i != contentJobCheckedList.size() - 1) {
                 names.append("、");
@@ -353,5 +310,27 @@ public class InterviewRequest implements Serializable {
         }
 
         return names.toString();
+    }
+
+    /**
+     * 文字列形式の入社年月
+     * @return 入社年月文字列
+     */
+    public String getHireYM() {
+        if (hireYMDate == null) {
+            return "";
+        }
+
+        int year = 0;
+        try {
+            DateFormat df = new SimpleDateFormat("yyyyMM");
+            int hire = Integer.parseInt(df.format(hireYMDate));
+            int now = Integer.parseInt(df.format(new Date()));
+            year = (now - hire) / 100;
+        }
+        catch (NumberFormatException e) {
+        }
+
+        return new SimpleDateFormat("yyyy年MM月").format(hireYMDate) + "(" + year + "年勤続)";
     }
 }

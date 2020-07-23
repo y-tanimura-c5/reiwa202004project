@@ -1,5 +1,10 @@
 package com.cfiv.sysdev.rrs.dto;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import com.cfiv.sysdev.rrs.LogUtils;
 import com.cfiv.sysdev.rrs.entity.Employee;
 import com.opencsv.bean.CsvBindByName;
 
@@ -18,10 +23,10 @@ public class EmployeeCSV {
     private String companyID;
 
     /**
-     * 社員番号
+     * 従業員番号
      */
     @CsvBindByName(column = "従業員番号", required = true)
-    private String employeeID;
+    private String employeeCode;
 
     /**
      * 従業員名字
@@ -54,7 +59,7 @@ public class EmployeeCSV {
 
     public void check() {
         checkCompanyID();
-        checkEmployeeID();
+        checkEmployeeCode();
         checkEmployeeFName();
         checkHireYM();
         checkAdoptCode();
@@ -69,15 +74,15 @@ public class EmployeeCSV {
         }
     }
 
-    private void checkEmployeeID() {
+    private void checkEmployeeCode() {
         // 50文字以内か
-        if (employeeID.length() > 50) {
+        if (employeeCode.length() > 50) {
             result = false;
             reason += "従業員番号が50文字を超えています。";
         }
 
         // 数字、アルファベット、記号のみか
-        if (!employeeID.matches("^[a-zA-Z0-9!-/:-@\\[-`{-~]*$")) {
+        if (!employeeCode.matches("^[a-zA-Z0-9!-/:-@\\[-`{-~]*$")) {
             result = false;
             reason += "従業員番号に数字、アルファベット、記号以外の文字が含まれています。";
         }
@@ -145,7 +150,7 @@ public class EmployeeCSV {
      * クラスの文字列表現
      */
     public String toString() {
-        return "企業コード = " + companyID + ", 従業員番号 = " + employeeID + ", 従業員名字 = " + employeeFName +
+        return "企業コード = " + companyID + ", 従業員番号 = " + employeeCode + ", 従業員名字 = " + employeeFName +
                 ", 入社年月 = " + hireYM + ", 採用種別 = " + adoptCode + ", 扶養有無 = " + supportCode;
     }
 
@@ -157,12 +162,30 @@ public class EmployeeCSV {
         Employee employee = new Employee();
 
         employee.setCompanyIDFromString(getCompanyID());
-        employee.setEmployeeID(getEmployeeID());
+        employee.setEmployeeCode(getEmployeeCode());
         employee.setEmployeeFName(getEmployeeFName());
-        employee.setHireYM(getHireYM());
+        employee.setHireYM(getHireYMFromString());
         employee.setAdoptCodeFromString(getAdoptCode());
         employee.setSupportCodeFromString(getSupportCode());
 
         return employee;
+    }
+
+    /**
+     * Date形式の入社年月
+     * @return 入社年月Dateクラス
+     */
+    public Date getHireYMFromString() {
+        Date hireDate = new Date(0);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+
+        try {
+            hireDate = sdf.parse(hireYM);
+        }
+        catch (ParseException e) {
+            LogUtils.error("入社年月が正しくありません。(" + hireYM + ")");
+        }
+
+        return hireDate;
     }
 }

@@ -1,7 +1,5 @@
 package com.cfiv.sysdev.rrs.entity;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -11,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.cfiv.sysdev.rrs.LogUtils;
 import com.cfiv.sysdev.rrs.dto.EmployeeRequest;
 
 import lombok.Data;
@@ -39,10 +36,10 @@ public class Employee {
     private Long companyID;
 
     /**
-     * 社員番号
+     * 従業員番号
      */
-    @Column(name="EMPLOYEE_ID")
-    private String employeeID;
+    @Column(name="EMPLOYEE_CODE")
+    private String employeeCode;
 
     /**
      * 従業員名字
@@ -54,7 +51,7 @@ public class Employee {
      * 入社年月
      */
     @Column(name="HIRE_YM")
-    private String hireYM;
+    private Date hireYM;
 
     /**
      * 採用種別
@@ -142,24 +139,6 @@ public class Employee {
     }
 
     /**
-     * Date形式の入社年月
-     * @return 入社年月Dateクラス
-     */
-    public Date getHireYMDate() {
-        Date hireDate = new Date(0);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
-
-        try {
-            hireDate = sdf.parse(hireYM);
-        }
-        catch (ParseException e) {
-            LogUtils.info("入社年月が正しくありません。(" + hireYM + ")");
-        }
-
-        return hireDate;
-    }
-
-    /**
      * 文字列形式の採用種別
      * @return 採用種別文字列
      */
@@ -242,7 +221,7 @@ public class Employee {
      * @return 従業員情報(EmployeeRequest)
      */
     public EmployeeRequest toRequest() {
-        return new EmployeeRequest(getIdString(1), getCompanyIDString(4), getEmployeeID(), getEmployeeFName(),
+        return new EmployeeRequest(getIdString(1), getCompanyIDString(4), getEmployeeCode(), getEmployeeFName(),
                 getHireYM(), getAdoptCodeString(), getSupportCodeString(), getEmployCodeString());
     }
 }

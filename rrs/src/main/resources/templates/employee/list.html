@@ -16,8 +16,8 @@
 						<input class="form-control" type="text" th:field="*{companyID}" />
 					</div>
 					<div class="form-group">
-						<label class="control-label">社員番号</label>
-						<input class="form-control" type="text" th:field="*{employeeID}" />
+						<label class="control-label">従業員番号</label>
+						<input class="form-control" type="text" th:field="*{employeeCode}" />
 					</div>
 					<div class="col text-center">
 						<button class="btn btn-primary" type="submit">検索</button>
@@ -28,7 +28,7 @@
 					<thead>
 						<tr>
 							<th>企業コード</th>
-							<th>社員番号</th>
+							<th>従業員番号</th>
 							<th>従業員名字</th>
 							<th>入社年月</th>
 							<th>採用種別</th>
@@ -39,9 +39,9 @@
 					<tbody>
 					    <tr th:each="employee : ${employee_request_list}" th:object="${employee}">
 							<td><a class="btn btn-link" th:href="@{/employee/{id}/edit(id=*{id})}" th:text="*{companyID}"></a></td>
-							<td th:text="*{employeeID}"></td>
+							<td th:text="*{employeeCode}"></td>
 							<td th:text="*{employeeFName}"></td>
-							<td th:text="*{hireYM}"></td>
+							<td th:text="*{hireYMShort}"></td>
 							<td th:text="*{adoptCode}"></td>
 							<td th:text="*{supportCode}"></td>
 							<td>

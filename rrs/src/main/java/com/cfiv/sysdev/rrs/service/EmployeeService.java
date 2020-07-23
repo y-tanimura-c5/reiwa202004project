@@ -46,8 +46,6 @@ public class EmployeeService {
 
     /**
      * 従業員情報全検索
-     * @param companyID 企業コード
-     * @param employeeID 社員番号
      * @return 検索結果(EmployeeRequest)
      */
     public List<EmployeeRequest> searchRequestAll() {
@@ -55,17 +53,17 @@ public class EmployeeService {
     }
 
     /**
-     * 企業コード、社員番号での従業員情報検索
+     * 企業コード、従業員番号での従業員情報検索
      * @param companyID 企業コード
-     * @param employeeID 社員番号
+     * @param employeeCode 従業員番号
      * @return 検索結果(Employee)
      */
     @SuppressWarnings("unchecked")
-    public List<Employee> searchFromID(String companyID, String employeeID) {
+    public List<Employee> searchFromID(String companyID, String employeeCode) {
         List<Employee> result = new ArrayList<Employee>();
 
         // すべてブランクだった場合は全件検索する
-        if (companyID.isEmpty() && employeeID.isEmpty()){
+        if (companyID.isEmpty() && employeeCode.isEmpty()){
             result = employeeRepository.findAll();
         }
         else {
@@ -86,11 +84,11 @@ public class EmployeeService {
                 }
             }
 
-            if (!employeeID.isEmpty()) {
+            if (!employeeCode.isEmpty()) {
                 if (isNeedAnd) {
                     sql.append(" AND ");
                 }
-                sql.append("e.employeeID = :employeeID");
+                sql.append("e.employeeCode = :employeeCode");
             }
 
             Query query = entityManager.createQuery(sql.toString());
@@ -98,8 +96,8 @@ public class EmployeeService {
             if (companyIDLong != null) {
                 query.setParameter("companyID", companyIDLong);
             }
-            if (!employeeID.isEmpty()) {
-                query.setParameter("employeeID", employeeID);
+            if (!employeeCode.isEmpty()) {
+                query.setParameter("employeeCode", employeeCode);
             }
 
             result = (List<Employee>) query.getResultList();
@@ -109,13 +107,13 @@ public class EmployeeService {
     }
 
     /**
-     * 企業コード、社員番号での従業員情報検索
+     * 企業コード、従業員番号での従業員情報検索
      * @param companyID 企業コード
-     * @param employeeID 社員番号
+     * @param employeeCode 従業員番号
      * @return 検索結果(EmployeeRequest)
      */
-    public List<EmployeeRequest> searchRequestFromID(String companyID, String employeeID) {
-        return employeeToRequestList(searchFromID(companyID, employeeID));
+    public List<EmployeeRequest> searchRequestFromID(String companyID, String employeeCode) {
+        return employeeToRequestList(searchFromID(companyID, employeeCode));
     }
 
     /**
@@ -170,7 +168,7 @@ public class EmployeeService {
      */
     public void saveCSV(List<EmployeeCSV> list) {
         for (EmployeeCSV csv : list) {
-            List<Employee> employees = searchFromID(csv.getCompanyID(), csv.getEmployeeID());
+            List<Employee> employees = searchFromID(csv.getCompanyID(), csv.getEmployeeCode());
 
             if (employees.size() > 0) {
                 save(employees.get(0).getId(), csv);
@@ -265,9 +263,9 @@ public class EmployeeService {
 
         Date now = new Date();
         employee.setCompanyIDFromString(req.getCompanyID());
-        employee.setEmployeeID(req.getEmployeeID());
+        employee.setEmployeeCode(req.getEmployeeCode());
         employee.setEmployeeFName(req.getEmployeeFName());
-        employee.setHireYM(req.getHireYM());
+        employee.setHireYM(req.getHireYMDate());
         employee.setAdoptCodeFromString(req.getAdoptCode());
         employee.setSupportCodeFromString(req.getSupportCode());
         employee.setEmployCodeFromString(req.getEmployCode());
@@ -293,9 +291,9 @@ public class EmployeeService {
 
         Date now = new Date();
         employee.setCompanyIDFromString(req.getCompanyID());
-        employee.setEmployeeID(req.getEmployeeID());
+        employee.setEmployeeCode(req.getEmployeeCode());
         employee.setEmployeeFName(req.getEmployeeFName());
-        employee.setHireYM(req.getHireYM());
+        employee.setHireYM(req.getHireYMFromString());
         employee.setAdoptCodeFromString(req.getAdoptCode());
         employee.setSupportCodeFromString(req.getSupportCode());
         employee.setUpdateUser("user");

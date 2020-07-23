@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.cfiv.sysdev.rrs.LogUtils;
 import com.cfiv.sysdev.rrs.dto.EmployeeRequest;
 import com.cfiv.sysdev.rrs.dto.InterviewRequest;
+import com.cfiv.sysdev.rrs.dto.InterviewSearchRequest;
 import com.cfiv.sysdev.rrs.entity.Company;
 import com.cfiv.sysdev.rrs.entity.InterviewResult;
 import com.cfiv.sysdev.rrs.service.CompanyService;
@@ -57,7 +58,7 @@ public class InterviewController {
     @RequestMapping(value = "/interview/list", method = RequestMethod.GET)
     public String list(Model model) {
         model.addAttribute("interview_request_list", new ArrayList<InterviewRequest>());
-        model.addAttribute("interview_request", new InterviewRequest());
+        model.addAttribute("interview_search_request", new InterviewSearchRequest());
 
         return "interview/list";
     }
@@ -68,12 +69,57 @@ public class InterviewController {
      * @return 従業員情報検索画面
      */
     @RequestMapping(value = "/interview/search", method = RequestMethod.POST)
-    public String search(Model model, @ModelAttribute("interview_request") InterviewRequest req) {
-        List<InterviewRequest> req_list = interviewService.search();
-//        List<InterviewRequest> req_list = interviewService.searchFromID(req.getCompanyIDLong(), req.getEmployeeID(), 0);
+    public String search(Model model, @ModelAttribute("interview_search_request") InterviewSearchRequest req) {
+        List<InterviewRequest> req_list = interviewService.search(req);
+//        List<InterviewRequest> req_list = interviewService.searchFromID(req.getCompanyIDLong(), req.getEmployeeCode(), 0);
+
+/*
+        LogUtils.info("companyID = " + req.getCompanyID());
+        LogUtils.info("employeeCode = " + req.getEmployeeCode());
+        LogUtils.info("interviewDateStart = " + req.getInterviewDateStart());
+        LogUtils.info("interviewDateEnd = " + req.getInterviewDateEnd());
+        LogUtils.info("interviewDateLastCode = " + req.getInterviewDateLastCode());
+        LogUtils.info("interviewDateCode = " + req.getInterviewDateCode());
+
+        for (int i = 0; i < req.getInterviewTimeCheckedList().size(); i ++) {
+            LogUtils.info("interviewTimeChecked[" + i + "] = " + req.getInterviewTimeCheckedList().get(i));
+        }
+        for (int i = 0; i < req.getDiscloseCheckedList().size(); i ++) {
+            LogUtils.info("discloseChecked[" + i + "] = " + req.getDiscloseCheckedList().get(i));
+        }
+
+        for (int i = 0; i < req.getContentJobCheckedList().size(); i ++) {
+            LogUtils.info("contentJobChecked[" + i + "] = " + req.getContentJobCheckedList().get(i));
+        }
+        for (int i = 0; i < req.getContentJobMemos().size(); i ++) {
+            LogUtils.info("contentJobMemos[" + i + "] = " + req.getContentJobMemos().get(i));
+        }
+        for (int i = 0; i < req.getContentPrivateMemos().size(); i ++) {
+            LogUtils.info("contentPrivateMemos[" + i + "] = " + req.getContentPrivateMemos().get(i));
+        }
+        for (int i = 0; i < req.getInterviewerCommentMemos().size(); i ++) {
+            LogUtils.info("interviewerCommentMemos[" + i + "] = " + req.getInterviewerCommentMemos().get(i));
+        }
+        for (int i = 0; i < req.getAdminCommentMemos().size(); i ++) {
+            LogUtils.info("adminCommentMemos[" + i + "] = " + req.getAdminCommentMemos().get(i));
+        }
+
+        LogUtils.info("hireLengthStartCode = " + req.getHireLengthStartCode());
+        LogUtils.info("hireLengthEndCode = " + req.getHireLengthEndCode());
+
+        for (int i = 0; i < req.getAdoptCheckedList().size(); i ++) {
+            LogUtils.info("adoptChecked[" + i + "] = " + req.getAdoptCheckedList().get(i));
+        }
+        for (int i = 0; i < req.getSupportCheckedList().size(); i ++) {
+            LogUtils.info("supportChecked[" + i + "] = " + req.getSupportCheckedList().get(i));
+        }
+        for (int i = 0; i < req.getEmployCheckedList().size(); i ++) {
+            LogUtils.info("employChecked[" + i + "] = " + req.getEmployCheckedList().get(i));
+        }
+*/
 
         model.addAttribute("interview_request_list", req_list);
-        model.addAttribute("interview_request", req);
+        model.addAttribute("interview_search_request", req);
 
         return "/interview/list";
     }
@@ -98,14 +144,14 @@ public class InterviewController {
     @RequestMapping(value = "/interview/submit", params = "info", method = RequestMethod.POST)
     public String info(Model model, @ModelAttribute("interview_request") @Valid InterviewRequest req, BindingResult result) {
         if (!result.hasErrors()) {
-            List<EmployeeRequest> emp_list = employeeService.searchRequestFromID(req.getCompanyID(), req.getEmployeeID());
+            List<EmployeeRequest> emp_list = employeeService.searchRequestFromID(req.getCompanyID(), req.getEmployeeCode());
             Company company = companyService.findOne(req.getCompanyIDLong());
-            List<InterviewRequest> past_list = interviewService.searchFromID(req.getCompanyIDLong(), req.getEmployeeID(), 3);
+            List<InterviewRequest> past_list = interviewService.searchFromID(req.getCompanyIDLong(), req.getEmployeeCode(), 3);
 
             if (emp_list.size() >= 1) {
                 req.setCompanyName(company.getName());
                 req.setEmployeeFName(emp_list.get(0).getEmployeeFName());
-                req.setHireYM(emp_list.get(0).getHireYM());
+                req.setHireYMDate(emp_list.get(0).getHireYMDate());
                 req.setAdoptCode(emp_list.get(0).getAdoptCode());
                 req.setSupportCode(emp_list.get(0).getSupportCode());
                 req.setEmployCode(emp_list.get(0).getEmployCode());

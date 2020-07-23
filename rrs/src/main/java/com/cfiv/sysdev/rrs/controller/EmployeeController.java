@@ -55,7 +55,7 @@ public class EmployeeController {
      */
     @RequestMapping(value = "/employee/search", method = RequestMethod.POST)
     public String search(Model model, @ModelAttribute("employee_request") EmployeeRequest req) {
-        List<EmployeeRequest> req_list = employeeService.searchRequestFromID(req.getCompanyID(), req.getEmployeeID());
+        List<EmployeeRequest> req_list = employeeService.searchRequestFromID(req.getCompanyID(), req.getEmployeeCode());
 
         model.addAttribute("employee_request_list", req_list);
         model.addAttribute("employee_request", req);
@@ -94,6 +94,7 @@ public class EmployeeController {
                 employeeService.saveCSV(csvToBean.parse());
             }
             catch (Exception e) {
+                e.printStackTrace();
             }
         }
 

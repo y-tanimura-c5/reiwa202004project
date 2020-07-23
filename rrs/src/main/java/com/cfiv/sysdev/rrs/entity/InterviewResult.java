@@ -39,10 +39,10 @@ public class InterviewResult implements Serializable {
     private Long companyID;
 
     /**
-     * 社員番号
+     * 従業員番号
      */
-    @Column(name="EMPLOYEE_ID")
-    private String employeeID;
+    @Column(name="EMPLOYEE_CODE")
+    private String employeeCode;
 
     /**
      * 面談日
@@ -128,6 +128,9 @@ public class InterviewResult implements Serializable {
     @Column(name="UPDATE_COUNT")
     private int updateCount;
 
+    /**
+     * 面談内容
+     */
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "RESULT_ID")
     private List<InterviewContent> interviewContents;

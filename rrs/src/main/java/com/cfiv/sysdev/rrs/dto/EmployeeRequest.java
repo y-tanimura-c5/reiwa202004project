@@ -1,6 +1,9 @@
 package com.cfiv.sysdev.rrs.dto;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import com.cfiv.sysdev.rrs.entity.Employee;
 
@@ -8,13 +11,13 @@ import lombok.Data;
 
 @Data
 public class EmployeeRequest implements Serializable {
-    public EmployeeRequest(String _id, String _companyID, String _employeeID, String _employeeFName,
-            String _hireYM, String _adoptCode, String _supportCode, String _employCode) {
+    public EmployeeRequest(String _id, String _companyID, String _employeeCode, String _employeeFName,
+            Date _hireYM, String _adoptCode, String _supportCode, String _employCode) {
         setId(_id);
         setCompanyID(_companyID);
-        setEmployeeID(_employeeID);
+        setEmployeeCode(_employeeCode);
         setEmployeeFName(_employeeFName);
-        setHireYM(_hireYM);
+        setHireYMDate(_hireYM);
         setAdoptCode(_adoptCode);
         setSupportCode(_supportCode);
         setEmployCode(_employCode);
@@ -34,9 +37,9 @@ public class EmployeeRequest implements Serializable {
     private String companyID;
 
     /**
-     * 社員番号
+     * 従業員番号
      */
-    private String employeeID;
+    private String employeeCode;
 
     /**
      * 従業員名字
@@ -46,7 +49,7 @@ public class EmployeeRequest implements Serializable {
     /**
      * 入社年月
      */
-    private String hireYM;
+    private Date hireYMDate;
 
     /**
      * 採用種別
@@ -71,13 +74,43 @@ public class EmployeeRequest implements Serializable {
         Employee employee = new Employee();
 
         employee.setCompanyIDFromString(getCompanyID());
-        employee.setEmployeeID(getEmployeeID());
+        employee.setEmployeeCode(getEmployeeCode());
         employee.setEmployeeFName(getEmployeeFName());
-        employee.setHireYM(getHireYM());
+        employee.setHireYM(getHireYMDate());
         employee.setAdoptCodeFromString(getAdoptCode());
         employee.setSupportCodeFromString(getSupportCode());
         employee.setEmployCodeFromString(getEmployCode());
 
         return employee;
+    }
+
+    /**
+     * 文字列形式の入社年月
+     * @return 入社年月文字列
+     */
+    public String getHireYM() {
+        if (hireYMDate == null) {
+            return "";
+        }
+
+        int year = 0;
+        try {
+            DateFormat df = new SimpleDateFormat("yyyyMM");
+            int hire = Integer.parseInt(df.format(hireYMDate));
+            int now = Integer.parseInt(df.format(new Date()));
+            year = (now - hire) / 100;
+        }
+        catch (NumberFormatException e) {
+        }
+
+        return new SimpleDateFormat("yyyy年MM月").format(hireYMDate) + "(" + year + "年勤続)";
+    }
+
+    /**
+     * 文字列形式の入社年月
+     * @return 入社年月文字列
+     */
+    public String getHireYMShort() {
+        return new SimpleDateFormat("yyyy/MM").format(hireYMDate);
     }
 }
