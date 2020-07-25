@@ -24,6 +24,7 @@
 						</div>
 					</div>
 
+					<div class="my-box mb-1"></div>
 					<div class="row align-items-center">
 						<div class="col-md-2 col-lg-2">
 							従業員番号：
@@ -32,15 +33,15 @@
 							<input class="form-control" type="text" th:field="*{employeeCode}" />
 							<label th:if="${#fields.hasErrors('employeeCode')}" th:errors="*{employeeCode}" style="color: red"></label>
 						</div>
-						<div class="col-md-7 col-lg-5">
-							<input class="form-control" type="text" th:field="*{employeeFName}" readonly="readonly" />
+						<div class="col-md-3 col-lg-3">
+							<input class="form-control" type="text" th:field="*{employee.employeeFName}" readonly="readonly" />
 						</div>
 						<div class="col-md-4 col-lg-2">
 							<button class="btn btn-primary" type="submit" name="info">情報表示</button>
 						</div>
 					</div>
 
-					<div class="my-box mb-3"></div>
+					<div class="my-box mb-2"></div>
 					<div class="row align-items-start">
 						<div class="col-md-2 col-lg-2">
 							従業員情報：
@@ -53,7 +54,7 @@
 									入社年月：
 								</div>
 								<div class="col-md-10 col-lg-6">
-									<input class="form-control" type="text" th:field="*{hireYM}" readonly="readonly" />
+									<input class="form-control" type="text" th:field="*{employee.hireYM}" readonly="readonly" />
 								</div>
 							</div>
 							<div class="row align-items-center">
@@ -61,7 +62,7 @@
 									採用種別：
 								</div>
 								<div class="col-md-10 col-lg-6">
-									<input class="form-control" type="text" th:field="*{adoptCode}" readonly="readonly" />
+									<input class="form-control" type="text" th:field="*{employee.adopt}" readonly="readonly" />
 								</div>
 							</div>
 							<div class="row align-items-center">
@@ -69,7 +70,15 @@
 									扶養有無：
 								</div>
 								<div class="col-md-10 col-lg-6">
-									<input class="form-control" type="text" th:field="*{supportCode}" readonly="readonly" />
+									<input class="form-control" type="text" th:field="*{employee.support}" readonly="readonly" />
+								</div>
+							</div>
+							<div class="row align-items-center">
+								<div class="col-md-2 col-lg-2">
+									就業種別：
+								</div>
+								<div class="col-md-10 col-lg-6">
+									<input class="form-control" type="text" th:field="*{employee.employ}" readonly="readonly" />
 								</div>
 							</div>
 						</div>
@@ -80,7 +89,7 @@
 						<div class="my-box mb-1"></div>
 						<a class="btn btn-primary" data-toggle="collapse" th:href="'#pastInterview' + ${stat.index}" role="button" aria-expand="false"
 							 th:aria-controls="'pastInterview' + ${stat.index}"
-							 th:text="*{pastInterviews[__${stat.index}__].interviewDate}+' 面談結果'"></a>
+							 th:text="*{pastInterviews[__${stat.index}__].interviewDateResult}"></a>
 						<div class="collapse" th:id="'pastInterview' + ${stat.index}">
 							<div class="card card-body">
 								<div class="row align-items-start">
@@ -92,7 +101,7 @@
 									</div>
 								</div>
 
-								<div class="my-box mb-3"></div>
+								<div class="my-box mb-2"></div>
 									<div class="row align-items-start">
 										<div class="col-md-2 col-lg-2">
 											面談内容：
@@ -118,7 +127,7 @@
 											</div>
 										</div>
 
-										<div class="my-box mb-3"></div>
+										<div class="my-box mb-1"></div>
 										<div class="row align-items-start">
 											<div class="col-md-2 col-lg-3">
 												プライベートについて
@@ -132,7 +141,7 @@
 									</div>
 								</div>
 
-								<div class="my-box mb-3"></div>
+								<div class="my-box mb-2"></div>
 								<div class="row align-items-center">
 									<div class="col-md-12 col-lg-12">
 										相談内容【自由記述】(リファイナー所感)：
@@ -142,7 +151,7 @@
 									</div>
 								</div>
 
-								<div class="my-box mb-3"></div>
+								<div class="my-box mb-2"></div>
 								<div class="row align-items-start">
 									<div class="col-md-12 col-lg-2">
 										添付ファイル：
@@ -150,7 +159,6 @@
 									<div class="col-md-12 col-lg-4">
 										<div th:if="*{pastInterviews[__${stat.index}__].attachedFilename == null}">
 											なし
-<!-- 											<input class="form-control" type="text" th:field="*{pastInterviews[__${stat.index}__].attachedFilename}" readonly="readonly" /> -->
 										</div>
 										<div th:unless="*{pastInterviews[__${stat.index}__].attachedFilename == null}">
 											<input class="form-control" type="text" th:field="*{pastInterviews[__${stat.index}__].attachedFilename}" readonly="readonly" />
@@ -165,7 +173,7 @@
 									</div>
 								</div>
 
-								<div class="my-box mb-3"></div>
+								<div class="my-box mb-2"></div>
 								<div class="row align-items-start">
 									<div class="col-md-12 col-lg-2">
 										情報開示：
@@ -175,7 +183,7 @@
 									</div>
 								</div>
 
-								<div class="my-box mb-3"></div>
+								<div class="my-box mb-2"></div>
 								<div class="row align-items-center">
 									<div class="col-md-12 col-lg-12">
 										管理者記入欄：
@@ -188,7 +196,7 @@
 						</div>
 					</div>
 
-					<div class="my-box mb-5"></div>
+					<div class="my-box mb-3"></div>
 					<div class="row align-items-center">
 						<div class="col-md-2 col-lg-2">
 							面談日：
@@ -199,7 +207,7 @@
 						</div>
 					</div>
 
-					<div class="my-box mb-3"></div>
+					<div class="my-box mb-1"></div>
 					<div class="row align-items-start">
 						<div class="col-md-2 col-lg-2">
 							面談時間：
@@ -215,7 +223,7 @@
 						</div>
 					</div>
 
-					<div class="my-box mb-3"></div>
+					<div class="my-box mb-2"></div>
 					<div class="row align-items-start">
 						<div class="col-md-2 col-lg-2">
 							面談内容：
@@ -248,7 +256,7 @@
 								</div>
 							</div>
 
-							<div class="my-box mb-3"></div>
+							<div class="my-box mb-1"></div>
 							<div class="row align-items-start">
 								<div class="col-md-2 col-lg-3">
 									プライベートについて
@@ -269,7 +277,7 @@
 						</div>
 					</div>
 
-					<div class="my-box mb-3"></div>
+					<div class="my-box mb-2"></div>
 					<div class="row align-items-center">
 						<div class="col-md-12 col-lg-12">
 							相談内容【自由記述】(リファイナー所感)：
@@ -280,7 +288,7 @@
 						</div>
 					</div>
 
-					<div class="my-box mb-3"></div>
+					<div class="my-box mb-2"></div>
 					<div class="form-group">
 						<label for="inputFile">添付ファイル：</label>
 						<div class="custom-file">
@@ -290,7 +298,7 @@
 						</div>
 					</div>
 
-					<div class="my-box mb-3"></div>
+					<div class="my-box mb-2"></div>
 					<div class="row align-items-start">
 						<div class="col-md-2 col-lg-2">
 							情報開示：
@@ -306,7 +314,7 @@
 						</div>
 					</div>
 
-					<div class="my-box mb-3"></div>
+					<div class="my-box mb-2"></div>
 					<div class="row align-items-center">
 						<div class="col-md-12 col-lg-12">
 							管理者記入欄：
@@ -321,7 +329,6 @@
 					<div class="col text-center">
 						<button class="btn btn-primary btn-block" type="submit" name="create">登録</button>
 					</div>
-
 				</form>
 			</div>
 		</div>

@@ -3,16 +3,26 @@ package com.cfiv.sysdev.rrs.dto;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
+import com.cfiv.sysdev.rrs.Const;
 import com.cfiv.sysdev.rrs.entity.Employee;
 
 import lombok.Data;
 
 @Data
 public class EmployeeRequest implements Serializable {
+
+    public EmployeeRequest() {
+        employItems = Arrays.asList(Const.EMPLOY_NAMES);
+    }
+
     public EmployeeRequest(String _id, String _companyID, String _employeeCode, String _employeeFName,
-            Date _hireYM, String _adoptCode, String _supportCode, String _employCode) {
+            Date _hireYM, int _adoptCode, int _supportCode, int _employCode) {
+        this();
+
         setId(_id);
         setCompanyID(_companyID);
         setEmployeeCode(_employeeCode);
@@ -21,9 +31,6 @@ public class EmployeeRequest implements Serializable {
         setAdoptCode(_adoptCode);
         setSupportCode(_supportCode);
         setEmployCode(_employCode);
-    }
-
-    public EmployeeRequest() {
     }
 
     /**
@@ -52,19 +59,24 @@ public class EmployeeRequest implements Serializable {
     private Date hireYMDate;
 
     /**
-     * 採用種別
+     * 採用種別コード
      */
-    private String adoptCode;
+    private int adoptCode;
 
     /**
-     * 扶養有無
+     * 扶養有無コード
      */
-    private String supportCode;
+    private int supportCode;
 
     /**
-     * 就業種別
+     * 就業種別コード
      */
-    private String employCode;
+    private int employCode;
+
+    /**
+     * 就業種別ラジオボタン表示内容リスト
+     */
+    private List<String> employItems;
 
     /**
      * 従業員情報の型変換(EmployeeRequest→Employee)
@@ -77,9 +89,9 @@ public class EmployeeRequest implements Serializable {
         employee.setEmployeeCode(getEmployeeCode());
         employee.setEmployeeFName(getEmployeeFName());
         employee.setHireYM(getHireYMDate());
-        employee.setAdoptCodeFromString(getAdoptCode());
-        employee.setSupportCodeFromString(getSupportCode());
-        employee.setEmployCodeFromString(getEmployCode());
+        employee.setAdoptCode(getAdoptCode());
+        employee.setSupportCode(getSupportCode());
+        employee.setEmployCode(getEmployCode());
 
         return employee;
     }
@@ -112,5 +124,56 @@ public class EmployeeRequest implements Serializable {
      */
     public String getHireYMShort() {
         return new SimpleDateFormat("yyyy/MM").format(hireYMDate);
+    }
+
+    /**
+     * 文字列形式の採用種別
+     * @return 採用種別文字列
+     */
+    public String getAdopt() {
+        if (id == null) {
+            return "";
+        }
+
+        try {
+            return Const.ADOPT_NAMES[adoptCode];
+        }
+        catch (Exception e) {
+            return Const.ADOPT_NAMES[0];
+        }
+    }
+
+    /**
+     * 文字列形式の扶養有無
+     * @return 扶養有無文字列
+     */
+    public String getSupport() {
+        if (id == null) {
+            return "";
+        }
+
+        try {
+            return Const.SUPPORT_NAMES[supportCode];
+        }
+        catch (Exception e) {
+            return Const.SUPPORT_NAMES[0];
+        }
+    }
+
+    /**
+     * 文字列形式の就業種別
+     * @return 就業種別文字列
+     */
+    public String getEmploy() {
+        if (id == null) {
+            return "";
+        }
+
+        try {
+            return Const.EMPLOY_NAMES[employCode];
+        }
+        catch (Exception e) {
+            return Const.EMPLOY_NAMES[0];
+        }
     }
 }

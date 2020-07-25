@@ -18,9 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.cfiv.sysdev.rrs.LogUtils;
-import com.cfiv.sysdev.rrs.dto.UserAddRequest;
-import com.cfiv.sysdev.rrs.dto.UserEditRequest;
+import com.cfiv.sysdev.rrs.Const;
+import com.cfiv.sysdev.rrs.dto.UserRequest;
 import com.cfiv.sysdev.rrs.entity.Account;
 import com.cfiv.sysdev.rrs.service.CompanyService;
 import com.cfiv.sysdev.rrs.service.UserAccountService;
@@ -50,13 +49,13 @@ public class UserController {
      */
     @RequestMapping(value = "/user/list", method = RequestMethod.GET)
     public String displayList(Model model) {
-        List<UserEditRequest> req_list = new ArrayList<UserEditRequest>();
+        List<UserRequest> req_list = new ArrayList<UserRequest>();
         List<Account> account_list = userAccountService.searchAll();
 
         for (Account account : account_list) {
-            req_list.add(new UserEditRequest(account.idToString(1), account.getUsername(), account.getPassword(),
-                    account.getDisplayName(), account.getUserRoleString(), companyService.getCompanyName(account.getCompanyID()),
-                    account.getEnabledString()));
+            req_list.add(new UserRequest(account.idToString(1), account.getUsername(), account.getPassword(),
+                    account.getDisplayName(), account.getUserRole(), companyService.getCompanyName(account.getCompanyID()),
+                    account.isEnabled()));
         }
 
 //        List<String> keys = new ArrayList<String>(company_items.keySet());
@@ -80,7 +79,7 @@ public class UserController {
         Map<String, String> company_items = companyService.getAllCompanyNames();
         List<String> keys = new ArrayList<String>(company_items.keySet());
 
-        model.addAttribute("user_request", new UserAddRequest("", "", "", "", "リファイナー", company_items.get(keys.get(0)), "有効"));
+        model.addAttribute("user_request", new UserRequest("", "", "", "", Const.USERROLE_REFINER_CODE, company_items.get(keys.get(0)), true));
         model.addAttribute("company_items", company_items);
 
         return "user/add";
@@ -94,11 +93,11 @@ public class UserController {
      * @return ユーザー情報一覧画面(登録完了時)／新規登録画面(エラー発生時)
      */
     @RequestMapping(value = "/user/create", method = RequestMethod.POST)
-    public String create(@ModelAttribute("user_request") @Valid UserAddRequest req, BindingResult result, Model model) {
+    public String create(@ModelAttribute("user_request") @Valid UserRequest req, BindingResult result, Model model) {
         if (result.hasErrors()) {
-            for(FieldError err: result.getFieldErrors()) {
-                LogUtils.info("error field  [" + err.getField() + "], error code = [" + err.getCode() + "]");
-            }
+//            for(FieldError err: result.getFieldErrors()) {
+//                LogUtils.info("error field  [" + err.getField() + "], error code = [" + err.getCode() + "]");
+//            }
 
             model.addAttribute("company_items", companyService.getAllCompanyNames());
             return "/user/add";
@@ -119,9 +118,9 @@ public class UserController {
         Account account = userAccountService.findOne(id);
         Map<String, String> company_items = companyService.getAllCompanyNames();
 
-        model.addAttribute("user_request", new UserEditRequest(account.idToString(1), account.getUsername(), account.getPassword(),
-                account.getDisplayName(), account.getUserRoleString(), companyService.getCompanyName(account.getCompanyID()),
-                account.getEnabledString()));
+        model.addAttribute("user_request", new UserRequest(account.idToString(1), account.getUsername(), account.getPassword(),
+                account.getDisplayName(), account.getUserRole(), companyService.getCompanyName(account.getCompanyID()),
+                account.isEnabled()));
         model.addAttribute("company_items", company_items);
 
         String key = BindingResult.MODEL_KEY_PREFIX + "user_request";
@@ -143,16 +142,22 @@ public class UserController {
      */
     @RequestMapping(value = "/user/{id}", method = RequestMethod.POST)
     public String update(RedirectAttributes attributes, @PathVariable Long id,
-            @ModelAttribute("user_request") @Valid UserEditRequest req, BindingResult result, Model model) {
+            @ModelAttribute("user_request") @Valid UserRequest req, BindingResult result, Model model) {
         boolean error = true;
 
         if (result.hasErrors()) {
             for(FieldError err: result.getFieldErrors()) {
-                LogUtils.info("error field = [" + err.getField() + "], error code = [" + err.getCode() + "]");
+//                LogUtils.info("error field = [" + err.getField() + "], error code = [" + err.getCode() + "]");
 
-                // 空パスワードが来た場合は、前回設定パスワードで更新するためエラーにしない(バリデーションチェック外とする)
+                // 空パスワードが来た場合は、前回設定パスワードで更新するためバリデーションチェック外とする
                 if ((err.getField().equals("password") && err.getCode().equals("Size")) && req.getPassword().isEmpty() ||
-                        (err.getField().equals("passwordCheck") && err.getCode().equals("Size") && req.getPasswordCheck().isEmpty())) {
+                        (err.getField().equals("passwordCheck") && err.getCode().equals("Size") && req.getPasswordCheck().isEmpty()) ||
+                        (err.getField().equals("password") && err.getCode().equals("NotBlank")) ||
+                        (err.getField().equals("passwordCheck") && err.getCode().equals("NotBlank"))) {
+                    error = false;
+                }
+                // 更新のためすでに存在するユーザーに対する更新はバリデーションチェック外とする
+                else if (err.getField().equals("username") && err.getCode().equals("Unused")) {
                     error = false;
                 }
                 else {
@@ -168,6 +173,7 @@ public class UserController {
         }
 
         userAccountService.save(id, req);
+
         return "redirect:/user/list";
     }
 }

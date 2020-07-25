@@ -111,7 +111,7 @@ public class EmployeeController {
     }
 
     @RequestMapping(value = "/employee/{id}", method = RequestMethod.POST)
-    public String update(@PathVariable Long id, @ModelAttribute EmployeeRequest req) {
+    public String update(@PathVariable Long id, @ModelAttribute("employee_request") EmployeeRequest req) {
         employeeService.save(id, req);
 
         return "redirect:/employee/list";

@@ -3,3 +3,9 @@
 .dropdown:hover > .dropdown-menu {
   display: block;
 }
+
+.table .thead-darknavy th {
+  color: #fff;
+  background-color: #02325F;
+  border-color: #95999c;
+}

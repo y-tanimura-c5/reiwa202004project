@@ -10,31 +10,43 @@
 		<div class="card mt-2 p-3">
 			<div class="card-heading"><h2>企業情報編集</h2></div>
 			<div class="card-body">
-				<div><a class="btn btn-link" href="/company/list">一覧画面へ</a></div>
+				<div><a class="btn btn-primary" th:href="@{/company/list}">企業情報一覧へ戻る</a></div>
+				<div class="my-box mb-1"></div>
 				<form th:action="@{/company/{id}(id=*{id})}" th:method="post" th:object="${company_request}">
-					<div class="form-group">
-						<label class="control-label">企業コード</label>
-						<input class="form-control" type="text" th:field="*{id}" disabled />
+					<div class="row align-items-center" style="height:40px;">
+						<div class="col-md-2 col-lg-2">
+							企業コード：
+						</div>
+						<div class="col-md-3 col-lg-3">
+							<input class="form-control" type="text" th:field="*{id}" disabled />
+						</div>
 					</div>
-					<div class="form-group">
-						<label class="control-label">企業名称</label>
-						<input class="form-control" type="text" th:field="*{name}" />
+
+					<div class="row align-items-center" style="height:40px;">
+						<div class="col-md-2 col-lg-2">
+							企業名称：
+						</div>
+						<div class="col-md-3 col-lg-3">
+							<input class="form-control" type="text" th:field="*{name}" />
+						</div>
 					</div>
-					<div class="form-group">
-						<label class="control-label">有効／無効</label>
-						<br>
-						<table class="table table-borderless" style="width:300px;">
-							<tbody>
-								<tr>
-									<td><input type="radio" name="enabled" th:value="有効" th:text="有効" th:field="*{enabled}" /></td>
-									<td><input type="radio" name="enabled" th:value="無効" th:text="無効" th:field="*{enabled}" /></td>
-								</tr>
-							</tbody>
-						</table>
+
+					<div class="row align-items-center" style="height:40px;">
+						<div class="col-md-2 col-lg-2">
+							有効／無効：
+						</div>
+						<div class="col-md-8 col-lg-10">
+							<div class="row align-items-center">
+								<div th:each="item : *{enabledItems}" class="col-md-3 col-lg-3">
+									<input type="radio" name="enabled" th:value="${item.key}" th:text="${item.value}" th:field="*{enabled}" />
+								</div>
+							</div>
+						</div>
 					</div>
-					<br>
+
+					<div class="my-box mb-3"></div>
 					<div class="col text-center">
-						<button class="btn btn-primary" type="submit">更新</button>
+						<button class="btn btn-primary btn-block" type="submit" name="create">登録</button>
 					</div>
 				</form>
 			</div>

@@ -14,8 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.util.StringUtils;
 
-import com.cfiv.sysdev.rrs.dto.UserAddRequest;
-import com.cfiv.sysdev.rrs.dto.UserEditRequest;
+import com.cfiv.sysdev.rrs.dto.UserRequest;
 import com.cfiv.sysdev.rrs.entity.Account;
 import com.cfiv.sysdev.rrs.repository.AccountRepository;
 import com.cfiv.sysdev.rrs.security.UserAccount;
@@ -74,16 +73,16 @@ public class UserAccountService implements UserDetailsService {
      * @param req ユーザー情報
      */
     @Transactional
-    public void create(UserAddRequest req) {
+    public void create(UserRequest req) {
         Date now = new Date();
         Account account = new Account();
 
         account.setUsername(req.getUsername());
         account.setPassword(passwordEncoder.encode(req.getPassword()));
         account.setDisplayName(req.getDisplayName());
-        account.setUserRoleFromString(req.getUserRole());
+        account.setUserRole(req.getUserRoleCode());
         account.setCompanyIDFromName(req.getCompany());
-        account.setEnabledFromString(req.getEnabled());
+        account.setEnabled(req.getEnabled() == 1 ? true : false);
         account.setDeleted(false);
         account.setRegistUser("user");
         account.setRegistTime(now);
@@ -99,7 +98,7 @@ public class UserAccountService implements UserDetailsService {
      * @param req ユーザー情報
      */
     @Transactional
-    public Account save(Long id, UserEditRequest req) {
+    public Account save(Long id, UserRequest req) {
         Date now = new Date();
         Account account = findOne(id);
 
@@ -108,11 +107,12 @@ public class UserAccountService implements UserDetailsService {
         }
 
         account.setDisplayName(req.getDisplayName());
-        account.setUserRoleFromString(req.getUserRole());
+        account.setUserRole(req.getUserRoleCode());
         account.setCompanyIDFromName(req.getCompany());
-        account.setEnabledFromString(req.getEnabled());
+        account.setEnabled(req.getEnabled() == 1 ? true : false);
         account.setUpdateTime(now);
         account.setUpdateUser("user");
+        account.setUpdateCount(account.getUpdateCount() + 1);
 
         return accountRepository.save(account);
     }

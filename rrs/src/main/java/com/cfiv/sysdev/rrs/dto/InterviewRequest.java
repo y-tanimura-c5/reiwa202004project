@@ -1,7 +1,6 @@
 package com.cfiv.sysdev.rrs.dto;
 
 import java.io.Serializable;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,12 +15,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cfiv.sysdev.rrs.Const;
 import com.cfiv.sysdev.rrs.annotation.AttachedFile;
+import com.cfiv.sysdev.rrs.entity.InterviewContent;
+import com.cfiv.sysdev.rrs.entity.InterviewResult;
 
 import lombok.Data;
 
 @Data
 public class InterviewRequest implements Serializable {
-
 
     public InterviewRequest() {
         contentJobCheckItems = Arrays.asList(Const.JOB_NAMES);
@@ -29,6 +29,37 @@ public class InterviewRequest implements Serializable {
         interviewTimeItems = Arrays.asList(Const.INTERVIEWTIME_NAMES);
         discloseItems = Arrays.asList(Const.DISCLOSE_NAMES);
         interviewDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+    }
+
+    public InterviewRequest(InterviewResult result, EmployeeRequest employee) {
+        this();
+
+        setIdFromNumeric(result.getId(), 1);
+        setCompanyIDFromNumeric(result.getCompanyID(), 4);
+        setEmployeeCode(result.getEmployeeCode());
+        setEmployee(employee);
+        setInterviewDateFromDate(result.getInterviewDateTime());
+        setInterviewTimeCode(result.getInterviewTimeCode());
+        setDiscloseCode(result.getDiscloseCode());
+        setInterviewerComment(result.getInterviewerComment());
+        setAdminComment(result.getAdminComment());
+        setAttachedFilename(result.getFilename());
+
+        List<Integer> job_checked = new ArrayList<Integer>();
+        List<String> job_memos = new ArrayList<String>();
+        List<String> pri_memos = new ArrayList<String>();
+        for (InterviewContent content : result.getInterviewContents()) {
+            if (content.getContentKind() == Const.CONTENTKIND_JOB) {
+                job_checked.add(content.getContentCode());
+                job_memos.add(content.getContentComment());
+            }
+            else {
+                pri_memos.add(content.getContentComment());
+            }
+        }
+        setContentJobCheckedList(job_checked);
+        setContentJobMemos(job_memos);
+        setContentPrivateMemos(pri_memos);
     }
 
     /**
@@ -54,29 +85,9 @@ public class InterviewRequest implements Serializable {
     private String employeeCode;
 
     /**
-     * 従業員名字
+     * 従業員情報
      */
-    private String employeeFName;
-
-    /**
-     * 入社年月
-     */
-    private Date hireYMDate;
-
-    /**
-     * 採用種別
-     */
-    private String adoptCode;
-
-    /**
-     * 扶養有無
-     */
-    private String supportCode;
-
-    /**
-     * 就業種別
-     */
-    private String employCode;
+    private EmployeeRequest employee;
 
     /**
      * 面談日
@@ -228,7 +239,7 @@ public class InterviewRequest implements Serializable {
      * @param 面談日
      */
     public void setInterviewDateFromDate(Date date) {
-        setInterviewDate(new SimpleDateFormat("yyyy/MM/dd").format(date));
+        setInterviewDate(new SimpleDateFormat("yyyy-MM-dd").format(date));
     }
 
     /**
@@ -283,6 +294,10 @@ public class InterviewRequest implements Serializable {
         }
     }
 
+    /**
+     * 面談内容・会社関連アイテム名文字列
+     * @return 面談内容・会社関連アイテム名文字列
+     */
     public List<String> getContentJobNames() {
         List<String> names = new ArrayList<String>();
 
@@ -298,6 +313,10 @@ public class InterviewRequest implements Serializable {
         return names;
     }
 
+    /**
+     * 面談内容・会社関連アイテム名文字列(短縮版)
+     * @return 面談内容・会社関連アイテム名文字列(短縮版)
+     */
     public String getContentJobNamesShort() {
         StringBuilder names = new StringBuilder();
 
@@ -313,24 +332,18 @@ public class InterviewRequest implements Serializable {
     }
 
     /**
-     * 文字列形式の入社年月
-     * @return 入社年月文字列
+     * 文字列形式の面談日("/"区切り)
+     * @param 面談日
      */
-    public String getHireYM() {
-        if (hireYMDate == null) {
-            return "";
-        }
+    public String getInterviewDateSlash() {
+        return interviewDate.replace("-", "/");
+    }
 
-        int year = 0;
-        try {
-            DateFormat df = new SimpleDateFormat("yyyyMM");
-            int hire = Integer.parseInt(df.format(hireYMDate));
-            int now = Integer.parseInt(df.format(new Date()));
-            year = (now - hire) / 100;
-        }
-        catch (NumberFormatException e) {
-        }
-
-        return new SimpleDateFormat("yyyy年MM月").format(hireYMDate) + "(" + year + "年勤続)";
+    /**
+     * 文字列形式の面談日(面談結果日表示用)
+     * @param 面談日
+     */
+    public String getInterviewDateResult() {
+        return getInterviewDateSlash() + " 面談結果";
     }
 }

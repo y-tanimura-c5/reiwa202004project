@@ -6,28 +6,30 @@
 <div class="box">
 	<div th:replace="header :: header"></div>
 
-	<div class="container">
+	<div class="container-fluid">
 		<div class="card mt-2 p-3">
 			<div class="card-heading"><h2>ユーザー情報一覧</h2></div>
 			<div class="card-body">
-				<div><a class="btn btn-link" th:href="@{/user/add}">新規登録はこちら</a></div>
-				<table class="table">
-					<thead>
+				<div><a class="btn btn-primary" th:href="@{/user/add}">ユーザー情報の新規登録</a></div>
+
+				<div class="my-box mb-3"></div>
+				<table class="table table-hover table-bordered">
+					<thead class="thead-darknavy">
 						<tr>
-							<th>ユーザーID</th>
-							<th>表示用名称</th>
-							<th>企業名称</th>
-							<th>権限</th>
-							<th>種別</th>
+							<th><div class="text-center">ユーザーID</div></th>
+							<th><div class="text-center">表示用名称</div></th>
+							<th><div class="text-center">企業名称</div></th>
+							<th><div class="text-center">権限</div></th>
+							<th><div class="text-center">種別</div></th>
 						</tr>
 					</thead>
 					<tbody>
-					    <tr th:each="user : ${user_request_list}" th:object="${user}">
-					        <td><a class="btn btn-link" th:href="@{/user/{id}/edit(id=*{id})}" th:text="*{username}"></a></td>
-					        <td th:text="*{displayName}"></td>
-					        <td th:text="*{company}"></td>
-					        <td th:text="*{userRole}"></td>
-					        <td th:text="*{enabled}"></td>
+					    <tr th:each="user : ${user_request_list}" th:object="${user}" class="clickable-row" th:data-href="@{/user/{id}/edit(id=*{id})}">
+					        <td><div class="text-center" th:text="*{username}"></div></td>
+					        <td><div class="text-center" th:text="*{displayName}"></div></td>
+					        <td><div class="text-center" th:text="*{company}"></div></td>
+					        <td><div class="text-center" th:text="*{userRole}"></div></td>
+					        <td><div class="text-center" th:text="*{enabledName}"></div></td>
 					    </tr>
 					</tbody>
 				</table>

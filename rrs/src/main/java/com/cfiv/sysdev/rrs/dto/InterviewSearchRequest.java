@@ -284,36 +284,80 @@ public class InterviewSearchRequest implements Serializable {
         return getHireYMDateFromCode(hireLengthEndCode);
     }
 
-
     public Date getHireYMDateFromCode(int code) {
-        Date hireYMMin = null;
+        Date result = null;
         Calendar calendar = Calendar.getInstance();
 
-        Date nowYM = new Date();
+        Date now = new Date();
         try {
             DateFormat df = new SimpleDateFormat("yyyyMM");
-            nowYM = df.parse(df.format(new Date()));
+            now = df.parse(df.format(new Date()));
         }
         catch (ParseException e) {
             return null;
         }
 
         if (code != 0) {
-            int hireYMLength = 0;
+            int length = 0;
             try {
-                hireYMLength = Integer.parseInt("-" + Const.HIRELENGTH_NAMES[code]);
+                length = Integer.parseInt("-" + Const.HIRELENGTH_NAMES[code]);
             }
             catch (NumberFormatException e) {
                 return null;
             }
-            calendar.setTime(nowYM);
-            calendar.add(Calendar.YEAR, hireYMLength);
-            hireYMMin = calendar.getTime();
+            calendar.setTime(now);
+            calendar.add(Calendar.YEAR, length);
+            result = calendar.getTime();
         }
         else {
             return null;
         }
 
-        return hireYMMin;
+        return result;
     }
+
+    public Date getInterviewDateStartDate() {
+        return getInterviewDateFromString(interviewDateStart);
+    }
+
+    public Date getInterviewDateEndDate() {
+        return getInterviewDateFromString(interviewDateEnd);
+    }
+
+    public Date getInterviewDateFromString(String str) {
+        try {
+            return new SimpleDateFormat("yyyy-MM-dd").parse(str);
+        }
+        catch (ParseException e) {
+            return null;
+        }
+    }
+
+    public Date getInterviewDateLastDate() {
+        Date result = null;
+        Calendar calendar = Calendar.getInstance();
+
+        Date now = new Date();
+        try {
+            DateFormat df = new SimpleDateFormat("yyyyMMdd");
+            now = df.parse(df.format(new Date()));
+        }
+        catch (ParseException e) {
+            return null;
+        }
+
+        int length = 0;
+        try {
+            length = Integer.parseInt("-" + Const.INTERVIEWDATELAST_NAMES[interviewDateLastCode]);
+        }
+        catch (NumberFormatException e) {
+            return null;
+        }
+        calendar.setTime(now);
+        calendar.add(Calendar.MONTH, length);
+        result = calendar.getTime();
+
+        return result;
+    }
+
 }

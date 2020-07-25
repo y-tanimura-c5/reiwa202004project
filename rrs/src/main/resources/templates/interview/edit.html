@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common :: meta_header('面談結果新規登録',~{::link},~{::script})">
+<head th:replace="common :: meta_header('面談結果編集',~{::link},~{::script})">
 </head>
 <body>
 <div class="box">
@@ -8,16 +8,15 @@
 
 	<div class="container-fluid">
 		<div class="card mt-2 p-3">
-			<div class="card-heading"><h2>面談結果新規登録</h2></div>
+			<div class="card-heading"><h2>面談結果編集</h2></div>
 			<div class="card-body">
-				<form th:action="@{/interview/submit}" enctype="multipart/form-data" th:method="post" th:object="${interview_request}">
+				<form th:action="@{/interview/{id}(id=*{id})}" enctype="multipart/form-data" th:method="post" th:object="${interview_request}">
 					<div class="row align-items-center">
 						<div class="col-md-2 col-lg-2">
 							企業コード：
 						</div>
 						<div class="col-md-3 col-lg-3">
-							<input class="form-control" type="text" th:field="*{companyID}" />
-							<label th:if="${#fields.hasErrors('companyID')}" th:errors="*{companyID}" style="color: red"></label>
+							<input class="form-control" type="text" th:field="*{companyID}" readonly="readonly" />
 						</div>
 						<div class="col-md-7 col-lg-5">
 							<input class="form-control" type="text" th:field="*{companyName}" readonly="readonly" />
@@ -30,14 +29,10 @@
 							従業員番号：
 						</div>
 						<div class="col-md-3 col-lg-3">
-							<input class="form-control" type="text" th:field="*{employeeCode}" />
-							<label th:if="${#fields.hasErrors('employeeCode')}" th:errors="*{employeeCode}" style="color: red"></label>
+							<input class="form-control" type="text" th:field="*{employeeCode}" readonly="readonly" />
 						</div>
-						<div class="col-md-3 col-lg-3">
+						<div class="col-md-7 col-lg-3">
 							<input class="form-control" type="text" th:field="*{employee.employeeFName}" readonly="readonly" />
-						</div>
-						<div class="col-md-4 col-lg-2">
-							<button class="btn btn-primary" type="submit" name="info">情報表示</button>
 						</div>
 					</div>
 
@@ -62,7 +57,7 @@
 									採用種別：
 								</div>
 								<div class="col-md-10 col-lg-6">
-									<input class="form-control" type="text" th:field="*{employee.adopt}" readonly="readonly" />
+									<input class="form-control" type="text" th:field="*{employee.adoptCode}" readonly="readonly" />
 								</div>
 							</div>
 							<div class="row align-items-center">
@@ -70,7 +65,7 @@
 									扶養有無：
 								</div>
 								<div class="col-md-10 col-lg-6">
-									<input class="form-control" type="text" th:field="*{employee.support}" readonly="readonly" />
+									<input class="form-control" type="text" th:field="*{employee.supportCode}" readonly="readonly" />
 								</div>
 							</div>
 							<div class="row align-items-center">
@@ -78,119 +73,7 @@
 									就業種別：
 								</div>
 								<div class="col-md-10 col-lg-6">
-									<input class="form-control" type="text" th:field="*{employee.employ}" readonly="readonly" />
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div class="my-box mb-2"></div>
-					<div th:each="past, stat : *{pastInterviews}">
-						<div class="my-box mb-1"></div>
-						<a class="btn btn-primary" data-toggle="collapse" th:href="'#pastInterview' + ${stat.index}" role="button" aria-expand="false"
-							 th:aria-controls="'pastInterview' + ${stat.index}"
-							 th:text="*{pastInterviews[__${stat.index}__].interviewDateResult}"></a>
-						<div class="collapse" th:id="'pastInterview' + ${stat.index}">
-							<div class="card card-body">
-								<div class="row align-items-start">
-									<div class="col-md-4 col-lg-2">
-										面談時間：
-									</div>
-									<div class="col-md-4 col-lg-10">
-										<input class="form-control" type="text"  th:field="*{pastInterviews[__${stat.index}__].interviewTime}" readonly="readonly" />
-									</div>
-								</div>
-
-								<div class="my-box mb-2"></div>
-									<div class="row align-items-start">
-										<div class="col-md-2 col-lg-2">
-											面談内容：
-										</div>
-									</div>
-								<div class="card">
-									<div class="card-body">
-										<div class="row align-items-start">
-											<div class="col-md-2 col-lg-3">
-												会社関連について
-											</div>
-											<div class="col-md-10 col-lg-9">
-												<div th:each="jobitem, stat2 : *{pastInterviews[__${stat.index}__].contentJobNames}">
-    												<div class="row align-items-center no-gutters">
-														<div class="col-md-12 col-lg-3 mt-1">
-															 [[*{pastInterviews[__${stat.index}__].contentJobNames[__${stat2.index}__]}]]
-														</div>
-														<div class="col-md-12 col-lg-9">
-															<input class="form-control" type="text" th:field="*{pastInterviews[__${stat.index}__].contentJobMemos[__${stat2.index}__]}"  readonly="readonly" />
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-
-										<div class="my-box mb-1"></div>
-										<div class="row align-items-start">
-											<div class="col-md-2 col-lg-3">
-												プライベートについて
-											</div>
-											<div class="col-md-10 col-lg-9">
-												<div th:each="privateitem, stat3 : *{pastInterviews[__${stat.index}__].contentPrivateMemos}">
-													<input class="form-control" type="text" th:field="*{pastInterviews[__${stat.index}__].contentPrivateMemos[__${stat3.index}__]}"  readonly="readonly" />
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-
-								<div class="my-box mb-2"></div>
-								<div class="row align-items-center">
-									<div class="col-md-12 col-lg-12">
-										相談内容【自由記述】(リファイナー所感)：
-									</div>
-									<div class="col-md-12 col-lg-12">
-										<textarea id="textarea1" class="form-control" th:field="*{pastInterviews[__${stat.index}__].interviewerComment}" readonly="readonly"></textarea>
-									</div>
-								</div>
-
-								<div class="my-box mb-2"></div>
-								<div class="row align-items-start">
-									<div class="col-md-12 col-lg-2">
-										添付ファイル：
-									</div>
-									<div class="col-md-12 col-lg-4">
-										<div th:if="*{pastInterviews[__${stat.index}__].attachedFilename == null}">
-											なし
-										</div>
-										<div th:unless="*{pastInterviews[__${stat.index}__].attachedFilename == null}">
-											<input class="form-control" type="text" th:field="*{pastInterviews[__${stat.index}__].attachedFilename}" readonly="readonly" />
-										</div>
-									</div>
-									<div class="col-md-12 col-lg-2">
-										<div th:unless="*{pastInterviews[__${stat.index}__].attachedFilename == null}">
-											<a class="btn btn-primary"
-												th:href="@{/interview/{id}/{filename}(id=*{pastInterviews[__${stat.index}__].id}, filename=*{pastInterviews[__${stat.index}__].attachedFilename})}"
-												target="_blank" rel="noopener noreferrer">表示</a>
-										</div>
-									</div>
-								</div>
-
-								<div class="my-box mb-2"></div>
-								<div class="row align-items-start">
-									<div class="col-md-12 col-lg-2">
-										情報開示：
-									</div>
-									<div class="col-md-12 col-lg-10">
-										<input class="form-control" type="text"  th:field="*{pastInterviews[__${stat.index}__].disclose}" readonly="readonly" />
-									</div>
-								</div>
-
-								<div class="my-box mb-2"></div>
-								<div class="row align-items-center">
-									<div class="col-md-12 col-lg-12">
-										管理者記入欄：
-									</div>
-									<div class="col-md-12 col-lg-12">
-										<textarea id="textarea1" class="form-control" th:field="*{pastInterviews[__${stat.index}__].adminComment}" readonly="readonly"></textarea>
-									</div>
+									<input class="form-control" type="text" th:field="*{employee.employCode}" readonly="readonly" />
 								</div>
 							</div>
 						</div>
@@ -327,7 +210,7 @@
 
 					<div class="my-box mb-3"></div>
 					<div class="col text-center">
-						<button class="btn btn-primary btn-block" type="submit" name="create">登録</button>
+						<button class="btn btn-primary btn-block" type="submit">登録</button>
 					</div>
 				</form>
 			</div>

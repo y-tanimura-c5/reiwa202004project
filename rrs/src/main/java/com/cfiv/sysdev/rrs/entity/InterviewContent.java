@@ -56,7 +56,7 @@ public class InterviewContent implements Serializable {
      * 削除
      */
     @Column(name="DELETED")
-    private Boolean deleted;
+    private boolean deleted;
 
     /**
      * 登録日

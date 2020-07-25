@@ -10,47 +10,79 @@
 		<div class="card mt-2 p-3">
 			<div class="card-heading"><h2>従業員情報編集</h2></div>
 			<div class="card-body">
-				<div><a class="btn btn-link" href="/employee/list">検索画面へ</a></div>
+				<div><a class="btn btn-primary" th:href="@{/employee/list}">従業員情報検索一覧へ戻る</a></div>
+				<div class="my-box mb-3"></div>
 				<form th:action="@{/employee/{id}(id=*{id})}" th:method="post" th:object="${employee_request}">
-					<div class="form-group">
-						<label class="control-label">企業コード</label>
-						<input class="form-control" type="text" th:field="*{companyID}" readonly="readonly" />
+					<div class="row align-items-center" style="height:40px;">
+						<div class="col-md-2 col-lg-2">
+							企業コード：
+						</div>
+						<div class="col-md-3 col-lg-3">
+							<input class="form-control" type="text" th:field="*{companyID}" readonly="readonly" />
+						</div>
 					</div>
-					<div class="form-group">
-						<label class="control-label">従業員番号</label>
-						<input class="form-control" type="text" th:field="*{employeeCode}" readonly="readonly" />
+
+					<div class="row align-items-center" style="height:40px;">
+						<div class="col-md-2 col-lg-2">
+							従業員番号：
+						</div>
+						<div class="col-md-3 col-lg-3">
+							<input class="form-control" type="text" th:field="*{employeeCode}" readonly="readonly" />
+						</div>
 					</div>
-					<div class="form-group">
-						<label class="control-label">従業員名字</label>
-						<input class="form-control" type="text" th:field="*{employeeFName}" readonly="readonly" />
+
+					<div class="row align-items-center" style="height:40px;">
+						<div class="col-md-2 col-lg-2">
+							従業員名字：
+						</div>
+						<div class="col-md-3 col-lg-3">
+							<input class="form-control" type="text" th:field="*{employeeFName}" readonly="readonly" />
+						</div>
 					</div>
-					<div class="form-group">
-						<label class="control-label">入社年月</label>
-						<input class="form-control" type="text" th:field="*{hireYM}" readonly="readonly" />
+
+					<div class="row align-items-center" style="height:40px;">
+						<div class="col-md-2 col-lg-2">
+							入社年月：
+						</div>
+						<div class="col-md-3 col-lg-3">
+							<input class="form-control" type="text" th:field="*{hireYM}" readonly="readonly" />
+						</div>
 					</div>
-					<div class="form-group">
-						<label class="control-label">採用種別</label>
-						<input class="form-control" type="text" th:field="*{adoptCode}" readonly="readonly" />
+
+					<div class="row align-items-center" style="height:40px;">
+						<div class="col-md-2 col-lg-2">
+							扶養有無：
+						</div>
+						<div class="col-md-3 col-lg-3">
+							<input class="form-control" type="text" th:field="*{support}" readonly="readonly" />
+						</div>
 					</div>
-					<div class="form-group">
-						<label class="control-label">扶養有無</label>
-						<input class="form-control" type="text" th:field="*{supportCode}" readonly="readonly" />
+
+					<div class="row align-items-center" style="height:40px;">
+						<div class="col-md-2 col-lg-2">
+							採用種別：
+						</div>
+						<div class="col-md-3 col-lg-3">
+							<input class="form-control" type="text" th:field="*{adopt}" readonly="readonly" />
+						</div>
 					</div>
-					<div class="form-group">
-						<label class="control-label">就業種別</label>
-						<br>
-						<table class="table table-borderless" style="width:500px;">
-							<tbody>
-								<tr>
-									<td><input type="radio" name="employCode" th:value="在籍中" th:text="在籍中" th:field="*{employCode}" /></td>
-									<td><input type="radio" name="employCode" th:value="退職済" th:text="退職済" th:field="*{employCode}" /></td>
-								</tr>
-							</tbody>
-						</table>
+
+					<div class="row align-items-center" style="height:40px;">
+						<div class="col-md-2 col-lg-2">
+							就業種別：
+						</div>
+						<div class="col-md-10 col-lg-10">
+							<div class="row align-items-center">
+								<div th:each="employ, stat : *{employItems}" class="col-md-12 col-lg-3">
+									<input type="radio" name="employCode" th:value="${stat.index}" th:text="*{employItems[__${stat.index}__]}" th:field="*{employCode}" />
+								</div>
+							</div>
+						</div>
 					</div>
-					<br>
+
+					<div class="my-box mb-3"></div>
 					<div class="col text-center">
-						<button class="btn btn-primary" type="submit">更新</button>
+						<button class="btn btn-primary btn-block" type="submit">登録</button>
 					</div>
 				</form>
 			</div>

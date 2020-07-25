@@ -222,6 +222,6 @@ public class Employee {
      */
     public EmployeeRequest toRequest() {
         return new EmployeeRequest(getIdString(1), getCompanyIDString(4), getEmployeeCode(), getEmployeeFName(),
-                getHireYM(), getAdoptCodeString(), getSupportCodeString(), getEmployCodeString());
+                getHireYM(), getAdoptCode(), getSupportCode(), getEmployCode());
     }
 }

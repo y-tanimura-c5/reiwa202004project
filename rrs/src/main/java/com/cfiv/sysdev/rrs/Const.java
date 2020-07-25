@@ -1,6 +1,15 @@
 package com.cfiv.sysdev.rrs;
 
 public class Const {
+    public static final boolean EXIST = false;
+    public static final boolean DELETED = true;
+
+    public static final int CONTENTKIND_JOB = 0;
+    public static final int CONTENTKIND_PRIVATE = 1;
+
+    public static final int INTERVIEWDATECODE_REGION = 0;
+    public static final int INTERVIEWDATECODE_LAST = 1;
+
     public static final String[] JOB_NAMES = {
             "人間関係の相談",
             "給与面の相談",
@@ -88,4 +97,30 @@ public class Const {
             "7",
             "10"
             };
+
+    public static final int[] USERROLE_CODES = {
+            0,
+            1,
+            10
+            };
+
+
+    public static final String[] USERROLE_NAMES = {
+            "全体管理者",
+            "企業管理者",
+            "リファイナー"
+            };
+
+    public static final int[] ENABLED_CODES = {
+            1,
+            0
+            };
+
+    public static final String[] ENABLED_NAMES = {
+            "有効",
+            "無効"
+            };
+
+    public static int USERROLE_REFINER_CODE = USERROLE_CODES[2];
+    public static int PASTINTERVIEW_NUM = 3;
 }

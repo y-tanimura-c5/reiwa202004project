@@ -11,7 +11,6 @@
 			<div class="card-heading"><h2>面談結果検索</h2></div>
 			<div class="card-body">
 				<form th:action="@{/interview/search}" th:method="post" th:object="${interview_search_request}">
-					<div class="my-box mb-3"></div>
 					<div class="row align-items-start">
 						<div class="col-md-12 col-lg-12">
 							従業員情報：
@@ -19,7 +18,7 @@
 					</div>
 					<div class="card">
 						<div class="card-body">
-							<div class="row align-items-center no-gutters">
+							<div class="row align-items-center" style="height:40px;">
 								<div class="col-md-2 col-lg-2">
 									企業コード：
 								</div>
@@ -28,8 +27,7 @@
 								</div>
 							</div>
 
-							<div class="my-box mb-3"></div>
-							<div class="row align-items-center no-gutters">
+							<div class="row align-items-center" style="height:40px;">
 								<div class="col-md-2 col-lg-2">
 									従業員番号：
 								</div>
@@ -38,8 +36,7 @@
 								</div>
 							</div>
 
-							<div class="my-box mb-3"></div>
-							<div class="row align-items-center no-gutters">
+							<div class="row align-items-center" style="height:40px;">
 								<div class="col-md-2 col-lg-2">
 									勤続年数：
 								</div>
@@ -61,13 +58,12 @@
 								</div>
 							</div>
 
-							<div class="my-box mb-3"></div>
-							<div class="row align-items-start no-gutters">
+							<div class="row align-items-center">
 								<div class="col-md-12 col-lg-2">
 									採用種別：
 								</div>
 								<div class="col-md-12 col-lg-10">
-    								<div class="row align-items-center no-gutters">
+    								<div class="row align-items-center" style="height:40px;">
 										<div th:each="adopt, stat : *{adoptCheckItems}" class="col-md-2 col-lg-2 mt-1">
 									        <input type="checkbox" name="adoptCheck" th:value="${stat.index}" th:text="*{adoptCheckItems[__${stat.index}__]}" th:field="*{adoptCheckedList}" />
 										</div>
@@ -75,13 +71,12 @@
 								</div>
 							</div>
 
-							<div class="my-box mb-3"></div>
-							<div class="row align-items-start no-gutters">
+							<div class="row align-items-center">
 								<div class="col-md-12 col-lg-2">
 									扶養有無：
 								</div>
 								<div class="col-md-12 col-lg-10">
-    								<div class="row align-items-center no-gutters">
+    								<div class="row align-items-center" style="height:40px;">
 										<div th:each="support, stat : *{supportCheckItems}" class="col-md-2 col-lg-2 mt-1">
 									        <input type="checkbox" name="supportCheck" th:value="${stat.index}" th:text="*{supportCheckItems[__${stat.index}__]}" th:field="*{supportCheckedList}" />
 										</div>
@@ -89,13 +84,12 @@
 								</div>
 							</div>
 
-							<div class="my-box mb-3"></div>
-							<div class="row align-items-start no-gutters">
+							<div class="row align-items-center">
 								<div class="col-md-12 col-lg-2">
 									就業種別：
 								</div>
 								<div class="col-md-12 col-lg-10">
-    								<div class="row align-items-center no-gutters">
+    								<div class="row align-items-center" style="height:40px;">
 										<div th:each="employ, stat : *{employCheckItems}" class="col-md-2 col-lg-2 mt-1">
 									        <input type="checkbox" name="employCheck" th:value="${stat.index}" th:text="*{employCheckItems[__${stat.index}__]}" th:field="*{employCheckedList}" />
 										</div>
@@ -106,7 +100,7 @@
 					</div>
 
 
-					<div class="my-box mb-3"></div>
+					<div class="my-box mb-2"></div>
 					<div class="row align-items-start">
 						<div class="col-md-12 col-lg-12">
 							面談情報：
@@ -114,12 +108,12 @@
 					</div>
 					<div class="card">
 						<div class="card-body">
-							<div class="row align-items-center no-gutters">
+							<div class="row align-items-center">
 								<div class="col-md-2 col-lg-2">
 									面談日：
 								</div>
 								<div class="col-md-10 col-lg-10">
-									<div class="row align-items-center">
+									<div class="row align-items-center" style="height:40px;">
 										<div class="col-md-6 col-lg-1">
 											<input type="radio" name="interviewDateCode" th:value="0" th:field="*{interviewDateCode}" />
 										</div>
@@ -136,7 +130,7 @@
 											までの期間
 										</div>
 									</div>
-									<div class="row align-items-center">
+									<div class="row align-items-center" style="height:40px;">
 										<div class="col-md-6 col-lg-1">
 											<input type="radio" name="interviewDateCode" th:value="1" th:field="*{interviewDateCode}" />
 										</div>
@@ -155,8 +149,8 @@
 								</div>
 							</div>
 
-							<div class="my-box mb-3"></div>
-							<div class="row align-items-start no-gutters">
+							<div class="my-box mb-1"></div>
+							<div class="row align-items-start">
 								<div class="col-md-2 col-lg-2">
 									面談時間：
 								</div>
@@ -171,8 +165,8 @@
 								</div>
 							</div>
 
-							<div class="my-box mb-3"></div>
-							<div class="row align-items-start no-gutters">
+							<div class="my-box mb-1"></div>
+							<div class="row align-items-start">
 								<div class="col-md-2 col-lg-2">
 									情報開示：
 								</div>
@@ -189,7 +183,7 @@
 						</div>
 					</div>
 
-					<div class="my-box mb-3"></div>
+					<div class="my-box mb-2"></div>
 					<div class="row align-items-start">
 						<div class="col-md-12 col-lg-12">
 							面談内容：
@@ -198,21 +192,21 @@
 					<div class="card">
 						<div class="card-body">
 							<div class="row align-items-start">
-								<div class="col-md-2 col-lg-3">
+								<div class="col-md-2 col-lg-2">
 									会社関連について
 								</div>
-								<div class="col-md-10 col-lg-9">
+								<div class="col-md-10 col-lg-10">
 									<div th:each="jobitem, stat : *{contentJobCheckItems}">
-    									<div class="row align-items-center no-gutters">
+    									<div class="row align-items-center">
 											<div class="col-md-12 col-lg-3 mt-1">
 										        <input type="checkbox" name="inputMultiCheck" th:value="${stat.index}" th:text="*{contentJobCheckItems[__${stat.index}__]}" th:field="*{contentJobCheckedList}" />
 											</div>
 											<div class="col-md-12 col-lg-9">
-												<div class="row align-items-center no-gutters">
-													<div class="col-md-2 col-lg-2">
+												<div class="row align-items-center">
+													<div class="col-md-2 col-lg-3">
 														キーワード：
 													</div>
-													<div class="col-md-10 col-lg-10">
+													<div class="col-md-10 col-lg-9">
 														<input class="form-control" type="text" th:field="*{contentJobMemos[__${stat.index}__]}" />
 													</div>
 												</div>
@@ -222,18 +216,18 @@
 								</div>
 							</div>
 
-							<div class="my-box mb-3"></div>
+							<div class="my-box mb-1"></div>
 							<div class="row align-items-start">
-								<div class="col-md-2 col-lg-3">
+								<div class="col-md-2 col-lg-2">
 									プライベートについて
 								</div>
-								<div class="col-md-10 col-lg-9">
+								<div class="col-md-10 col-lg-10">
 									<div th:each="privateitem, stat : *{contentPrivateCheckItems}">
-										<div class="row align-items-center no-gutters">
-											<div class="col-md-2 col-lg-2">
+										<div class="row align-items-center">
+											<div class="col-md-2 col-lg-3">
 												キーワード：
 											</div>
-											<div class="col-md-10 col-lg-10">
+											<div class="col-md-10 col-lg-9">
 												<input class="form-control" type="text" th:field="*{contentPrivateMemos[__${stat.index}__]}" />
 											</div>
 										</div>
@@ -243,7 +237,7 @@
 						</div>
 					</div>
 
-					<div class="my-box mb-3"></div>
+					<div class="my-box mb-2"></div>
 					<div class="row align-items-start">
 						<div class="col-md-12 col-lg-12">
 							相談内容：
@@ -251,7 +245,7 @@
 					</div>
 					<div class="card">
 						<div class="card-body">
-							<div class="row align-items-center no-gutters">
+							<div class="row align-items-center">
 								<div class="col-md-2 col-lg-2">
 									検索キーワード：
 								</div>
@@ -266,7 +260,7 @@
 						</div>
 					</div>
 
-					<div class="my-box mb-3"></div>
+					<div class="my-box mb-2"></div>
 					<div class="row align-items-start">
 						<div class="col-md-12 col-lg-12">
 							管理者記入欄：
@@ -274,7 +268,7 @@
 					</div>
 					<div class="card">
 						<div class="card-body">
-							<div class="row align-items-center no-gutters">
+							<div class="row align-items-center">
 								<div class="col-md-2 col-lg-2">
 									検索キーワード：
 								</div>
@@ -289,41 +283,45 @@
 						</div>
 					</div>
 
-
-
 					<div class="my-box mb-3"></div>
 					<div class="col text-center">
 						<button class="btn btn-primary btn-block" type="submit">検索</button>
 					</div>
 				</form>
-				<br>
-				<table class="table">
-					<thead>
+
+				<div class="my-box mb-3"></div>
+				<div class="row align-items-center no-gutters" style="height:40px;">
+					<div class="col-md-2 col-lg-1">
+						<a id="search_result">検索結果：</a>
+					</div>
+					<div class="col-md-3 col-lg-3">
+						[[${interview_request_size}]] 件
+					</div>
+				</div>
+				<table class="table table-hover table-bordered">
+					<thead class="thead-darknavy">
 						<tr>
-							<th>ID</th>
-							<th>企業コード</th>
-							<th>従業員番号</th>
-							<th>従業員名字</th>
-							<th>面談日</th>
-							<th>面談時間</th>
-							<th>情報開示</th>
-							<th>面談内容</th>
+							<th><div class="text-center">企業コード</div></th>
+							<th><div class="text-center">従業員番号</div></th>
+							<th><div class="text-center">従業員名字</div></th>
+							<th><div class="text-center">面談日</div></th>
+							<th><div class="text-center">面談時間</div></th>
+							<th><div class="text-center">情報開示</div></th>
+							<th><div class="text-center">面談内容</div></th>
 						</tr>
 					</thead>
 					<tbody>
-					    <tr th:each="interview : ${interview_request_list}" th:object="${interview}">
-<!-- 							<td><a class="btn btn-link" th:href="@{/interview/{id}/edit(id=*{id})}" th:text="*{companyID}"></a></td> -->
-							<td th:text="*{id}"></td>
-							<td th:text="*{companyID}"></td>
-							<td th:text="*{employeeCode}"></td>
-							<td th:text="*{employeeFName}"></td>
-							<td th:text="*{interviewDate}"></td>
-							<td th:text="*{interviewTimeShort}"></td>
+					    <tr th:each="interview : ${interview_request_list}" th:object="${interview}" class="clickable-row" th:data-href="@{/interview/{id}/edit(id=*{id})}">
+							<td><div class="text-center" th:text="*{companyID}"></div></td>
+							<td><div class="text-center" th:text="*{employeeCode}"></div></td>
+							<td><div class="text-center" th:text="*{employee.employeeFName}"></div></td>
+							<td><div class="text-center" th:text="*{interviewDateSlash}"></div></td>
+							<td><div class="text-center" th:text="*{interviewTimeShort}"></div></td>
 							<td>
-								<div th:if="*{discloseCode == 0}">
+								<div th:if="*{discloseCode == 0}" class="text-center">
 									<a th:text="*{discloseShort}"></a>
 								</div>
-								<div th:if="*{discloseCode == 1 || discloseCode == 2}" class="text-danger">
+								<div th:if="*{discloseCode == 1 || discloseCode == 2}" class="text-center text-danger">
 									<a th:text="*{discloseShort}"></a>
 								</div>
 							</td>

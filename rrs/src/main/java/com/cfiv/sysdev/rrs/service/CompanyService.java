@@ -58,7 +58,7 @@ public class CompanyService {
         Company company = new Company();
 
         company.setName(req.getName());
-        company.setEnabledFromString(req.getEnabled());
+        company.setEnabled(req.getEnabled() == 1 ? true : false);
         company.setDeleted(false);
         company.setRegistTime(now);
         company.setRegistUser("user");
@@ -84,12 +84,13 @@ public class CompanyService {
         Company company = findOne(id);
 
         company.setName(req.getName());
-        company.setEnabledFromString(req.getEnabled());
+        company.setEnabled(req.getEnabled() == 1 ? true : false);
         company.setDeleted(false);
         company.setRegistTime(now);
         company.setRegistUser("user");
         company.setUpdateTime(now);
         company.setUpdateUser("user");
+        company.setUpdateCount(company.getUpdateCount() + 1);
 
         return companyRepository.save(company);
     }
@@ -102,6 +103,7 @@ public class CompanyService {
         company.setRegistUser("user");
         company.setUpdateTime(now);
         company.setUpdateUser("user");
+        company.setUpdateCount(company.getUpdateCount() + 1);
 
         return companyRepository.save(company);
     }

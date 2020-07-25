@@ -11,20 +11,18 @@
 			<div class="card-heading"><h2>従業員情報一括登録</h2></div>
 			<div class="card-body">
 				<form action="/employee/upload" th:action="@{/employee/upload}" method="post" enctype="multipart/form-data" th:object="${employeeFileRequest}">
-					<div class="input-group">
-						<label class="input-group-btn">
-							<span class="btn btn-primary">
-								ファイルの読み込み <input type="file" name="employeeFile" style="display:none" />
-							</span>
-						</label>
-						<input type="text" class="form-control" readonly="readonly">
+					<label for="inputFile">従業員情報ファイル：</label>
+					<div class="custom-file">
+						<input th:field="*{employeeFile}" type="file" class="custom-file-input" id="inputFile">
+						<label class="custom-file-label" for="inputFile" data-browse="参照">ファイルを選択(ここにドロップすることもできます)</label>
+						<label th:if="${#fields.hasErrors('employeeFile')}" th:errors="*{employeeFile}" style="color: red"></label>
+						<span th:if="${regist_result}">登録が完了しました。</span>
 					</div>
-					<span th:if="${#fields.hasErrors('employeeFile')}" class="text-danger" th:errors="*{employeeFile}">Error</span>
-					<span th:if="${regist_result}">登録が完了しました。</span>
+
+					<div class="my-box mb-3"></div>
 					<div class="col text-center">
-						<button class="btn btn-primary" type="submit">登録</button>
+						<button class="btn btn-primary btn-block" type="submit">登録</button>
 					</div>
-					<br>
 				</form>
 			</div>
 		</div>
@@ -33,4 +31,7 @@
 	<div th:replace="footer :: footer"></div>
 </div>
 </body>
+<script>
+	bsCustomFileInput.init();
+</script>
 </html>

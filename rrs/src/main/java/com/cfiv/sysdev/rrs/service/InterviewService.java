@@ -1,8 +1,8 @@
 package com.cfiv.sysdev.rrs.service;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -17,8 +17,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cfiv.sysdev.rrs.Const;
 import com.cfiv.sysdev.rrs.LogUtils;
-import com.cfiv.sysdev.rrs.dto.EmployeeRequest;
 import com.cfiv.sysdev.rrs.dto.InterviewRequest;
 import com.cfiv.sysdev.rrs.dto.InterviewSearchRequest;
 import com.cfiv.sysdev.rrs.entity.Employee;
@@ -33,6 +33,10 @@ import com.cfiv.sysdev.rrs.repository.InterviewResultRepository;
 @Service
 @Transactional(rollbackOn = Exception.class)
 public class InterviewService {
+    static final String WHERE = " WHERE ";
+    static final String AND = " AND ";
+    static final String OR = " OR ";
+
     /**
      * データベースエンティティ管理
      */
@@ -74,6 +78,22 @@ public class InterviewService {
     }
 
     /**
+     * IDでの従業員情報検索
+     * @param id ID
+     * @return 検索結果(Employee)
+     */
+    public InterviewRequest findOneRequest(Long id) {
+        InterviewResult result = findOne(id);
+
+        if (result != null) {
+            return new InterviewRequest(result, employeeService.findOneFromID(result.getCompanyID(), result.getEmployeeCode()));
+        }
+        else {
+            return null;
+        }
+    }
+
+    /**
      * 企業コード、従業員番号での面談結果検索
      * @param companyID 企業コード
      * @param employeeCode 従業員番号
@@ -83,13 +103,161 @@ public class InterviewService {
     public List<InterviewRequest> search(InterviewSearchRequest req) {
         List<InterviewRequest> req_list = new ArrayList<InterviewRequest>();
 
-        String where = " WHERE ";
-        String and = " AND ";
-        String or = " OR ";
+        List<Employee> employee_list = searchEmployees(req);
 
-        StringBuffer employeeSQL = new StringBuffer();
-        String selectEmployee = "SELECT DISTINCT e FROM Employee e ";
-        String employeeOrderBy = " ORDER BY e.companyID, e.employeeCode";
+        if (employee_list == null || employee_list.isEmpty()) {
+            return req_list;
+        }
+
+        for (int i = 0; i < req.getContentJobCheckItems().size(); i ++) {
+            if (!req.containsContentJobChecked(i) && !req.getContentJobMemos().get(i).isEmpty()) {
+                req.getContentJobCheckedList().add(i);
+            }
+        }
+
+        StringBuffer sql = new StringBuffer();
+        String deletedTag = "deleted";
+        String companyIDTag = "companyID";
+        String employeeCodeTag = "employeeCode";
+        String select = "SELECT DISTINCT r FROM InterviewResult r LEFT JOIN r.interviewContents c"
+                + " WHERE r.deleted = :" + deletedTag
+                + " AND r.companyID = :" + companyIDTag
+                + " AND r.employeeCode = :" + employeeCodeTag;
+        String orderBy = " ORDER BY r.interviewDateTime DESC";
+
+        String interviewDateStartTag = "interviewDateTimeStart";
+        String interviewDateEndTag = "interviewDateTimeEnd";
+        String interviewTimeCodeTag = "interviewTimeCode_";
+        String discloseCodeTag = "discloseCode_";
+        String contentJobCodeTag = "contentJobCode_";
+        String contentJobMemoTag = "contentJobMemo_";
+        String contentPriMemoTag = "contentPrivateMemo_";
+        String interviewerCommentTag = "interviewerCommentMemo_";
+        String adminCommentTag = "adminCommentMemo_";
+
+        String interviewDateStartCond = "r.interviewDateTime >= :" + interviewDateStartTag;
+        String interviewDateEndCond = "r.interviewDateTime < :" + interviewDateEndTag;
+        String interviewTimeCodeCond = "r.interviewTimeCode = :" + interviewTimeCodeTag;
+        String discloseCodeCond = "r.discloseCode = :" + discloseCodeTag;
+        String contentJobCodeCond = "c.contentKind = " + Const.CONTENTKIND_JOB + " AND c.contentCode = :" + contentJobCodeTag;
+        String contentJobMemoCond = "c.contentComment LIKE :" + contentJobMemoTag;
+        String contentPriMemoCond = "c.contentKind = " + Const.CONTENTKIND_PRIVATE + " AND c.contentComment LIKE :" + contentPriMemoTag;
+        String interviewerCommentCond = "r.interviewerComment LIKE :" + interviewerCommentTag;
+        String adminCommentCond = "r.adminComment LIKE :" + adminCommentTag;
+
+        sql.append(select);
+
+        // 面談日条件文字列を作成する
+        Date startDate = null;
+        Date endDate = null;
+        if (req.getInterviewDateCode() == Const.INTERVIEWDATECODE_REGION) {
+            if (req.getInterviewDateStartDate() != null && req.getInterviewDateEndDate() != null) {
+                if (req.getInterviewDateStartDate().compareTo(req.getInterviewDateEndDate()) < 0) {
+                    startDate = req.getInterviewDateStartDate();
+                    endDate = tommorow(req.getInterviewDateEndDate());
+                }
+                else {
+                    startDate = req.getInterviewDateEndDate();
+                    endDate = tommorow(req.getInterviewDateStartDate());
+                }
+
+                sql.append(AND + interviewDateStartCond + AND + interviewDateEndCond);
+            }
+        }
+        else if (req.getInterviewDateCode() == Const.INTERVIEWDATECODE_LAST) {
+            if (req.getInterviewDateLastDate() != null) {
+                endDate = tommorow(req.getInterviewDateLastDate());
+
+                sql.append(AND + interviewDateEndCond);
+            }
+        }
+
+        // 面談時間、情報開示条件文字列を作成する
+        sql.append(createMultiCondition(AND, req.getInterviewTimeCheckedList().size(), interviewTimeCodeCond));
+        sql.append(createMultiCondition(AND, req.getDiscloseCheckedList().size(), discloseCodeCond));
+
+        // 面談内容(会社関連、プライベート)条件文字列を作成する
+        sql.append(createContentJobCondition(AND, req.getContentJobCheckedList(), req.getContentJobMemos(),
+                contentJobCodeCond, contentJobMemoCond));
+        List<String> pMemos = trimMemos(req.getContentPrivateMemos());
+        sql.append(createMultiCondition(AND, pMemos.size(), contentPriMemoCond));
+
+        // 相談内容、管理者記入欄条件文字列を作成する
+        List<String> iMemos = trimMemos(req.getInterviewerCommentMemos());
+        sql.append(createMultiCondition(AND, iMemos.size(), interviewerCommentCond));
+        List<String> aMemos = trimMemos(req.getAdminCommentMemos());
+        sql.append(createMultiCondition(AND, aMemos.size(), adminCommentCond));
+
+        sql.append(orderBy);
+        LogUtils.debug("interviewSQL = " + sql);
+
+        // 作成したSQLに対応するパラメータを設定する
+        List<InterviewResult> result_list = new ArrayList<InterviewResult>();
+        Query query = entityManager.createQuery(sql.toString());
+        for (Employee employee : employee_list) {
+            query.setParameter(deletedTag, Const.EXIST);
+            query.setParameter(companyIDTag, employee.getCompanyID());
+            query.setParameter(employeeCodeTag, employee.getEmployeeCode());
+
+            if (startDate != null) {
+                query.setParameter(interviewDateStartTag, startDate);
+            }
+            if (endDate != null) {
+                query.setParameter(interviewDateEndTag, endDate);
+            }
+
+            for (int i = 0; i < req.getInterviewTimeCheckedList().size(); i ++) {
+                query.setParameter(interviewTimeCodeTag + i, req.getInterviewTimeCheckedList().get(i));
+            }
+            for (int i = 0; i < req.getDiscloseCheckedList().size(); i ++) {
+                query.setParameter(discloseCodeTag + i, req.getDiscloseCheckedList().get(i));
+            }
+
+            for (int i = 0; i < req.getContentJobCheckedList().size(); i ++) {
+                query.setParameter(contentJobCodeTag + i, req.getContentJobCheckedList().get(i));
+
+                String jMemo = req.getContentJobMemos().get(req.getContentJobCheckedList().get(i));
+                if (!jMemo.isEmpty()) {
+                    query.setParameter(contentJobMemoTag + i, "%" + jMemo + "%");
+                }
+            }
+
+            for (int i = 0; i < pMemos.size(); i ++) {
+                query.setParameter(contentPriMemoTag + i, "%" + pMemos.get(i) + "%");
+            }
+
+            for (int i = 0; i < iMemos.size(); i ++) {
+                query.setParameter(interviewerCommentTag + i, "%" + iMemos.get(i) + "%");
+            }
+            for (int i = 0; i < aMemos.size(); i ++) {
+                query.setParameter(adminCommentTag + i, "%" + aMemos.get(i) + "%");
+            }
+
+            result_list.addAll((List<InterviewResult>) query.getResultList());
+        }
+
+//        LogUtils.info("result_list.size = " + result_list.size());
+
+        // 取得した面談結果を面談結果リクエストに変換する
+        for (InterviewResult result : result_list) {
+            req_list.add(new InterviewRequest(result, employeeService.findOneFromID(result.getCompanyID(), result.getEmployeeCode())));
+        }
+
+        return req_list;
+    }
+
+    /**
+     * 従業員情報検索条件での従業員情報検索
+     * @param req 検索条件
+     * @return 検索結果
+     */
+    @SuppressWarnings("unchecked")
+    public List<Employee> searchEmployees(InterviewSearchRequest req) {
+
+        StringBuffer sql = new StringBuffer();
+        String deletedTag = "deleted";
+        String select = "SELECT DISTINCT e FROM Employee e WHERE e.deleted = :" + deletedTag;
+        String orderBy = " ORDER BY e.companyID, e.employeeCode";
 
         String companyIDTag = "companyID";
         String employeeCodeTag = "employeeCode";
@@ -107,48 +275,16 @@ public class InterviewService {
         String supportCodeCond = "e.supportCode = :" + supportCodeTag;
         String employCodeCond = "e.employCode = :" + employCodeTag;
 
-        boolean isNeedWhere = true;
-        boolean isNeedAnd = false;
+        sql.append(select);
 
-        employeeSQL.append(selectEmployee);
+        // 企業コード、従業員番号条件文字列を作成する
+        sql.append(createSingleCondition(AND, req.getCompanyID(), companyIDCond));
+        sql.append(createSingleCondition(AND, req.getEmployeeCode(), employeeCodeCond));
 
-        if (!req.getCompanyID().isEmpty()) {
-            if (isNeedWhere) {
-                employeeSQL.append(where);
-                isNeedWhere = false;
-            }
-            if (isNeedAnd) {
-                employeeSQL.append(and);
-            }
-
-            employeeSQL.append(companyIDCond);
-            isNeedAnd = true;
-        }
-
-        if (!req.getEmployeeCode().isEmpty()) {
-            if (isNeedWhere) {
-                employeeSQL.append(where);
-                isNeedWhere = false;
-            }
-            if (isNeedAnd) {
-                employeeSQL.append(and);
-            }
-
-            employeeSQL.append(employeeCodeCond);
-            isNeedAnd = true;
-        }
-
+        // 勤続年数範囲条件文字列を作成する
         Date hireYMMin = null;
         Date hireYMMax = null;
         if (req.getHireYMDateFromLengthStartCode() != null && req.getHireYMDateFromLengthEndCode() != null) {
-            if (isNeedWhere) {
-                employeeSQL.append(where);
-                isNeedWhere = false;
-            }
-            if (isNeedAnd) {
-                employeeSQL.append(and);
-            }
-
             if (req.getHireYMDateFromLengthStartCode().compareTo(req.getHireYMDateFromLengthEndCode()) < 0) {
                 hireYMMin = req.getHireYMDateFromLengthStartCode();
                 hireYMMax = req.getHireYMDateFromLengthEndCode();
@@ -158,375 +294,130 @@ public class InterviewService {
                 hireYMMax = req.getHireYMDateFromLengthStartCode();
             }
 
-            employeeSQL.append(hireYMMinCond);
-            employeeSQL.append(and);
-            employeeSQL.append(hireYMMaxCond);
-            isNeedAnd = true;
+            sql.append(AND + hireYMMinCond + AND + hireYMMaxCond);
         }
         else if (req.getHireYMDateFromLengthStartCode() != null && req.getHireYMDateFromLengthEndCode() == null) {
-            if (isNeedWhere) {
-                employeeSQL.append(where);
-                isNeedWhere = false;
-            }
-            if (isNeedAnd) {
-                employeeSQL.append(and);
-            }
-
             hireYMMax = req.getHireYMDateFromLengthStartCode();
 
-            employeeSQL.append(hireYMMaxCond);
-            isNeedAnd = true;
+            sql.append(AND + hireYMMaxCond);
         }
         else if (req.getHireYMDateFromLengthStartCode() == null && req.getHireYMDateFromLengthEndCode() != null) {
-            if (isNeedWhere) {
-                employeeSQL.append(where);
-                isNeedWhere = false;
-            }
-            if (isNeedAnd) {
-                employeeSQL.append(and);
-            }
-
             hireYMMin = req.getHireYMDateFromLengthEndCode();
 
-            employeeSQL.append(hireYMMinCond);
-            isNeedAnd = true;
+            sql.append(AND + hireYMMinCond);
         }
 
-        if (req.getAdoptCheckedList().size() == 1) {
-            if (isNeedWhere) {
-                employeeSQL.append(where);
-                isNeedWhere = false;
-            }
-            if (isNeedAnd) {
-                employeeSQL.append(and);
-            }
+        // 採用種別、扶養有無、就業種別条件文字列を作成する
+        sql.append(createMultiCondition(AND, req.getAdoptCheckedList().size(), adoptCodeCond));
+        sql.append(createMultiCondition(AND, req.getSupportCheckedList().size(), supportCodeCond));
+        sql.append(createMultiCondition(AND, req.getEmployCheckedList().size(), employCodeCond));
+        sql.append(orderBy);
+        LogUtils.debug("employeeSQL = " + sql);
 
-            employeeSQL.append(adoptCodeCond + 0);
-            isNeedAnd = true;
-        }
-        else if (req.getAdoptCheckedList().size() > 1) {
-            if (isNeedWhere) {
-                employeeSQL.append(where);
-                isNeedWhere = false;
-            }
-            if (isNeedAnd) {
-                employeeSQL.append(and);
-            }
-
-            employeeSQL.append("(");
-
-            for (int i = 0; i < req.getAdoptCheckedList().size(); i ++) {
-                employeeSQL.append(adoptCodeCond + i);
-
-                if (i != req.getAdoptCheckedList().size() - 1) {
-                    employeeSQL.append(or);
-                }
-            }
-
-            employeeSQL.append(")");
-            isNeedAnd = true;
-        }
-
-        if (req.getSupportCheckedList().size() == 1) {
-            if (isNeedWhere) {
-                employeeSQL.append(where);
-                isNeedWhere = false;
-            }
-            if (isNeedAnd) {
-                employeeSQL.append(and);
-            }
-
-            employeeSQL.append(supportCodeCond + 0);
-            isNeedAnd = true;
-        }
-        else if (req.getSupportCheckedList().size() > 1) {
-            if (isNeedWhere) {
-                employeeSQL.append(where);
-                isNeedWhere = false;
-            }
-            if (isNeedAnd) {
-                employeeSQL.append(and);
-            }
-
-            employeeSQL.append("(");
-
-            for (int i = 0; i < req.getSupportCheckedList().size(); i ++) {
-                employeeSQL.append(supportCodeCond + i);
-
-                if (i != req.getSupportCheckedList().size() - 1) {
-                    employeeSQL.append(or);
-                }
-            }
-
-            employeeSQL.append(")");
-            isNeedAnd = true;
-        }
-
-        if (req.getEmployCheckedList().size() == 1) {
-            if (isNeedWhere) {
-                employeeSQL.append(where);
-                isNeedWhere = false;
-            }
-            if (isNeedAnd) {
-                employeeSQL.append(and);
-            }
-
-            employeeSQL.append(employCodeCond + 0);
-            isNeedAnd = true;
-        }
-        else if (req.getEmployCheckedList().size() > 1) {
-            if (isNeedWhere) {
-                employeeSQL.append(where);
-                isNeedWhere = false;
-            }
-            if (isNeedAnd) {
-                employeeSQL.append(and);
-            }
-
-            employeeSQL.append("(");
-
-            for (int i = 0; i < req.getEmployCheckedList().size(); i ++) {
-                employeeSQL.append(employCodeCond + i);
-
-                if (i != req.getEmployCheckedList().size() - 1) {
-                    employeeSQL.append(or);
-                }
-            }
-
-            employeeSQL.append(")");
-            isNeedAnd = true;
-        }
-
-        employeeSQL.append(employeeOrderBy);
-
-        Query employeeQuery = entityManager.createQuery(employeeSQL.toString());
+        Query query = entityManager.createQuery(sql.toString());
+        query.setParameter(deletedTag, Const.EXIST);
         if (!req.getCompanyID().isEmpty()) {
-            employeeQuery.setParameter(companyIDTag, req.getCompanyIDLong());
+            query.setParameter(companyIDTag, req.getCompanyIDLong());
         }
         if (!req.getEmployeeCode().isEmpty()) {
-            employeeQuery.setParameter(employeeCodeTag, req.getEmployeeCode());
+            query.setParameter(employeeCodeTag, req.getEmployeeCode());
         }
         if (hireYMMin != null) {
-            employeeQuery.setParameter(hireYMMinTag, hireYMMin);
+            query.setParameter(hireYMMinTag, hireYMMin);
         }
         if (hireYMMax != null) {
-            employeeQuery.setParameter(hireYMMaxTag, hireYMMax);
+            query.setParameter(hireYMMaxTag, hireYMMax);
         }
         for (int i = 0; i < req.getAdoptCheckedList().size(); i ++) {
-            employeeQuery.setParameter(adoptCodeTag + i, req.getAdoptCheckedList().get(i));
+            query.setParameter(adoptCodeTag + i, req.getAdoptCheckedList().get(i));
         }
         for (int i = 0; i < req.getSupportCheckedList().size(); i ++) {
-            employeeQuery.setParameter(supportCodeTag + i, req.getSupportCheckedList().get(i));
+            query.setParameter(supportCodeTag + i, req.getSupportCheckedList().get(i));
         }
         for (int i = 0; i < req.getEmployCheckedList().size(); i ++) {
-            employeeQuery.setParameter(employCodeTag + i, req.getEmployCheckedList().get(i));
+            query.setParameter(employCodeTag + i, req.getEmployCheckedList().get(i));
         }
 
-        List<Employee> employee_list = (List<Employee>) employeeQuery.getResultList();
+        List<Employee> employee_list = (List<Employee>) query.getResultList();
 
-        for (int i = 0; i < employee_list.size(); i ++) {
-            LogUtils.info("[" + i + "]:CompanyID = " + employee_list.get(i).getCompanyID() + ", EmployeeCode = " + employee_list.get(i).getEmployeeCode());
-        }
-
-
-        LogUtils.info("employeeSQL = " + employeeSQL);
-        if (hireYMMin != null) {
-            LogUtils.info("hireYMMin = " + new SimpleDateFormat("yyyyMM").format(hireYMMin));
-        }
-        else {
-            LogUtils.info("hireYMMin = null");
-        }
-        if (hireYMMax != null) {
-            LogUtils.info("hireYMMax = " + new SimpleDateFormat("yyyyMM").format(hireYMMax));
-        }
-        else {
-            LogUtils.info("hireYMMax = null");
-        }
-
-        String select = "SELECT DISTINCT r FROM InterviewResult r LEFT JOIN r.interviewContents ";
-        String order_by = " ORDER BY r.interviewDateTime DESC";
-
-        String interviewdate_region_cond = "r.interviewDateTime >= :interviewDateTimeStart AND r.interviewDateTime < :interviewDateTimeEnd";
-        String interviewdate_last_cond = "r.interviewDateTime <= :interviewDateTimeLast";
-        String interviewtime_cond = "r.interviewTimeCode = :interviewTimeCode_";
-        String disclose_cond = "r.interviewTimeCode = :discloseCode_";
-        String contentjob_checked_cond = "r.contentKind = 0 AND r.contentCode = :contentJobCode_";
-        String contentjob_memo_cond = "r.contentComment LIKE :contentJobMemo_";
-        String contentprivate_checked_cond = "r.contentKind = 1 AND r.contentCode = :contentPrivateCode_";
-        String contentprivate_memo_cond = "r.contentComment LIKE :contentPrivateMemo_";
-        String interviewer_comment_cond = "r.interviewerComment LIKE :interviewerCommentMemo_";
-        String admin_comment_cond = "r.adminComment LIKE :adminCommentMemo_";
-
-        Query query = entityManager.createQuery(select);
-        List<InterviewResult> result_list = (List<InterviewResult>) query.getResultList();
-
-
-
-/*
-        LogUtils.info("companyID = " + req.getCompanyID());
-        LogUtils.info("employeeCode = " + req.getEmployeeCode());
-        LogUtils.info("hireLengthStartCode = " + req.getHireLengthStartCode());
-        LogUtils.info("hireLengthEndCode = " + req.getHireLengthEndCode());
-        for (int i = 0; i < req.getAdoptCheckedList().size(); i ++) {
-            LogUtils.info("adoptChecked[" + i + "] = " + req.getAdoptCheckedList().get(i));
-        }
-        for (int i = 0; i < req.getSupportCheckedList().size(); i ++) {
-            LogUtils.info("supportChecked[" + i + "] = " + req.getSupportCheckedList().get(i));
-        }
-        for (int i = 0; i < req.getEmployCheckedList().size(); i ++) {
-            LogUtils.info("employChecked[" + i + "] = " + req.getEmployCheckedList().get(i));
-        }
-
-
-        LogUtils.info("interviewDateStart = " + req.getInterviewDateStart());
-        LogUtils.info("interviewDateEnd = " + req.getInterviewDateEnd());
-        LogUtils.info("interviewDateLastCode = " + req.getInterviewDateLastCode());
-        LogUtils.info("interviewDateCode = " + req.getInterviewDateCode());
-
-        for (int i = 0; i < req.getInterviewTimeCheckedList().size(); i ++) {
-            LogUtils.info("interviewTimeChecked[" + i + "] = " + req.getInterviewTimeCheckedList().get(i));
-        }
-        for (int i = 0; i < req.getDiscloseCheckedList().size(); i ++) {
-            LogUtils.info("discloseChecked[" + i + "] = " + req.getDiscloseCheckedList().get(i));
-        }
-
-        for (int i = 0; i < req.getContentJobCheckedList().size(); i ++) {
-            LogUtils.info("contentJobChecked[" + i + "] = " + req.getContentJobCheckedList().get(i));
-        }
-        for (int i = 0; i < req.getContentJobMemos().size(); i ++) {
-            LogUtils.info("contentJobMemos[" + i + "] = " + req.getContentJobMemos().get(i));
-        }
-        for (int i = 0; i < req.getContentPrivateMemos().size(); i ++) {
-            LogUtils.info("contentPrivateMemos[" + i + "] = " + req.getContentPrivateMemos().get(i));
-        }
-        for (int i = 0; i < req.getInterviewerCommentMemos().size(); i ++) {
-            LogUtils.info("interviewerCommentMemos[" + i + "] = " + req.getInterviewerCommentMemos().get(i));
-        }
-        for (int i = 0; i < req.getAdminCommentMemos().size(); i ++) {
-            LogUtils.info("adminCommentMemos[" + i + "] = " + req.getAdminCommentMemos().get(i));
-        }
-
-
-        try {
-            DateFormat formatter = new SimpleDateFormat("yyyyMM");
-            int d1 = Integer.parseInt(formatter.format(new SimpleDateFormat("yyyyMM").parse("197102")));
-            int d2 = Integer.parseInt(formatter.format(new Date()));
-            int age = (d2 - d1)/100;
-            LogUtils.info("d1 = " + d1);
-            LogUtils.info("d2 = " + d2);
-            LogUtils.info("d2-d1 = " + (d2-d1));
-            LogUtils.info("age = " + age);
-        }
-        catch (NumberFormatException e) {
-            // TODO 自動生成された catch ブロック
-            e.printStackTrace();
-        }
-        catch (ParseException e) {
-            // TODO 自動生成された catch ブロック
-            e.printStackTrace();
-        }
-
-        LogUtils.info("result_list.size = " + result_list.size());
-*/
-
-        for (InterviewResult result : result_list) {
-            InterviewRequest ret = new InterviewRequest();
-
-            ret.setIdFromNumeric(result.getId(), 1);
-//            ret.setCompanyIDFromNumeric(result.getCompanyID(), 4);
-//            ret.setEmployeeCode(result.getEmployeeCode());
-
-            List<EmployeeRequest> emp_list = employeeService.searchRequestFromID(ret.getCompanyID(), ret.getEmployeeCode());
-            ret.setEmployeeFName(emp_list.get(0).getEmployeeFName());
-
-            ret.setInterviewDateFromDate(result.getInterviewDateTime());
-            ret.setInterviewTimeCode(result.getInterviewTimeCode());
-            ret.setDiscloseCode(result.getDiscloseCode());
-            ret.setInterviewerComment(result.getInterviewerComment());
-            ret.setAdminComment(result.getAdminComment());
-            ret.setAttachedFilename(result.getFilename());
-
-            List<Integer> job_checked = new ArrayList<Integer>();
-            List<String> job_memos = new ArrayList<String>();
-            List<String> pri_memos = new ArrayList<String>();
-            for (InterviewContent content : result.getInterviewContents()) {
-                if (content.getContentKind() == 0) {
-                    job_checked.add(content.getContentCode());
-                    job_memos.add(content.getContentComment());
-                }
-                else {
-                    pri_memos.add(content.getContentComment());
-                }
-            }
-            ret.setContentJobCheckedList(job_checked);
-            ret.setContentJobMemos(job_memos);
-            ret.setContentPrivateMemos(pri_memos);
-
-            req_list.add(ret);
-        }
-
-        return req_list;
+        return employee_list;
     }
-
 
     /**
      * 企業コード、従業員番号での面談結果検索
      * @param companyID 企業コード
      * @param employeeCode 従業員番号
-     * @return 検索結果(Employee)
+     * @return 検索結果(InterviewResult)
      */
     @SuppressWarnings("unchecked")
-    public List<InterviewRequest> searchFromID(Long companyID, String employeeCode, int limit) {
-        List<InterviewRequest> req_list = new ArrayList<InterviewRequest>();
+    public List<InterviewResult> searchResultFromKey(Long companyID, String employeeCode, int limit) {
+        String companyIDTag = "companyID";
+        String employeeCodeTag = "employeeCode";
+        String sql = "SELECT DISTINCT r FROM InterviewResult r LEFT JOIN r.interviewContents"
+                + " WHERE r.companyID = :" + companyIDTag + " AND r.employeeCode = :" + employeeCodeTag
+                + " ORDER BY r.interviewDateTime DESC";
 
-        String sql = "FROM InterviewResult r WHERE r.companyID = :companyID AND r.employeeCode = :employeeCode ORDER BY r.interviewDateTime DESC";
         Query query = entityManager.createQuery(sql);
-        query.setParameter("companyID", companyID);
-        query.setParameter("employeeCode", employeeCode);
-
+        query.setParameter(companyIDTag, companyID);
+        query.setParameter(employeeCodeTag, employeeCode);
         if (limit > 0) {
             query.setMaxResults(limit);
         }
 
-        List<InterviewResult> result_list = (List<InterviewResult>) query.getResultList();
-        for (InterviewResult result : result_list) {
-            InterviewRequest req = new InterviewRequest();
+        return (List<InterviewResult>) query.getResultList();
+    }
 
-            req.setIdFromNumeric(result.getId(), 1);
-//            req.setCompanyIDFromNumeric(result.getCompanyID(), 4);
-//            req.setEmployeeCode(result.getEmployeeCode());
+    /**
+     * 企業コード、従業員番号での面談結果検索
+     * @param companyID 企業コード
+     * @param employeeCode 従業員番号
+     * @return 検索結果(InterviewRequest)
+     */
+    public List<InterviewRequest> searchRequestFromKey(Long companyID, String employeeCode, int limit) {
+        return resultToRequestList(searchResultFromKey(companyID, employeeCode, limit));
+    }
 
-            List<EmployeeRequest> emp_list = employeeService.searchRequestFromID(req.getCompanyID(), req.getEmployeeCode());
-            req.setEmployeeFName(emp_list.get(0).getEmployeeFName());
-
-            req.setInterviewDateFromDate(result.getInterviewDateTime());
-            req.setInterviewTimeCode(result.getInterviewTimeCode());
-            req.setDiscloseCode(result.getDiscloseCode());
-            req.setInterviewerComment(result.getInterviewerComment());
-            req.setAdminComment(result.getAdminComment());
-            req.setAttachedFilename(result.getFilename());
-
-            List<InterviewContent> content_list = interviewContentRepository.findByResultID(result.getId());
-            List<Integer> job_checked = new ArrayList<Integer>();
-            List<String> job_memos = new ArrayList<String>();
-            List<String> pri_memos = new ArrayList<String>();
-            for (InterviewContent content : content_list) {
-                if (content.getContentKind() == 0) {
-                    job_checked.add(content.getContentCode());
-                    job_memos.add(content.getContentComment());
-                }
-                else {
-                    pri_memos.add(content.getContentComment());
-                }
-            }
-            req.setContentJobCheckedList(job_checked);
-            req.setContentJobMemos(job_memos);
-            req.setContentPrivateMemos(pri_memos);
-
-            req_list.add(req);
+    /**
+     * 面談結果一覧の型変換(InterviewResult→InterviewRequest)
+     * @param list 面談結果一覧(InterviewResult)
+     * @return 面談結果一覧(InterviewRequest)
+     */
+    public List<InterviewRequest> resultToRequestList(List<InterviewResult> list) {
+        List<InterviewRequest> res = new ArrayList<InterviewRequest>();
+        for (InterviewResult result : list) {
+            res.add(new InterviewRequest(result, employeeService.findOneFromID(result.getCompanyID(), result.getEmployeeCode())));
         }
 
-        return req_list;
+        return res;
+    }
+
+    /**
+     * 面談結果ID、面談内容種別、面談内容コードでの面談内容検索
+     * @param companyID 企業コード
+     * @param employeeCode 従業員番号
+     * @return 検索結果(Employee)
+     */
+    @SuppressWarnings("unchecked")
+    public InterviewContent findOneContentFromKey(Long resultID, int contentKind, int contentCode) {
+        String resultIDTag = "resultID";
+        String contentKindTag = "contentKind";
+        String contentCodeTag = "contentCode";
+        String sql = "FROM InterviewContent c WHERE c.resultID = :" + resultIDTag +
+                " AND c.contentKind = :" + contentKindTag +
+                " AND c.contentCode = :" + contentCodeTag;
+        Query query = entityManager.createQuery(sql);
+        query.setParameter(resultIDTag, resultID);
+        query.setParameter(contentKindTag, contentKind);
+        query.setParameter(contentCodeTag, contentCode);
+
+        List<InterviewContent> contentList = (List<InterviewContent>) query.getResultList();
+
+        if (!contentList.isEmpty()) {
+            return contentList.get(0);
+        }
+        else {
+            return null;
+        }
     }
 
     /**
@@ -538,8 +429,8 @@ public class InterviewService {
         Date now = new Date();
 
         InterviewResult result = new InterviewResult();
-//        result.setCompanyID(req.getCompanyIDLong());
-//        result.setEmployeeCode(req.getEmployeeCode());
+        result.setCompanyID(req.getCompanyIDLong());
+        result.setEmployeeCode(req.getEmployeeCode());
         result.setInterviewDateTime(req.getInterviewDateDate());
         result.setRefinerUserID("user");
         result.setInterviewTimeCode(req.getInterviewTimeCode());
@@ -551,7 +442,6 @@ public class InterviewService {
         result.setRegistTime(now);
         result.setUpdateUser("user");
         result.setUpdateTime(now);
-
         try {
             if (req.getAttachedFile() != null && !req.getAttachedFile().isEmpty()) {
                 result.setFilename(req.getAttachedFile().getOriginalFilename());
@@ -578,38 +468,218 @@ public class InterviewService {
             }
         }
 
-        LogUtils.info("contentJobItems:");
-        for (int key : contentJobItems.keySet()) {
-            LogUtils.info("key = " + key + ", value = " + contentJobItems.get(key));
+        contentSave(result.getId(), Const.CONTENTKIND_JOB, contentJobItems);
+        contentSave(result.getId(), Const.CONTENTKIND_PRIVATE, contentPrivateItems);
+    }
 
-            InterviewContent content = new InterviewContent();
-            content.setResultID(result.getId());
-            content.setContentKind(0);
-            content.setContentCode(key);
-            content.setContentComment(contentJobItems.get(key));
-            content.setDeleted(false);
-            content.setRegistUser("user");
-            content.setRegistTime(now);
-            content.setUpdateUser("user");
-            content.setUpdateTime(now);
-            interviewContentRepository.save(content);
+    /**
+     * 面談結果更新
+     * @param req 面談結果
+     */
+    @Transactional
+    public void update(Long id, InterviewRequest req) {
+        Date now = new Date();
+
+        InterviewResult result = findOne(id);
+
+        if (result != null) {
+            result.setInterviewDateTime(req.getInterviewDateDate());
+            result.setRefinerUserID("user");
+            result.setInterviewTimeCode(req.getInterviewTimeCode());
+            result.setInterviewerComment(req.getInterviewerComment());
+            result.setDiscloseCode(req.getDiscloseCode());
+            result.setAdminComment(req.getAdminComment());
+            result.setUpdateUser("user");
+            result.setUpdateTime(now);
+            result.setUpdateCount(result.getUpdateCount() + 1);
+            try {
+                if (req.getAttachedFile() != null && !req.getAttachedFile().isEmpty()) {
+                    result.setFilename(req.getAttachedFile().getOriginalFilename());
+                    result.setFiledata(req.getAttachedFile().getBytes());
+                }
+            }
+            catch (IOException e) {
+                LogUtils.error("添付ファイルのアクセスに失敗しました。");
+            }
         }
-        LogUtils.info("contentPrivateItems:");
-        for (int key : contentPrivateItems.keySet()) {
-            LogUtils.info("key = " + key + ", value = " + contentPrivateItems.get(key));
+        else {
+            LogUtils.error("面談結果更新対象の取得に失敗しました。");
+            return;
+        }
 
-            InterviewContent content = new InterviewContent();
-            content.setResultID(result.getId());
-            content.setContentKind(1);
-            content.setContentCode(key);
-            content.setContentComment(contentPrivateItems.get(key));
-            content.setDeleted(false);
-            content.setRegistUser("user");
-            content.setRegistTime(now);
-            content.setUpdateUser("user");
-            content.setUpdateTime(now);
+        result = interviewResultRepository.save(result);
+
+        Map<Integer, String> contentJobItems = new LinkedHashMap<Integer, String>();
+        for (int i = 0; i < req.getContentJobCheckItems().size(); i ++) {
+            if (req.containsContentJobChecked(i) || !req.getContentJobMemos().get(i).isEmpty()) {
+                contentJobItems.put(i, req.getContentJobMemos().get(i));
+            }
+        }
+
+        Map<Integer, String> contentPrivateItems = new LinkedHashMap<Integer, String>();
+        for (int i = 0; i < req.getContentPrivateCheckItems().size(); i ++) {
+            if (!req.getContentPrivateMemos().get(i).isEmpty()) {
+                contentPrivateItems.put(i, req.getContentPrivateMemos().get(i));
+            }
+        }
+
+        contentSave(result.getId(), Const.CONTENTKIND_JOB, contentJobItems);
+        contentSave(result.getId(), Const.CONTENTKIND_PRIVATE, contentPrivateItems);
+    }
+
+    private void contentSave(Long resultID, int contentKind, Map<Integer, String> items) {
+        Date now = new Date();
+
+        for (int key : items.keySet()) {
+            InterviewContent content = findOneContentFromKey(resultID, contentKind, key);
+
+            if (content != null) {
+                content.setContentComment(items.get(key));
+                content.setUpdateUser("user");
+                content.setUpdateTime(now);
+            }
+            else {
+                content = new InterviewContent();
+                content.setResultID(resultID);
+                content.setContentKind(contentKind);
+                content.setContentCode(key);
+                content.setContentComment(items.get(key));
+                content.setDeleted(false);
+                content.setRegistUser("user");
+                content.setRegistTime(now);
+                content.setUpdateUser("user");
+                content.setUpdateTime(now);
+            }
+
             interviewContentRepository.save(content);
         }
     }
 
+    /**
+     * SQL条件文字列(単体パラメータ)
+     * @param prefix 条件文字列の前に付与する文字列
+     * @param parm パラメータ
+     * @param condition 条件文字列
+     * @return
+     */
+    private String createSingleCondition(String prefix, String parm, String condition) {
+        if (!parm.isEmpty()) {
+            return prefix + condition;
+        }
+        else {
+            return "";
+        }
+    }
+
+    /**
+     * SQL条件文字列(複数パラメータ)
+     * @param prefix 条件文字列の前に付与する文字列
+     * @param paramNum パラメータ数
+     * @param condition 条件文字列
+     * @return
+     */
+    private String createMultiCondition(String prefix, int paramNum, String condition) {
+        StringBuffer result = new StringBuffer();
+
+        if (paramNum == 1) {
+            result.append(condition + 0);
+        }
+        else if (paramNum > 1) {
+            result.append("(");
+
+            for (int i = 0; i < paramNum; i ++) {
+                result.append("(" + condition + i + ")");
+
+                if (i != paramNum - 1) {
+                    result.append(OR);
+                }
+            }
+
+            result.append(")");
+        }
+
+        if(result.length() != 0) {
+            return prefix + result.toString();
+        }
+        else {
+            return "";
+        }
+    }
+
+    /**
+     * SQL条件文字列(面談内容・会社関連)
+     * @param prefix 条件文字列の前に付与する文字列
+     * @param checkedList チェック済アイテムリスト
+     * @param memos メモリスト
+     * @param codeCond チェック済アイテム条件文字列
+     * @param memoCond メモ条件文字列
+     * @return
+     */
+    private String createContentJobCondition(String prefix, List<Integer> checkedList, List<String> memos, String codeCond, String memoCond) {
+        StringBuffer result = new StringBuffer();
+
+        if (checkedList.size() == 1) {
+            result.append(codeCond + 0);
+
+            if (!memos.get(checkedList.get(0)).isEmpty()) {
+                result.append(AND + memoCond + 0);
+            }
+        }
+        else if (checkedList.size() > 1) {
+            result.append("(");
+
+            for (int i = 0; i < checkedList.size(); i ++) {
+                result.append("(");
+                result.append(codeCond + i);
+
+                if (!memos.get(checkedList.get(i)).isEmpty()) {
+                    result.append(AND + memoCond + i);
+                }
+                result.append(")");
+
+                if (i != checkedList.size() - 1) {
+                    result.append(OR);
+                }
+            }
+
+            result.append(")");
+        }
+
+        if(result.length() != 0) {
+            return prefix + result.toString();
+        }
+        else {
+            return "";
+        }
+    }
+
+    /**
+     * メモリストの空文字列削除
+     * @param memos
+     * @return
+     */
+    private List<String> trimMemos(List<String> memos) {
+        List<String> result = new ArrayList<String>();
+
+        for (String memo : memos) {
+            if (!memo.isEmpty()) {
+                result.add(memo);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * 翌日設定
+     * @param date 元日付
+     * @return 翌日日付
+     */
+    private Date tommorow(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DATE, 1);
+
+        return calendar.getTime();
+    }
 }

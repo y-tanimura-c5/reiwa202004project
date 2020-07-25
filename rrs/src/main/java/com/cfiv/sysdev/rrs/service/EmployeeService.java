@@ -13,6 +13,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cfiv.sysdev.rrs.Const;
 import com.cfiv.sysdev.rrs.dto.EmployeeCSV;
 import com.cfiv.sysdev.rrs.dto.EmployeeRequest;
 import com.cfiv.sysdev.rrs.entity.Employee;
@@ -24,6 +25,8 @@ import com.cfiv.sysdev.rrs.repository.EmployeeRepository;
 @Service
 @Transactional(rollbackOn = Exception.class)
 public class EmployeeService {
+    static final String AND = " AND ";
+
     /**
      * データベースエンティティ管理
      */
@@ -60,50 +63,85 @@ public class EmployeeService {
      */
     @SuppressWarnings("unchecked")
     public List<Employee> searchFromID(String companyID, String employeeCode) {
-        List<Employee> result = new ArrayList<Employee>();
 
-        // すべてブランクだった場合は全件検索する
-        if (companyID.isEmpty() && employeeCode.isEmpty()){
-            result = employeeRepository.findAll();
+        StringBuilder sql = new StringBuilder();
+        String deletedTag = "deleted";
+        String select = "SELECT DISTINCT e FROM Employee e WHERE e.deleted = :" + deletedTag;
+        String orderBy = " ORDER BY e.companyID, e.employeeCode";
+
+        String companyIDTag = "companyID";
+        String employeeCodeTag = "employeeCode";
+        String companyIDCond = "e.companyID = :" + companyIDTag;
+        String employeeCodeCond = "e.employeeCode = :" + employeeCodeTag;
+
+        sql.append(select);
+
+        Long companyIDLong = null;
+        if (!companyID.isEmpty()) {
+            try {
+                companyIDLong = Long.parseLong(companyID);
+            }
+            catch (NumberFormatException e) {
+                return new ArrayList<Employee>();
+            }
+        }
+
+        if (companyIDLong != null) {
+            sql.append(AND + companyIDCond);
+        }
+
+        if (!employeeCode.isEmpty()) {
+            sql.append(AND + employeeCodeCond);
+        }
+        sql.append(orderBy);
+
+        Query query = entityManager.createQuery(sql.toString());
+
+        query.setParameter(deletedTag, Const.EXIST);
+        if (companyIDLong != null) {
+            query.setParameter(companyIDTag, companyIDLong);
+        }
+        if (!employeeCode.isEmpty()) {
+            query.setParameter(employeeCodeTag, employeeCode);
+        }
+
+        return (List<Employee>) query.getResultList();
+    }
+
+    /**
+     * 企業コード、従業員番号での従業員情報取得
+     * @param companyID 企業コード
+     * @param employeeCode 従業員番号
+     * @return 検索結果(EmployeeRequest)
+     */
+    public EmployeeRequest findOneFromID(Long companyID, String employeeCode) {
+        return findOneFromID(Long.toString(companyID), employeeCode);
+    }
+
+    /**
+     * 企業コード、従業員番号での従業員情報取得
+     * @param companyID 企業コード
+     * @param employeeCode 従業員番号
+     * @return 検索結果(EmployeeRequest)
+     */
+    public EmployeeRequest findOneFromID(String companyID, String employeeCode) {
+        List<Employee> emp_list = searchFromID(companyID, employeeCode);
+        if (!emp_list.isEmpty()) {
+            return emp_list.get(0).toRequest();
         }
         else {
-            StringBuilder sql = new StringBuilder();
-            sql.append("FROM Employee e WHERE ");
-
-            boolean isNeedAnd = false;
-
-            Long companyIDLong = null;
-            if (!companyID.isEmpty()) {
-                try {
-                    companyIDLong = Long.parseLong(companyID);
-                    sql.append("e.companyID = :companyID");
-                    isNeedAnd = true;
-                }
-                catch (NumberFormatException e) {
-                    companyIDLong = null;
-                }
-            }
-
-            if (!employeeCode.isEmpty()) {
-                if (isNeedAnd) {
-                    sql.append(" AND ");
-                }
-                sql.append("e.employeeCode = :employeeCode");
-            }
-
-            Query query = entityManager.createQuery(sql.toString());
-
-            if (companyIDLong != null) {
-                query.setParameter("companyID", companyIDLong);
-            }
-            if (!employeeCode.isEmpty()) {
-                query.setParameter("employeeCode", employeeCode);
-            }
-
-            result = (List<Employee>) query.getResultList();
+            return new EmployeeRequest();
         }
+    }
 
-        return result;
+    /**
+     * 企業コード、従業員番号での従業員情報検索
+     * @param companyID 企業コード
+     * @param employeeCode 従業員番号
+     * @return 検索結果(EmployeeRequest)
+     */
+    public List<EmployeeRequest> searchRequestFromID(Long companyID, String employeeCode) {
+        return employeeToRequestList(searchFromID(Long.toString(companyID), employeeCode));
     }
 
     /**
@@ -262,13 +300,7 @@ public class EmployeeService {
         }
 
         Date now = new Date();
-        employee.setCompanyIDFromString(req.getCompanyID());
-        employee.setEmployeeCode(req.getEmployeeCode());
-        employee.setEmployeeFName(req.getEmployeeFName());
-        employee.setHireYM(req.getHireYMDate());
-        employee.setAdoptCodeFromString(req.getAdoptCode());
-        employee.setSupportCodeFromString(req.getSupportCode());
-        employee.setEmployCodeFromString(req.getEmployCode());
+        employee.setEmployCode(req.getEmployCode());
         employee.setUpdateUser("user");
         employee.setUpdateTime(now);
         employee.setUpdateCount(employee.getUpdateCount() + 1);
