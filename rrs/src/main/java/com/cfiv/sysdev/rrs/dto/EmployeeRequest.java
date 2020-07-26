@@ -7,7 +7,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import com.cfiv.sysdev.rrs.Const;
+import com.cfiv.sysdev.rrs.Consts;
+import com.cfiv.sysdev.rrs.Utils;
 import com.cfiv.sysdev.rrs.entity.Employee;
 
 import lombok.Data;
@@ -16,7 +17,7 @@ import lombok.Data;
 public class EmployeeRequest implements Serializable {
 
     public EmployeeRequest() {
-        employItems = Arrays.asList(Const.EMPLOY_NAMES);
+        employItems = Arrays.asList(Consts.EMPLOY_NAMES);
     }
 
     public EmployeeRequest(String _id, String _companyID, String _employeeCode, String _employeeFName,
@@ -85,7 +86,7 @@ public class EmployeeRequest implements Serializable {
     public Employee toEmployee() {
         Employee employee = new Employee();
 
-        employee.setCompanyIDFromString(getCompanyID());
+        employee.setCompanyID(getCompanyIDLong());
         employee.setEmployeeCode(getEmployeeCode());
         employee.setEmployeeFName(getEmployeeFName());
         employee.setHireYM(getHireYMDate());
@@ -94,6 +95,14 @@ public class EmployeeRequest implements Serializable {
         employee.setEmployCode(getEmployCode());
 
         return employee;
+    }
+
+    /**
+     * Long形式の企業コード
+     * @return Long形式の企業コード
+     */
+    public Long getCompanyIDLong() {
+        return Utils.getLongFromString(companyID);
     }
 
     /**
@@ -136,10 +145,10 @@ public class EmployeeRequest implements Serializable {
         }
 
         try {
-            return Const.ADOPT_NAMES[adoptCode];
+            return Consts.ADOPT_NAMES[adoptCode];
         }
         catch (Exception e) {
-            return Const.ADOPT_NAMES[0];
+            return Consts.ADOPT_NAMES[0];
         }
     }
 
@@ -153,10 +162,10 @@ public class EmployeeRequest implements Serializable {
         }
 
         try {
-            return Const.SUPPORT_NAMES[supportCode];
+            return Consts.SUPPORT_NAMES[supportCode];
         }
         catch (Exception e) {
-            return Const.SUPPORT_NAMES[0];
+            return Consts.SUPPORT_NAMES[0];
         }
     }
 
@@ -170,10 +179,10 @@ public class EmployeeRequest implements Serializable {
         }
 
         try {
-            return Const.EMPLOY_NAMES[employCode];
+            return Consts.EMPLOY_NAMES[employCode];
         }
         catch (Exception e) {
-            return Const.EMPLOY_NAMES[0];
+            return Consts.EMPLOY_NAMES[0];
         }
     }
 }

@@ -1,14 +1,14 @@
 package com.cfiv.sysdev.rrs;
 
-public class Const {
+public class Consts {
     public static final boolean EXIST = false;
     public static final boolean DELETED = true;
 
     public static final int CONTENTKIND_JOB = 0;
     public static final int CONTENTKIND_PRIVATE = 1;
 
-    public static final int INTERVIEWDATECODE_REGION = 0;
-    public static final int INTERVIEWDATECODE_LAST = 1;
+    public static final int INTERVIEWDATECODE_LAST = 0;
+    public static final int INTERVIEWDATECODE_REGION = 1;
 
     public static final String[] JOB_NAMES = {
             "人間関係の相談",
@@ -74,6 +74,7 @@ public class Const {
             };
 
     public static final String[] INTERVIEWDATELAST_NAMES = {
+            "0",
             "1",
             "2",
             "3",
@@ -123,4 +124,5 @@ public class Const {
 
     public static int USERROLE_REFINER_CODE = USERROLE_CODES[2];
     public static int PASTINTERVIEW_NUM = 3;
+    public static int CONVERTEDIMAGE_WIDTH = 1600;
 }

@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.cfiv.sysdev.rrs.LogUtils;
+import com.cfiv.sysdev.rrs.Utils;
 import com.cfiv.sysdev.rrs.entity.Employee;
 import com.opencsv.bean.CsvBindByName;
 
@@ -147,26 +148,18 @@ public class EmployeeCSV {
     }
 
     /**
-     * クラスの文字列表現
-     */
-    public String toString() {
-        return "企業コード = " + companyID + ", 従業員番号 = " + employeeCode + ", 従業員名字 = " + employeeFName +
-                ", 入社年月 = " + hireYM + ", 採用種別 = " + adoptCode + ", 扶養有無 = " + supportCode;
-    }
-
-    /**
      * 従業員情報の型変換(EmployeeCSV→Employee)
      * @return 従業員情報(Employee)
      */
     public Employee toEmployee() {
         Employee employee = new Employee();
 
-        employee.setCompanyIDFromString(getCompanyID());
+        employee.setCompanyID(getCompanyIDLong());
         employee.setEmployeeCode(getEmployeeCode());
         employee.setEmployeeFName(getEmployeeFName());
-        employee.setHireYM(getHireYMFromString());
-        employee.setAdoptCodeFromString(getAdoptCode());
-        employee.setSupportCodeFromString(getSupportCode());
+        employee.setHireYM(getHireYMDate());
+        employee.setAdoptCode(getAdoptCodeInteger());
+        employee.setSupportCode(getSupportCodeInteger());
 
         return employee;
     }
@@ -175,7 +168,7 @@ public class EmployeeCSV {
      * Date形式の入社年月
      * @return 入社年月Dateクラス
      */
-    public Date getHireYMFromString() {
+    public Date getHireYMDate() {
         Date hireDate = new Date(0);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
 
@@ -187,5 +180,29 @@ public class EmployeeCSV {
         }
 
         return hireDate;
+    }
+
+    /**
+     * Long形式の企業コード
+     * @return Long形式の企業コード
+     */
+    public Long getCompanyIDLong() {
+        return Utils.getLongFromString(companyID);
+    }
+
+    /**
+     * Integer形式の採用種別
+     * @return Integer形式の採用種別
+     */
+    public Integer getAdoptCodeInteger() {
+        return Utils.getIntegerFromString(adoptCode);
+    }
+
+    /**
+     * Integer形式の扶養有無
+     * @return Integer形式の扶養有無
+     */
+    public Integer getSupportCodeInteger() {
+        return Utils.getIntegerFromString(supportCode);
     }
 }

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.cfiv.sysdev.rrs.Const;
+import com.cfiv.sysdev.rrs.Consts;
 import com.cfiv.sysdev.rrs.dto.UserRequest;
 import com.cfiv.sysdev.rrs.entity.Account;
 import com.cfiv.sysdev.rrs.service.CompanyService;
@@ -48,12 +48,12 @@ public class UserController {
      * @return ユーザー情報一覧画面
      */
     @RequestMapping(value = "/user/list", method = RequestMethod.GET)
-    public String displayList(Model model) {
+    public String list(Model model) {
         List<UserRequest> req_list = new ArrayList<UserRequest>();
         List<Account> account_list = userAccountService.searchAll();
 
         for (Account account : account_list) {
-            req_list.add(new UserRequest(account.idToString(1), account.getUsername(), account.getPassword(),
+            req_list.add(new UserRequest(account.getIdString(1), account.getUsername(), account.getPassword(),
                     account.getDisplayName(), account.getUserRole(), companyService.getCompanyName(account.getCompanyID()),
                     account.isEnabled()));
         }
@@ -79,7 +79,7 @@ public class UserController {
         Map<String, String> company_items = companyService.getAllCompanyNames();
         List<String> keys = new ArrayList<String>(company_items.keySet());
 
-        model.addAttribute("user_request", new UserRequest("", "", "", "", Const.USERROLE_REFINER_CODE, company_items.get(keys.get(0)), true));
+        model.addAttribute("user_request", new UserRequest("", "", "", "", Consts.USERROLE_REFINER_CODE, company_items.get(keys.get(0)), true));
         model.addAttribute("company_items", company_items);
 
         return "user/add";
@@ -118,7 +118,7 @@ public class UserController {
         Account account = userAccountService.findOne(id);
         Map<String, String> company_items = companyService.getAllCompanyNames();
 
-        model.addAttribute("user_request", new UserRequest(account.idToString(1), account.getUsername(), account.getPassword(),
+        model.addAttribute("user_request", new UserRequest(account.getIdString(1), account.getUsername(), account.getPassword(),
                 account.getDisplayName(), account.getUserRole(), companyService.getCompanyName(account.getCompanyID()),
                 account.isEnabled()));
         model.addAttribute("company_items", company_items);

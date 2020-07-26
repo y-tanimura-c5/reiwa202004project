@@ -10,31 +10,45 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import com.cfiv.sysdev.rrs.Const;
+import com.cfiv.sysdev.rrs.Consts;
 
 import lombok.Data;
 
 @Data
 public class InterviewSearchRequest implements Serializable {
-
-
     public InterviewSearchRequest() {
-        interviewDateLastItems = Arrays.asList(Const.INTERVIEWDATELAST_NAMES);
-        hireLengthItems = Arrays.asList(Const.HIRELENGTH_NAMES);
-        adoptCheckItems = Arrays.asList(Const.ADOPT_NAMES);
-        supportCheckItems = Arrays.asList(Const.SUPPORT_NAMES);
-        employCheckItems = Arrays.asList(Const.EMPLOY_NAMES);
+        interviewDateLastItems = Arrays.asList(Consts.INTERVIEWDATELAST_NAMES);
+        hireLengthItems = Arrays.asList(Consts.HIRELENGTH_NAMES);
+        adoptCheckItems = Arrays.asList(Consts.ADOPT_NAMES);
+        supportCheckItems = Arrays.asList(Consts.SUPPORT_NAMES);
+        employCheckItems = Arrays.asList(Consts.EMPLOY_NAMES);
 
-        contentJobCheckItems = Arrays.asList(Const.JOB_NAMES);
-        contentPrivateCheckItems = Arrays.asList(Const.PRIVATE_NAMES);
-        interviewTimeItems = Arrays.asList(Const.INTERVIEWTIME_NAMES);
-        discloseItems = Arrays.asList(Const.DISCLOSE_NAMES);
+        contentJobCheckItems = Arrays.asList(Consts.JOB_NAMES);
+        contentPrivateCheckItems = Arrays.asList(Consts.PRIVATE_NAMES);
+        interviewTimeItems = Arrays.asList(Consts.INTERVIEWTIME_NAMES);
+        discloseItems = Arrays.asList(Consts.DISCLOSE_NAMES);
         interviewDateStart = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         interviewDateEnd = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-        interviewDateLastCode = 2;
+        interviewDateLastCode = 0;
 
         interviewerCommentMemos = Arrays.asList("", "", "");
         adminCommentMemos = Arrays.asList("", "", "");
+
+        companyID = "";
+        employeeCode = "";
+        interviewDateStart = "";
+        interviewDateEnd = "";
+        interviewTimeCheckedList = new ArrayList<Integer>();
+        discloseCheckedList = new ArrayList<Integer>();
+        contentJobCheckedList = new ArrayList<Integer>();
+        contentJobMemos = new ArrayList<String>() ;
+        contentPrivateCheckedList = new ArrayList<Integer>();
+        contentPrivateMemos = new ArrayList<String>();
+        interviewerCommentMemos = new ArrayList<String>();
+        adminCommentMemos = new ArrayList<String>();
+        adoptCheckedList =  new ArrayList<Integer>();
+        supportCheckedList = new ArrayList<Integer>();
+        employCheckedList = new ArrayList<Integer>();
     }
 
     /**
@@ -213,24 +227,6 @@ public class InterviewSearchRequest implements Serializable {
     }
 
     /**
-     * 文字列形式のID保存
-     * @param id id
-     * @param nDigits 0埋め桁数
-     */
-    public void setIdFromNumeric(Long id, int nDigits) {
-        setId(String.format("%0" + nDigits + "d", id));
-    }
-
-    /**
-     * 文字列形式の企業コード保存
-     * @param id id
-     * @param nDigits 0埋め桁数
-     */
-    public void setCompanyIDFromNumeric(Long id, int nDigits) {
-        setCompanyID(String.format("%0" + nDigits + "d", id));
-    }
-
-    /**
      * Date形式の面談日(開始)
      * @param id id
      * @param nDigits 0埋め桁数
@@ -266,10 +262,10 @@ public class InterviewSearchRequest implements Serializable {
 
         for (int code : contentJobCheckedList) {
             try {
-                names.add(Const.JOB_NAMES[code]);
+                names.add(Consts.JOB_NAMES[code]);
             }
             catch (Exception e) {
-                names.add(Const.JOB_NAMES[0]);
+                names.add(Consts.JOB_NAMES[0]);
             }
         }
 
@@ -300,7 +296,7 @@ public class InterviewSearchRequest implements Serializable {
         if (code != 0) {
             int length = 0;
             try {
-                length = Integer.parseInt("-" + Const.HIRELENGTH_NAMES[code]);
+                length = Integer.parseInt("-" + Consts.HIRELENGTH_NAMES[code]);
             }
             catch (NumberFormatException e) {
                 return null;
@@ -348,7 +344,7 @@ public class InterviewSearchRequest implements Serializable {
 
         int length = 0;
         try {
-            length = Integer.parseInt("-" + Const.INTERVIEWDATELAST_NAMES[interviewDateLastCode]);
+            length = Integer.parseInt("-" + Consts.INTERVIEWDATELAST_NAMES[interviewDateLastCode]);
         }
         catch (NumberFormatException e) {
             return null;

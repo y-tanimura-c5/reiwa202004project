@@ -16,14 +16,18 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.cfiv.sysdev.rrs.Const;
+import com.cfiv.sysdev.rrs.Consts;
 import com.cfiv.sysdev.rrs.LogUtils;
+import com.cfiv.sysdev.rrs.Utils;
 import com.cfiv.sysdev.rrs.dto.InterviewRequest;
 import com.cfiv.sysdev.rrs.dto.InterviewSearchRequest;
 import com.cfiv.sysdev.rrs.entity.Employee;
+import com.cfiv.sysdev.rrs.entity.InterviewAttach;
 import com.cfiv.sysdev.rrs.entity.InterviewContent;
 import com.cfiv.sysdev.rrs.entity.InterviewResult;
+import com.cfiv.sysdev.rrs.repository.InterviewAttachRepository;
 import com.cfiv.sysdev.rrs.repository.InterviewContentRepository;
 import com.cfiv.sysdev.rrs.repository.InterviewResultRepository;
 
@@ -60,6 +64,12 @@ public class InterviewService {
      */
     @Autowired
     private InterviewContentRepository interviewContentRepository;
+
+    /**
+     * 面談添付ファイル Repository
+     */
+    @Autowired
+    private InterviewAttachRepository interviewAttachRepository;
 
     /**
      * IDでの面談結果検索
@@ -110,7 +120,7 @@ public class InterviewService {
         }
 
         for (int i = 0; i < req.getContentJobCheckItems().size(); i ++) {
-            if (!req.containsContentJobChecked(i) && !req.getContentJobMemos().get(i).isEmpty()) {
+            if (!req.containsContentJobChecked(i) && !req.getContentJobMemos().isEmpty() && !req.getContentJobMemos().get(i).isEmpty()) {
                 req.getContentJobCheckedList().add(i);
             }
         }
@@ -123,10 +133,10 @@ public class InterviewService {
                 + " WHERE r.deleted = :" + deletedTag
                 + " AND r.companyID = :" + companyIDTag
                 + " AND r.employeeCode = :" + employeeCodeTag;
-        String orderBy = " ORDER BY r.interviewDateTime DESC";
+        String orderBy = " ORDER BY r.interviewDate DESC";
 
-        String interviewDateStartTag = "interviewDateTimeStart";
-        String interviewDateEndTag = "interviewDateTimeEnd";
+        String interviewDateStartTag = "interviewDateStart";
+        String interviewDateEndTag = "interviewDateEnd";
         String interviewTimeCodeTag = "interviewTimeCode_";
         String discloseCodeTag = "discloseCode_";
         String contentJobCodeTag = "contentJobCode_";
@@ -135,13 +145,13 @@ public class InterviewService {
         String interviewerCommentTag = "interviewerCommentMemo_";
         String adminCommentTag = "adminCommentMemo_";
 
-        String interviewDateStartCond = "r.interviewDateTime >= :" + interviewDateStartTag;
-        String interviewDateEndCond = "r.interviewDateTime < :" + interviewDateEndTag;
+        String interviewDateStartCond = "r.interviewDate >= :" + interviewDateStartTag;
+        String interviewDateEndCond = "r.interviewDate < :" + interviewDateEndTag;
         String interviewTimeCodeCond = "r.interviewTimeCode = :" + interviewTimeCodeTag;
         String discloseCodeCond = "r.discloseCode = :" + discloseCodeTag;
-        String contentJobCodeCond = "c.contentKind = " + Const.CONTENTKIND_JOB + " AND c.contentCode = :" + contentJobCodeTag;
+        String contentJobCodeCond = "c.contentKind = " + Consts.CONTENTKIND_JOB + " AND c.contentCode = :" + contentJobCodeTag;
         String contentJobMemoCond = "c.contentComment LIKE :" + contentJobMemoTag;
-        String contentPriMemoCond = "c.contentKind = " + Const.CONTENTKIND_PRIVATE + " AND c.contentComment LIKE :" + contentPriMemoTag;
+        String contentPriMemoCond = "c.contentKind = " + Consts.CONTENTKIND_PRIVATE + " AND c.contentComment LIKE :" + contentPriMemoTag;
         String interviewerCommentCond = "r.interviewerComment LIKE :" + interviewerCommentTag;
         String adminCommentCond = "r.adminComment LIKE :" + adminCommentTag;
 
@@ -150,7 +160,7 @@ public class InterviewService {
         // 面談日条件文字列を作成する
         Date startDate = null;
         Date endDate = null;
-        if (req.getInterviewDateCode() == Const.INTERVIEWDATECODE_REGION) {
+        if (req.getInterviewDateCode() == Consts.INTERVIEWDATECODE_REGION) {
             if (req.getInterviewDateStartDate() != null && req.getInterviewDateEndDate() != null) {
                 if (req.getInterviewDateStartDate().compareTo(req.getInterviewDateEndDate()) < 0) {
                     startDate = req.getInterviewDateStartDate();
@@ -164,7 +174,7 @@ public class InterviewService {
                 sql.append(AND + interviewDateStartCond + AND + interviewDateEndCond);
             }
         }
-        else if (req.getInterviewDateCode() == Const.INTERVIEWDATECODE_LAST) {
+        else if (req.getInterviewDateCode() == Consts.INTERVIEWDATECODE_LAST) {
             if (req.getInterviewDateLastDate() != null) {
                 endDate = tommorow(req.getInterviewDateLastDate());
 
@@ -195,7 +205,7 @@ public class InterviewService {
         List<InterviewResult> result_list = new ArrayList<InterviewResult>();
         Query query = entityManager.createQuery(sql.toString());
         for (Employee employee : employee_list) {
-            query.setParameter(deletedTag, Const.EXIST);
+            query.setParameter(deletedTag, Consts.EXIST);
             query.setParameter(companyIDTag, employee.getCompanyID());
             query.setParameter(employeeCodeTag, employee.getEmployeeCode());
 
@@ -315,7 +325,7 @@ public class InterviewService {
         LogUtils.debug("employeeSQL = " + sql);
 
         Query query = entityManager.createQuery(sql.toString());
-        query.setParameter(deletedTag, Const.EXIST);
+        query.setParameter(deletedTag, Consts.EXIST);
         if (!req.getCompanyID().isEmpty()) {
             query.setParameter(companyIDTag, req.getCompanyIDLong());
         }
@@ -351,13 +361,17 @@ public class InterviewService {
      */
     @SuppressWarnings("unchecked")
     public List<InterviewResult> searchResultFromKey(Long companyID, String employeeCode, int limit) {
+        String deletedTag = "deleted";
         String companyIDTag = "companyID";
         String employeeCodeTag = "employeeCode";
         String sql = "SELECT DISTINCT r FROM InterviewResult r LEFT JOIN r.interviewContents"
-                + " WHERE r.companyID = :" + companyIDTag + " AND r.employeeCode = :" + employeeCodeTag
-                + " ORDER BY r.interviewDateTime DESC";
+                + " WHERE r.deleted = :" + deletedTag
+                + " AND r.companyID = :" + companyIDTag
+                + " AND r.employeeCode = :" + employeeCodeTag
+                + " ORDER BY r.interviewDate DESC";
 
         Query query = entityManager.createQuery(sql);
+        query.setParameter(deletedTag, Consts.EXIST);
         query.setParameter(companyIDTag, companyID);
         query.setParameter(employeeCodeTag, employeeCode);
         if (limit > 0) {
@@ -365,6 +379,51 @@ public class InterviewService {
         }
 
         return (List<InterviewResult>) query.getResultList();
+    }
+
+    /**
+     * 企業コードでの面談結果検索
+     * @param companyID 企業コード
+     * @return 検索結果(InterviewResult)
+     */
+    @SuppressWarnings("unchecked")
+    public InterviewResult findOneResultFromCompanyID(Long companyID) {
+        String deletedTag = "deleted";
+        String companyIDTag = "companyID";
+        String sql = "SELECT DISTINCT r FROM InterviewResult r LEFT JOIN r.interviewContents"
+                + " WHERE r.deleted = :" + deletedTag
+                + " AND r.companyID = :" + companyIDTag
+                + " ORDER BY r.interviewDate DESC";
+
+        Query query = entityManager.createQuery(sql);
+        query.setParameter(deletedTag, Consts.EXIST);
+        query.setParameter(companyIDTag, companyID);
+        query.setMaxResults(1);
+
+        List<InterviewResult> result = (List<InterviewResult>) query.getResultList();
+
+        if (!result.isEmpty()) {
+            return result.get(0);
+        }
+        else {
+            return null;
+        }
+    }
+
+    /**
+     * 企業コードでの最終面談日時検索
+     * @param companyID 企業コード
+     * @return 検索結果(InterviewResult)
+     */
+    public Date getLastInterviewDateFromCompanyID(Long companyID) {
+        InterviewResult result = findOneResultFromCompanyID(companyID);
+
+        if (result != null) {
+            return result.getInterviewDate();
+        }
+        else {
+            return null;
+        }
     }
 
     /**
@@ -399,25 +458,83 @@ public class InterviewService {
      */
     @SuppressWarnings("unchecked")
     public InterviewContent findOneContentFromKey(Long resultID, int contentKind, int contentCode) {
+        String deletedTag = "deleted";
         String resultIDTag = "resultID";
         String contentKindTag = "contentKind";
         String contentCodeTag = "contentCode";
-        String sql = "FROM InterviewContent c WHERE c.resultID = :" + resultIDTag +
-                " AND c.contentKind = :" + contentKindTag +
-                " AND c.contentCode = :" + contentCodeTag;
+        String sql = "FROM InterviewContent c"
+                + " WHERE c.deleted = :" + deletedTag
+                + " AND c.resultID = :" + resultIDTag
+                + " AND c.contentKind = :" + contentKindTag
+                + " AND c.contentCode = :" + contentCodeTag;
         Query query = entityManager.createQuery(sql);
+        query.setParameter(deletedTag, Consts.EXIST);
         query.setParameter(resultIDTag, resultID);
         query.setParameter(contentKindTag, contentKind);
         query.setParameter(contentCodeTag, contentCode);
 
-        List<InterviewContent> contentList = (List<InterviewContent>) query.getResultList();
+        List<InterviewContent> list = (List<InterviewContent>) query.getResultList();
 
-        if (!contentList.isEmpty()) {
-            return contentList.get(0);
+        if (!list.isEmpty()) {
+            return list.get(0);
         }
         else {
             return null;
         }
+    }
+
+    /**
+     * 面談結果ID、添付ファイル名での面談添付ファイル検索
+     * @param companyID 企業コード
+     * @param employeeCode 従業員番号
+     * @return 検索結果(Employee)
+     */
+    @SuppressWarnings("unchecked")
+    public InterviewAttach findOneAttachFromKey(Long resultID, String filename) {
+        String deletedTag = "deleted";
+        String resultIDTag = "resultID";
+        String filenameTag = "filename";
+        String sql = "FROM InterviewAttach a"
+                + " WHERE a.deleted = :" + deletedTag
+                + " AND a.resultID = :" + resultIDTag
+                + " AND a.filename = :" + filenameTag;
+        Query query = entityManager.createQuery(sql);
+        query.setParameter(deletedTag, Consts.EXIST);
+        query.setParameter(resultIDTag, resultID);
+        query.setParameter(filenameTag, filename);
+
+        List<InterviewAttach> list = (List<InterviewAttach>) query.getResultList();
+
+        for (InterviewAttach attach : list) {
+            LogUtils.info("attach.id = " + attach.getId());
+        }
+
+        if (!list.isEmpty()) {
+            return list.get(0);
+        }
+        else {
+            return null;
+        }
+    }
+
+    /**
+     * 面談結果ID、添付ファイル名での面談添付ファイル検索
+     * @param companyID 企業コード
+     * @param employeeCode 従業員番号
+     * @return 検索結果(Employee)
+     */
+    @SuppressWarnings("unchecked")
+    public List<InterviewAttach> searchAttachFromResultID(Long resultID) {
+        String deletedTag = "deleted";
+        String resultIDTag = "resultID";
+        String sql = "FROM InterviewAttach a"
+                + " WHERE a.deleted = :" + deletedTag
+                + " AND a.resultID = :" + resultIDTag;
+        Query query = entityManager.createQuery(sql);
+        query.setParameter(deletedTag, Consts.EXIST);
+        query.setParameter(resultIDTag, resultID);
+
+        return (List<InterviewAttach>) query.getResultList();
     }
 
     /**
@@ -431,26 +548,17 @@ public class InterviewService {
         InterviewResult result = new InterviewResult();
         result.setCompanyID(req.getCompanyIDLong());
         result.setEmployeeCode(req.getEmployeeCode());
-        result.setInterviewDateTime(req.getInterviewDateDate());
-        result.setRefinerUserID("user");
+        result.setInterviewDate(req.getInterviewDateDate());
+        result.setRefinerUserID(Utils.loginUsername());
         result.setInterviewTimeCode(req.getInterviewTimeCode());
         result.setInterviewerComment(req.getInterviewerComment());
         result.setDiscloseCode(req.getDiscloseCode());
         result.setAdminComment(req.getAdminComment());
         result.setDeleted(false);
-        result.setRegistUser("user");
+        result.setRegistUser(Utils.loginUsername());
         result.setRegistTime(now);
-        result.setUpdateUser("user");
+        result.setUpdateUser(Utils.loginUsername());
         result.setUpdateTime(now);
-        try {
-            if (req.getAttachedFile() != null && !req.getAttachedFile().isEmpty()) {
-                result.setFilename(req.getAttachedFile().getOriginalFilename());
-                result.setFiledata(req.getAttachedFile().getBytes());
-            }
-        }
-        catch (IOException e) {
-            LogUtils.error("添付ファイルのアクセスに失敗しました。");
-        }
 
         result = interviewResultRepository.save(result);
 
@@ -468,12 +576,19 @@ public class InterviewService {
             }
         }
 
-        contentSave(result.getId(), Const.CONTENTKIND_JOB, contentJobItems);
-        contentSave(result.getId(), Const.CONTENTKIND_PRIVATE, contentPrivateItems);
+        saveContents(result.getId(), Consts.CONTENTKIND_JOB, contentJobItems);
+        saveContents(result.getId(), Consts.CONTENTKIND_PRIVATE, contentPrivateItems);
+
+        if (req.getAttachedFile() != null && !req.getAttachedFile().isEmpty()) {
+            List<MultipartFile> attachList = new ArrayList<MultipartFile>();
+            attachList.add(req.getAttachedFile());
+            saveAttaches(result.getId(), attachList);
+        }
     }
 
     /**
      * 面談結果更新
+     * @param id 面談結果ID
      * @param req 面談結果
      */
     @Transactional
@@ -483,24 +598,14 @@ public class InterviewService {
         InterviewResult result = findOne(id);
 
         if (result != null) {
-            result.setInterviewDateTime(req.getInterviewDateDate());
-            result.setRefinerUserID("user");
+            result.setInterviewDate(req.getInterviewDateDate());
             result.setInterviewTimeCode(req.getInterviewTimeCode());
             result.setInterviewerComment(req.getInterviewerComment());
             result.setDiscloseCode(req.getDiscloseCode());
             result.setAdminComment(req.getAdminComment());
-            result.setUpdateUser("user");
+            result.setUpdateUser(Utils.loginUsername());
             result.setUpdateTime(now);
             result.setUpdateCount(result.getUpdateCount() + 1);
-            try {
-                if (req.getAttachedFile() != null && !req.getAttachedFile().isEmpty()) {
-                    result.setFilename(req.getAttachedFile().getOriginalFilename());
-                    result.setFiledata(req.getAttachedFile().getBytes());
-                }
-            }
-            catch (IOException e) {
-                LogUtils.error("添付ファイルのアクセスに失敗しました。");
-            }
         }
         else {
             LogUtils.error("面談結果更新対象の取得に失敗しました。");
@@ -523,11 +628,43 @@ public class InterviewService {
             }
         }
 
-        contentSave(result.getId(), Const.CONTENTKIND_JOB, contentJobItems);
-        contentSave(result.getId(), Const.CONTENTKIND_PRIVATE, contentPrivateItems);
+        saveContents(result.getId(), Consts.CONTENTKIND_JOB, contentJobItems);
+        saveContents(result.getId(), Consts.CONTENTKIND_PRIVATE, contentPrivateItems);
+
+        if (req.getAttachedFile() != null && !req.getAttachedFile().isEmpty()) {
+            deleteAttaches(result.getId());
+            List<MultipartFile> attachList = new ArrayList<MultipartFile>();
+            attachList.add(req.getAttachedFile());
+            saveAttaches(result.getId(), attachList);
+        }
     }
 
-    private void contentSave(Long resultID, int contentKind, Map<Integer, String> items) {
+    /**
+     * 面談結果削除
+     * @param id 面談結果ID
+     * @param req 面談結果
+     */
+    @Transactional
+    public void delete(Long id, InterviewRequest req) {
+        Date now = new Date();
+
+        InterviewResult result = findOne(id);
+
+        if (result != null) {
+            result.setDeleted(Consts.DELETED);
+            result.setUpdateUser(Utils.loginUsername());
+            result.setUpdateTime(now);
+            result.setUpdateCount(result.getUpdateCount() + 1);
+        }
+        else {
+            LogUtils.error("面談結果更新対象の取得に失敗しました。");
+            return;
+        }
+
+        result = interviewResultRepository.save(result);
+    }
+
+    private void saveContents(Long resultID, int contentKind, Map<Integer, String> items) {
         Date now = new Date();
 
         for (int key : items.keySet()) {
@@ -535,7 +672,7 @@ public class InterviewService {
 
             if (content != null) {
                 content.setContentComment(items.get(key));
-                content.setUpdateUser("user");
+                content.setUpdateUser(Utils.loginUsername());
                 content.setUpdateTime(now);
             }
             else {
@@ -545,13 +682,66 @@ public class InterviewService {
                 content.setContentCode(key);
                 content.setContentComment(items.get(key));
                 content.setDeleted(false);
-                content.setRegistUser("user");
+                content.setRegistUser(Utils.loginUsername());
                 content.setRegistTime(now);
-                content.setUpdateUser("user");
+                content.setUpdateUser(Utils.loginUsername());
                 content.setUpdateTime(now);
             }
 
             interviewContentRepository.save(content);
+        }
+    }
+
+    private void saveAttaches(Long resultID, List<MultipartFile> files) {
+        Date now = new Date();
+
+        for (MultipartFile file : files) {
+            try {
+                InterviewAttach attach = findOneAttachFromKey(resultID, file.getOriginalFilename());
+
+                if (attach != null) {
+                    attach.setFilename(file.getOriginalFilename());
+                    if (file.getOriginalFilename().toLowerCase().endsWith(".pdf")) {
+                        attach.setFiledata(file.getBytes());
+                    }
+                    else {
+                        attach.setFiledata(Utils.imageSizeConvert(file.getBytes()));
+
+                    }
+                    attach.setUpdateUser(Utils.loginUsername());
+                    attach.setUpdateTime(now);
+                }
+                else {
+                    attach = new InterviewAttach();
+                    attach.setResultID(resultID);
+                    attach.setFilename(file.getOriginalFilename());
+                    if (file.getOriginalFilename().toLowerCase().endsWith(".pdf")) {
+                        attach.setFiledata(file.getBytes());
+                    }
+                    else {
+                        attach.setFiledata(Utils.imageSizeConvert(file.getBytes()));
+
+                    }
+                    attach.setDeleted(false);
+                    attach.setRegistUser(Utils.loginUsername());
+                    attach.setRegistTime(now);
+                    attach.setUpdateUser(Utils.loginUsername());
+                    attach.setUpdateTime(now);
+                }
+
+                interviewAttachRepository.save(attach);
+            }
+            catch (IOException e) {
+                LogUtils.error("添付ファイルのアクセスに失敗しました。filename = " + file.getOriginalFilename());
+            }
+        }
+    }
+
+    private void deleteAttaches(Long resultID) {
+        List<InterviewAttach> attaches = searchAttachFromResultID(resultID);
+
+        for (InterviewAttach attach : attaches) {
+            interviewAttachRepository.delete(attach);
         }
     }
 

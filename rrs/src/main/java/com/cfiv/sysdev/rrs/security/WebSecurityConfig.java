@@ -25,7 +25,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity web) throws Exception {
-        web.formLogin().loginPage("/login").defaultSuccessUrl("/").failureUrl("/login-error").permitAll();
+        web.formLogin().loginPage("/login").successForwardUrl("/").failureUrl("/login-error").permitAll();
         web.authorizeRequests().antMatchers("/css/**", "/images/**", "/js/**").permitAll().anyRequest().authenticated();
         web.logout().logoutSuccessUrl("/login").permitAll();
     }

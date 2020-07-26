@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.util.StringUtils;
 
+import com.cfiv.sysdev.rrs.Utils;
 import com.cfiv.sysdev.rrs.dto.UserRequest;
 import com.cfiv.sysdev.rrs.entity.Account;
 import com.cfiv.sysdev.rrs.repository.AccountRepository;
@@ -84,9 +85,9 @@ public class UserAccountService implements UserDetailsService {
         account.setCompanyIDFromName(req.getCompany());
         account.setEnabled(req.getEnabled() == 1 ? true : false);
         account.setDeleted(false);
-        account.setRegistUser("user");
+        account.setRegistUser(Utils.loginUsername());
         account.setRegistTime(now);
-        account.setUpdateUser("user");
+        account.setUpdateUser(Utils.loginUsername());
         account.setUpdateTime(now);
 
         accountRepository.save(account);
@@ -111,7 +112,7 @@ public class UserAccountService implements UserDetailsService {
         account.setCompanyIDFromName(req.getCompany());
         account.setEnabled(req.getEnabled() == 1 ? true : false);
         account.setUpdateTime(now);
-        account.setUpdateUser("user");
+        account.setUpdateUser(Utils.loginUsername());
         account.setUpdateCount(account.getUpdateCount() + 1);
 
         return accountRepository.save(account);

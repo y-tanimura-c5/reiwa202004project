@@ -13,7 +13,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.cfiv.sysdev.rrs.Const;
+import com.cfiv.sysdev.rrs.Consts;
 import com.cfiv.sysdev.rrs.dto.EmployeeCSV;
 import com.cfiv.sysdev.rrs.dto.EmployeeRequest;
 import com.cfiv.sysdev.rrs.entity.Employee;
@@ -97,7 +97,7 @@ public class EmployeeService {
 
         Query query = entityManager.createQuery(sql.toString());
 
-        query.setParameter(deletedTag, Const.EXIST);
+        query.setParameter(deletedTag, Consts.EXIST);
         if (companyIDLong != null) {
             query.setParameter(companyIDTag, companyIDLong);
         }
@@ -322,12 +322,12 @@ public class EmployeeService {
         }
 
         Date now = new Date();
-        employee.setCompanyIDFromString(req.getCompanyID());
+        employee.setCompanyID(req.getCompanyIDLong());
         employee.setEmployeeCode(req.getEmployeeCode());
         employee.setEmployeeFName(req.getEmployeeFName());
-        employee.setHireYM(req.getHireYMFromString());
-        employee.setAdoptCodeFromString(req.getAdoptCode());
-        employee.setSupportCodeFromString(req.getSupportCode());
+        employee.setHireYM(req.getHireYMDate());
+        employee.setAdoptCode(req.getAdoptCodeInteger());
+        employee.setSupportCode(req.getSupportCodeInteger());
         employee.setUpdateUser("user");
         employee.setUpdateTime(now);
         employee.setUpdateCount(employee.getUpdateCount() + 1);

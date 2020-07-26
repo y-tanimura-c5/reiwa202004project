@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,6 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.cfiv.sysdev.rrs.Utils;
 
 import lombok.Data;
 
@@ -48,7 +51,7 @@ public class InterviewResult implements Serializable {
      * 面談日
      */
     @Column(name="INTERVIEW_DATETIME")
-    private Date interviewDateTime;
+    private Date interviewDate;
 
     /**
      * リファイナー
@@ -131,7 +134,48 @@ public class InterviewResult implements Serializable {
     /**
      * 面談内容
      */
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "RESULT_ID")
     private List<InterviewContent> interviewContents;
+
+    /**
+     * 面談添付ファイル
+     */
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "RESULT_ID")
+    private List<InterviewAttach> interviewAttaches;
+
+    /**
+     * 文字列形式のID
+     * @param nDigits 0埋め桁数
+     * @return 指定桁で0埋め後のID文字列
+     */
+    public String getIdString(int n) {
+        return Utils.getStringFromLong(id, n);
+    }
+
+    /**
+     * 文字列形式の企業コード
+     * @param nDigits 0埋め桁数
+     * @return 指定桁で0埋め後のID文字列
+     */
+    public String getCompanyIDString(int n) {
+        return Utils.getStringFromLong(companyID, n);
+    }
+
+    /**
+     * 文字列形式の面談日時
+     * @return YYYY-MM-DD形式文字列
+     */
+    public String getInteviewDateStringDash() {
+        return Utils.getStringDashFromDate(interviewDate);
+    }
+
+    /**
+     * 文字列形式の面談日時
+     * @return YYYY/MM/DD形式文字列
+     */
+    public String getInteviewDateStringSlash() {
+        return Utils.getStringSlashFromDate(interviewDate);
+    }
 }

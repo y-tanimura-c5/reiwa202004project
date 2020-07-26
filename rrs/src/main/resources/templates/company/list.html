@@ -25,11 +25,11 @@
 					</thead>
 					<tbody>
 					    <tr th:each="company : ${company_request_list}" th:object="${company}" class="clickable-row" th:data-href="@{/company/{id}/edit(id=*{id})}">
-					        <td><div class="text-center"  th:text="*{id}"></div></td>
-					        <td><div class="text-center"  th:text="*{name}"></div></td>
-					        <td><div class="text-center"  th:text="*{enabledName}"></div></td>
-					        <td><div class="text-center"  th:text="*{enabledName}"></div></td>
-					        <td><div class="text-center"  th:text="*{enabledName}"></div></td>
+					        <td><div class="text-center" th:text="*{id}"></div></td>
+					        <td><div class="text-center" th:text="*{name}"></div></td>
+					        <td><div class="text-center" th:text="*{enabledName}"></div></td>
+					        <td><div class="text-center" th:text="*{lastLoginDateString}"></div></td>
+					        <td><div class="text-center" th:text="*{lastInterviewDateString}"></div></td>
 					    </tr>
 					</tbody>
 				</table>

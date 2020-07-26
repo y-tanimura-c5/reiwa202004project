@@ -14,40 +14,40 @@
 				<div class="my-box mb-3"></div>
 				<form th:action="@{/user/{id}(id=*{id})}" th:method="post" th:object="${user_request}">
 					<div class="row align-items-center" style="height:40px;">
-						<div class="col-md-2 col-lg-2">
+						<div class="col-md-3 col-lg-3">
 							ユーザーID：
 						</div>
 						<div class="col-md-3 col-lg-3">
 							<input class="form-control" type="text" th:field="*{username}" autocomplete="off" readonly="readonly" />
 						</div>
-						<div class="col-md-3 col-lg-5">
-							<label th:if="${#fields.hasErrors('username')}" th:errors="*{username}" style="color: red"></label>
-						</div>
 					</div>
 
 					<div class="row align-items-center" style="height:40px;">
-						<div class="col-md-2 col-lg-2">
+						<div class="col-md-3 col-lg-3">
 							パスワード：
 						</div>
 						<div class="col-md-3 col-lg-3">
 							<input class="form-control" type="password" th:field="*{password}" autocomplete="off" />
 						</div>
+						<div class="col-md-5 col-lg-5">
+							※パスワードを変更しない場合は、パスワード、パスワード(確認)いずれも空としてください。
+						</div>
 					</div>
 
 					<div class="row align-items-center" style="height:40px;">
-						<div class="col-md-2 col-lg-2">
-							パスワード(確認用)：
+						<div class="col-md-3 col-lg-3">
+							パスワード(確認)：
 						</div>
 						<div class="col-md-3 col-lg-3">
 							<input class="form-control" type="password" th:field="*{passwordCheck}" autocomplete="off" />
 						</div>
-						<div class="col-md-3 col-lg-5">
+						<div class="col-md-5 col-lg-5">
 							<label th:if="${#fields.hasErrors('passwordCheck')}" th:errors="*{passwordCheck}" style="color: red"></label>
 						</div>
 					</div>
 
 					<div class="row align-items-center" style="height:40px;">
-						<div class="col-md-2 col-lg-2">
+						<div class="col-md-3 col-lg-3">
 							表示用名称：
 						</div>
 						<div class="col-md-3 col-lg-3">
@@ -57,10 +57,10 @@
 					</div>
 
 					<div class="row align-items-center" style="height:40px;">
-						<div class="col-md-2 col-lg-2">
+						<div class="col-md-3 col-lg-3">
 							ユーザー権限：
 						</div>
-						<div class="col-md-10 col-lg-10">
+						<div class="col-md-9 col-lg-9">
 							<div class="row align-items-center" style="height:40px;">
 								<div th:each="item : *{userRoleItems}" class="col-md-12 col-lg-3">
 									<input type="radio" name="userRole" th:value="${item.key}" th:text="${item.value}" th:field="*{userRoleCode}" />
@@ -70,7 +70,7 @@
 					</div>
 
 					<div class="row align-items-center" style="height:40px;">
-						<div class="col-md-2 col-lg-2">
+						<div class="col-md-3 col-lg-3">
 							企業名称：
 						</div>
 						<div class="col-md-3 col-lg-3">
@@ -82,10 +82,10 @@
 					</div>
 
 					<div class="row align-items-center" style="height:40px;">
-						<div class="col-md-2 col-lg-2">
+						<div class="col-md-3 col-lg-3">
 							有効／無効：
 						</div>
-						<div class="col-md-8 col-lg-10">
+						<div class="col-md-9 col-lg-9">
 							<div class="row align-items-center" style="height:40px;">
 								<div th:each="item : *{enabledItems}" class="col-md-3 col-lg-3">
 									<input type="radio" name="enabled" th:value="${item.key}" th:text="${item.value}" th:field="*{enabled}" />
@@ -96,7 +96,28 @@
 
 					<div class="my-box mb-3"></div>
 					<div class="col text-center">
-						<button class="btn btn-primary btn-block" type="submit" name="create">登録</button>
+						<button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#modalconfirm">
+							更新
+						</button>
+						<div class="modal fade" id="modalconfirm" tabindex="-1" role="dialog" aria-labelledby="labelconfirm" aria-hidden="true">
+							<div class="modal-dialog modal-dialog-centered" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title" id="labelconfirm">ユーザー情報更新</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+									<div class="modal-body">
+										入力した内容でユーザー情報を更新します。
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-secondary" data-dismiss="modal">キャンセル</button>
+										<button class="btn btn-primary" type="submit">更新</button>
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
 				</form>
 			</div>

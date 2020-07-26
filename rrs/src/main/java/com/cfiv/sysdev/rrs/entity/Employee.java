@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.cfiv.sysdev.rrs.Utils;
 import com.cfiv.sysdev.rrs.dto.EmployeeRequest;
 
 import lombok.Data;
@@ -112,8 +113,8 @@ public class Employee {
      * @param nDigits 0埋め桁数
      * @return 指定桁で0埋め後のID文字列
      */
-    public String getIdString(int nDigits) {
-        return String.format("%0" + nDigits + "d", id);
+    public String getIdString(int n) {
+        return Utils.getStringFromLong(id, n);
     }
 
     /**
@@ -121,99 +122,8 @@ public class Employee {
      * @param nDigits 0埋め桁数
      * @return 指定桁で0埋め後のID文字列
      */
-    public String getCompanyIDString(int nDigits) {
-        return String.format("%0" + nDigits + "d", companyID);
-    }
-
-    /**
-     * 文字列からの企業コード設定
-     * @param cs 企業コード文字列
-     */
-    public void setCompanyIDFromString(String cs) {
-        try {
-            setCompanyID(Long.parseLong(cs));
-        }
-        catch (NumberFormatException e) {
-            setCompanyID(0L);
-        }
-    }
-
-    /**
-     * 文字列形式の採用種別
-     * @return 採用種別文字列
-     */
-    public String getAdoptCodeString() {
-        if (adoptCode == 0) {
-            return "新卒採用";
-        }
-        else {
-            return "中途採用";
-        }
-    }
-
-    /**
-     * 文字列からの採用種別設定
-     * @param as 採用種別文字列
-     */
-    public void setAdoptCodeFromString(String as) {
-        if (as.equals("新卒採用") || as.equals("0")) {
-            setAdoptCode(0);
-        }
-        else {
-            setAdoptCode(1);
-        }
-    }
-
-    /**
-     * 文字列形式の扶養有無
-     * @return 扶養有無文字列
-     */
-    public String getSupportCodeString() {
-        if (supportCode == 0) {
-            return "扶養なし";
-        }
-        else {
-            return "扶養あり";
-        }
-    }
-
-    /**
-     * 文字列からの扶養有無設定
-     * @param ss 扶養有無文字列
-     */
-    public void setSupportCodeFromString(String ss) {
-        if (ss.equals("扶養なし") || ss.equals("0")) {
-            setSupportCode(0);
-        }
-        else {
-            setSupportCode(1);
-        }
-    }
-
-    /**
-     * 文字列形式の就業種別
-     * @return 就業種別文字列
-     */
-    public String getEmployCodeString() {
-        if (employCode == 0) {
-            return "在籍中";
-        }
-        else {
-            return "退職済";
-        }
-    }
-
-    /**
-     * 文字列からの就業種別設定
-     * @param es 就業種別文字列
-     */
-    public void setEmployCodeFromString(String es) {
-        if (es.equals("在籍中") || es.equals("0")) {
-            setEmployCode(0);
-        }
-        else {
-            setEmployCode(1);
-        }
+    public String getCompanyIDString(int n) {
+        return Utils.getStringFromLong(companyID, n);
     }
 
     /**

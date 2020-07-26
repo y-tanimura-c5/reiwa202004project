@@ -41,7 +41,7 @@ public class EmployeeController {
      * @return 従業員情報検索画面
      */
     @RequestMapping(value = "/employee/list", method = RequestMethod.GET)
-    public String displayList(Model model) {
+    public String list(Model model) {
         model.addAttribute("employee_request_list", new ArrayList<EmployeeRequest>());
         model.addAttribute("employee_request", new EmployeeRequest());
 

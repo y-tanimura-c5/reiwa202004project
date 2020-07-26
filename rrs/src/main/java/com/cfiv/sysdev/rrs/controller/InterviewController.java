@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.cfiv.sysdev.rrs.Const;
+import com.cfiv.sysdev.rrs.Consts;
 import com.cfiv.sysdev.rrs.LogUtils;
 import com.cfiv.sysdev.rrs.dto.EmployeeRequest;
 import com.cfiv.sysdev.rrs.dto.InterviewRequest;
 import com.cfiv.sysdev.rrs.dto.InterviewSearchRequest;
 import com.cfiv.sysdev.rrs.entity.Company;
-import com.cfiv.sysdev.rrs.entity.InterviewResult;
+import com.cfiv.sysdev.rrs.entity.InterviewAttach;
 import com.cfiv.sysdev.rrs.service.CompanyService;
 import com.cfiv.sysdev.rrs.service.EmployeeService;
 import com.cfiv.sysdev.rrs.service.InterviewService;
@@ -152,7 +152,7 @@ public class InterviewController {
         if (!result.hasErrors()) {
             EmployeeRequest employee = employeeService.findOneFromID(req.getCompanyID(), req.getEmployeeCode());
             Company company = companyService.findOne(req.getCompanyIDLong());
-            List<InterviewRequest> past_list = interviewService.searchRequestFromKey(req.getCompanyIDLong(), req.getEmployeeCode(), Const.PASTINTERVIEW_NUM);
+            List<InterviewRequest> past_list = interviewService.searchRequestFromKey(req.getCompanyIDLong(), req.getEmployeeCode(), Consts.PASTINTERVIEW_NUM);
 
             req.setCompanyName(company.getName());
             req.setEmployee(employee);
@@ -196,14 +196,22 @@ public class InterviewController {
      */
     @RequestMapping(value = "/interview/submit", params = "create", method = RequestMethod.POST)
     public String create(Model model, @ModelAttribute("interview_request") @Valid InterviewRequest req, BindingResult result) {
-        model.addAttribute("interview_request", req);
-
         if (!result.hasErrors()) {
             interviewService.create(req);
 
             return "redirect:/";
         }
         else {
+            EmployeeRequest employee = employeeService.findOneFromID(req.getCompanyID(), req.getEmployeeCode());
+            Company company = companyService.findOne(req.getCompanyIDLong());
+            List<InterviewRequest> past_list = interviewService.searchRequestFromKey(req.getCompanyIDLong(), req.getEmployeeCode(), Consts.PASTINTERVIEW_NUM);
+
+            req.setCompanyName(company.getName());
+            req.setEmployee(employee);
+            req.setPastInterviews(past_list);
+
+            model.addAttribute("interview_request", req);
+
             return "/interview/add";
         }
     }
@@ -219,12 +227,12 @@ public class InterviewController {
     public String preview(@PathVariable Long id, @PathVariable String filename, Model model) {
         LogUtils.info("id = " + id + ", filename = " + filename);
 
-        InterviewResult result = interviewService.findOne(id);
+        InterviewAttach attach = interviewService.findOneAttachFromKey(id, filename);
 
         StringBuffer data = new StringBuffer();
         String base64;
         try {
-            base64 = new String(Base64.encodeBase64(result.getFiledata()), "ASCII");
+            base64 = new String(Base64.encodeBase64(attach.getFiledata()), "ASCII");
         }
         catch (UnsupportedEncodingException e) {
             base64 = "";
@@ -269,12 +277,33 @@ public class InterviewController {
      * @param result バリデーションチェック結果
      * @return 面談結果検索画面(更新成功)／面談結果編集画面(更新失敗)
      */
-    @RequestMapping(value = "/interview/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/interview/{id}", params = "confirm", method = RequestMethod.POST)
     public String update(@PathVariable Long id, Model model, @ModelAttribute("interview_request") @Valid InterviewRequest req, BindingResult result) {
         model.addAttribute("interview_request", req);
 
         if (!result.hasErrors()) {
             interviewService.update(id, req);
+
+            return "redirect:/interview/listinit";
+        }
+        else {
+            return "/interview/edit";
+        }
+    }
+
+    /**
+     * 面談結果削除
+     * @param model モデル
+     * @param req 面談結果
+     * @param result バリデーションチェック結果
+     * @return 面談結果検索画面(削除成功)／面談結果編集画面(削除失敗)
+     */
+    @RequestMapping(value = "/interview/{id}", params = "delete", method = RequestMethod.POST)
+    public String delte(@PathVariable Long id, Model model, @ModelAttribute("interview_request") @Valid InterviewRequest req, BindingResult result) {
+        model.addAttribute("interview_request", req);
+
+        if (!result.hasErrors()) {
+            interviewService.delete(id, req);
 
             return "redirect:/interview/listinit";
         }

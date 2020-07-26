@@ -6,13 +6,50 @@
 <div class="box">
 	<div th:replace="header :: header"></div>
 
-	<div class="container">
+	<div class="container-fluid">
 		<div class="card mt-2 p-3">
 			<div class="card-heading"><h2>ホーム</h2></div>
 			<div class="card-body">
-
-			<!-- ここになにか書く -->
-
+				<div class="my-box mb-3"></div>
+				<div class="row align-items-center no-gutters" style="height:40px;">
+					<div class="col-md-2 col-lg-1">
+						<a id="search_result">検索結果：</a>
+					</div>
+					<div class="col-md-3 col-lg-3">
+						[[${interview_request_size}]] 件
+					</div>
+				</div>
+				<table class="table table-hover table-bordered">
+					<thead class="thead-darknavy">
+						<tr>
+							<th><div class="text-center">企業コード</div></th>
+							<th><div class="text-center">従業員番号</div></th>
+							<th><div class="text-center">従業員名字</div></th>
+							<th><div class="text-center">面談日</div></th>
+							<th><div class="text-center">面談時間</div></th>
+							<th><div class="text-center">情報開示</div></th>
+							<th><div class="text-center">面談内容</div></th>
+						</tr>
+					</thead>
+					<tbody>
+					    <tr th:each="interview : ${interview_request_list}" th:object="${interview}" class="clickable-row" th:data-href="@{/interview/{id}/edit(id=*{id})}">
+							<td><div class="text-center" th:text="*{companyID}"></div></td>
+							<td><div class="text-center" th:text="*{employeeCode}"></div></td>
+							<td><div class="text-center" th:text="*{employee.employeeFName}"></div></td>
+							<td><div class="text-center" th:text="*{interviewDateSlash}"></div></td>
+							<td><div class="text-center" th:text="*{interviewTimeShort}"></div></td>
+							<td>
+								<div th:if="*{discloseCode == 0}" class="text-center">
+									<a th:text="*{discloseShort}"></a>
+								</div>
+								<div th:if="*{discloseCode == 1 || discloseCode == 2}" class="text-center text-danger">
+									<a th:text="*{discloseShort}"></a>
+								</div>
+							</td>
+							<td th:text="*{contentJobNamesShort}"></td>
+					    </tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</div>

@@ -7,7 +7,7 @@ import java.util.Map;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-import com.cfiv.sysdev.rrs.Const;
+import com.cfiv.sysdev.rrs.Consts;
 import com.cfiv.sysdev.rrs.annotation.PasswordConfirm;
 import com.cfiv.sysdev.rrs.annotation.Unused;
 
@@ -21,12 +21,12 @@ import lombok.Data;
 public class UserRequest implements Serializable {
     public UserRequest() {
         userRoleItems = new LinkedHashMap<Integer, String>();
-        for (int i = 0; i < Const.USERROLE_CODES.length; i ++) {
-            userRoleItems.put(Const.USERROLE_CODES[i], Const.USERROLE_NAMES[i]);
+        for (int i = 0; i < Consts.USERROLE_CODES.length; i ++) {
+            userRoleItems.put(Consts.USERROLE_CODES[i], Consts.USERROLE_NAMES[i]);
         }
         enabledItems = new LinkedHashMap<Integer, String>();
-        for (int i = 0; i < Const.ENABLED_CODES.length; i ++) {
-            enabledItems.put(Const.ENABLED_CODES[i], Const.ENABLED_NAMES[i]);
+        for (int i = 0; i < Consts.ENABLED_CODES.length; i ++) {
+            enabledItems.put(Consts.ENABLED_CODES[i], Consts.ENABLED_NAMES[i]);
         }
     }
 

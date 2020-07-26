@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.cfiv.sysdev.rrs.dto.CompanyRequest;
+
 import lombok.Data;
 
 /**
@@ -86,28 +88,20 @@ public class Company implements Serializable {
     }
 
     /**
-     * 文字列形式の有効／無効
-     * @return 「有効」または「無効」文字列
+     * Company→CompanyRequest変換
+     * @param lastlogin 最終ログイン日時
+     * @param lastInterview 最終面談日時
+     * @return CompanyRequest
      */
-    public String getEnabledString() {
-        if (enabled) {
-            return "有効";
-        }
-        else {
-            return "無効";
-        }
+    public CompanyRequest toRequest(Date lastlogin, Date lastInterview) {
+        return new CompanyRequest(getIdString(4), getName(), isEnabled(), lastlogin, lastInterview);
     }
 
     /**
-     * 文字列からの有効／無効設定
-     * @param es 「有効」／「無効」文字列
+     * Company→CompanyRequest変換
+     * @return CompanyRequest
      */
-    public void setEnabledFromString(String es) {
-        if (es.equals("有効")) {
-            setEnabled(true);
-        }
-        else {
-            setEnabled(false);
-        }
+    public CompanyRequest toRequest() {
+        return new CompanyRequest(getIdString(4), getName(), isEnabled(), null, null);
     }
 }

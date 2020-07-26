@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cfiv.sysdev.rrs.annotation.AttachedFile;
 
-public class AttachedFileValidator implements ConstraintValidator<AttachedFile, MultipartFile> {
+public class AttachFileValidator implements ConstraintValidator<AttachedFile, MultipartFile> {
     @Override
     public void initialize(AttachedFile constraint) {
     }
@@ -20,18 +20,17 @@ public class AttachedFileValidator implements ConstraintValidator<AttachedFile, 
 
         if (multipartFile != null && !multipartFile.getOriginalFilename().isEmpty()) {
             // 拡張子チェック
-            if (!multipartFile.getOriginalFilename().endsWith(".jpg") &&
-                    !multipartFile.getOriginalFilename().endsWith(".jpeg") &&
-                    !multipartFile.getOriginalFilename().endsWith(".jpe") &&
-                    !multipartFile.getOriginalFilename().endsWith(".png") &&
-                    !multipartFile.getOriginalFilename().endsWith(".pdf")) {
-                message = "登録可能な添付ファイルはJPGファイル、PNGファイル、PDFファイルのみです。";
-           }
+            if (!multipartFile.getOriginalFilename().toLowerCase().endsWith(".jpg") &&
+                    !multipartFile.getOriginalFilename().toLowerCase().endsWith(".jpeg") &&
+                    !multipartFile.getOriginalFilename().toLowerCase().endsWith(".jpe") &&
+                    !multipartFile.getOriginalFilename().toLowerCase().endsWith(".pdf")) {
+                message = "登録可能な添付ファイルはJPGファイル、PDFファイルのみです。＜添付ファイル：" + multipartFile.getOriginalFilename() + "＞";
+            }
 
             try {
                 byte[] filedata = multipartFile.getBytes();
-                if (filedata.length > 1024 * 1024) {
-                    message = "1Mバイトを超えるサイズの添付ファイルは登録できません。";
+                if (multipartFile.getOriginalFilename().toLowerCase().endsWith(".pdf") && filedata.length > 1024 * 1024) {
+                    message = "1Mバイトを超えるサイズのPDFファイルは登録できません。";
                 }
             }
             catch (IOException e) {
@@ -39,7 +38,7 @@ public class AttachedFileValidator implements ConstraintValidator<AttachedFile, 
             }
         }
 
-        if (!message.isEmpty()){
+        if (!message.isEmpty()) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
             return false;

@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.cfiv.sysdev.rrs.Utils;
+
 import lombok.Data;
 
 /**
@@ -104,8 +106,8 @@ public class Account {
      * @param nDigits 0埋め桁数
      * @return 指定桁で0埋め後のID文字列
      */
-    public String idToString(int nDigits) {
-        return String.format("%0" + nDigits + "d", id);
+    public String getIdString(int n) {
+        return Utils.getStringFromLong(id, n);
     }
 
     /**

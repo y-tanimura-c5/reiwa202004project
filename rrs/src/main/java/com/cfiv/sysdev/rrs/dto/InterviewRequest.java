@@ -13,8 +13,9 @@ import javax.validation.constraints.Size;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.cfiv.sysdev.rrs.Const;
+import com.cfiv.sysdev.rrs.Consts;
 import com.cfiv.sysdev.rrs.annotation.AttachedFile;
+import com.cfiv.sysdev.rrs.entity.InterviewAttach;
 import com.cfiv.sysdev.rrs.entity.InterviewContent;
 import com.cfiv.sysdev.rrs.entity.InterviewResult;
 
@@ -24,32 +25,31 @@ import lombok.Data;
 public class InterviewRequest implements Serializable {
 
     public InterviewRequest() {
-        contentJobCheckItems = Arrays.asList(Const.JOB_NAMES);
-        contentPrivateCheckItems = Arrays.asList(Const.PRIVATE_NAMES);
-        interviewTimeItems = Arrays.asList(Const.INTERVIEWTIME_NAMES);
-        discloseItems = Arrays.asList(Const.DISCLOSE_NAMES);
+        contentJobCheckItems = Arrays.asList(Consts.JOB_NAMES);
+        contentPrivateCheckItems = Arrays.asList(Consts.PRIVATE_NAMES);
+        interviewTimeItems = Arrays.asList(Consts.INTERVIEWTIME_NAMES);
+        discloseItems = Arrays.asList(Consts.DISCLOSE_NAMES);
         interviewDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
     }
 
     public InterviewRequest(InterviewResult result, EmployeeRequest employee) {
         this();
 
-        setIdFromNumeric(result.getId(), 1);
-        setCompanyIDFromNumeric(result.getCompanyID(), 4);
+        setId(result.getIdString(1));
+        setCompanyID(result.getCompanyIDString(4));
         setEmployeeCode(result.getEmployeeCode());
         setEmployee(employee);
-        setInterviewDateFromDate(result.getInterviewDateTime());
+        setInterviewDate(result.getInteviewDateStringDash());
         setInterviewTimeCode(result.getInterviewTimeCode());
         setDiscloseCode(result.getDiscloseCode());
         setInterviewerComment(result.getInterviewerComment());
         setAdminComment(result.getAdminComment());
-        setAttachedFilename(result.getFilename());
 
         List<Integer> job_checked = new ArrayList<Integer>();
         List<String> job_memos = new ArrayList<String>();
         List<String> pri_memos = new ArrayList<String>();
         for (InterviewContent content : result.getInterviewContents()) {
-            if (content.getContentKind() == Const.CONTENTKIND_JOB) {
+            if (content.getContentKind() == Consts.CONTENTKIND_JOB) {
                 job_checked.add(content.getContentCode());
                 job_memos.add(content.getContentComment());
             }
@@ -60,6 +60,10 @@ public class InterviewRequest implements Serializable {
         setContentJobCheckedList(job_checked);
         setContentJobMemos(job_memos);
         setContentPrivateMemos(pri_memos);
+
+        for (InterviewAttach attach : result.getInterviewAttaches()) {
+            setAttachedFilename(attach.getFilename());
+        }
     }
 
     /**
@@ -158,6 +162,11 @@ public class InterviewRequest implements Serializable {
     private List<String> contentPrivateMemos;
 
     /**
+     * 過去面談結果リスト
+     */
+    private List<InterviewRequest> pastInterviews;
+
+    /**
      * 添付ファイル
      */
     @AttachedFile
@@ -167,11 +176,6 @@ public class InterviewRequest implements Serializable {
      * 添付ファイル名
      */
     private String attachedFilename;
-
-    /**
-     * 過去面談結果リスト
-     */
-    private List<InterviewRequest> pastInterviews;
 
     /**
      * 企業コードLong値
@@ -217,41 +221,15 @@ public class InterviewRequest implements Serializable {
     }
 
     /**
-     * 文字列形式のID保存
-     * @param id id
-     * @param nDigits 0埋め桁数
-     */
-    public void setIdFromNumeric(Long id, int nDigits) {
-        setId(String.format("%0" + nDigits + "d", id));
-    }
-
-    /**
-     * 文字列形式の企業コード保存
-     * @param id id
-     * @param nDigits 0埋め桁数
-     */
-    public void setCompanyIDFromNumeric(Long id, int nDigits) {
-        setCompanyID(String.format("%0" + nDigits + "d", id));
-    }
-
-    /**
-     * 文字列形式の面談日保存
-     * @param 面談日
-     */
-    public void setInterviewDateFromDate(Date date) {
-        setInterviewDate(new SimpleDateFormat("yyyy-MM-dd").format(date));
-    }
-
-    /**
      * 文字列形式の面談時間
      * @return 面談時間文字列
      */
     public String getInterviewTime() {
         try {
-            return Const.INTERVIEWTIME_NAMES[interviewTimeCode];
+            return Consts.INTERVIEWTIME_NAMES[interviewTimeCode];
         }
         catch (Exception e) {
-            return Const.INTERVIEWTIME_NAMES[0];
+            return Consts.INTERVIEWTIME_NAMES[0];
         }
     }
 
@@ -261,10 +239,10 @@ public class InterviewRequest implements Serializable {
      */
     public String getDisclose() {
         try {
-            return Const.DISCLOSE_NAMES[discloseCode];
+            return Consts.DISCLOSE_NAMES[discloseCode];
         }
         catch (Exception e) {
-            return Const.DISCLOSE_NAMES[0];
+            return Consts.DISCLOSE_NAMES[0];
         }
     }
 
@@ -274,10 +252,10 @@ public class InterviewRequest implements Serializable {
      */
     public String getInterviewTimeShort() {
         try {
-            return Const.INTERVIEWTIME_SHORTNAMES[interviewTimeCode];
+            return Consts.INTERVIEWTIME_SHORTNAMES[interviewTimeCode];
         }
         catch (Exception e) {
-            return Const.INTERVIEWTIME_SHORTNAMES[0];
+            return Consts.INTERVIEWTIME_SHORTNAMES[0];
         }
     }
 
@@ -287,10 +265,10 @@ public class InterviewRequest implements Serializable {
      */
     public String getDiscloseShort() {
         try {
-            return Const.DISCLOSE_SHORTNAMES[discloseCode];
+            return Consts.DISCLOSE_SHORTNAMES[discloseCode];
         }
         catch (Exception e) {
-            return Const.DISCLOSE_SHORTNAMES[0];
+            return Consts.DISCLOSE_SHORTNAMES[0];
         }
     }
 
@@ -303,10 +281,10 @@ public class InterviewRequest implements Serializable {
 
         for (int code : contentJobCheckedList) {
             try {
-                names.add(Const.JOB_NAMES[code]);
+                names.add(Consts.JOB_NAMES[code]);
             }
             catch (Exception e) {
-                names.add(Const.JOB_NAMES[0]);
+                names.add(Consts.JOB_NAMES[0]);
             }
         }
 
@@ -321,7 +299,7 @@ public class InterviewRequest implements Serializable {
         StringBuilder names = new StringBuilder();
 
         for (int i = 0; i < contentJobCheckedList.size(); i ++) {
-            names.append(Const.JOB_SHORTNAMES[i]);
+            names.append(Consts.JOB_SHORTNAMES[i]);
 
             if (i != contentJobCheckedList.size() - 1) {
                 names.append("、");
