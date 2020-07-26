@@ -124,5 +124,22 @@ public class Consts {
 
     public static int USERROLE_REFINER_CODE = USERROLE_CODES[2];
     public static int PASTINTERVIEW_NUM = 3;
+    public static int INTERVIEWERCOMMENT_CONDNUM = 3;
+    public static int ADMINCOMMENT_CONDNUM = 3;
     public static int CONVERTEDIMAGE_WIDTH = 1600;
+
+    public static int CONDITIONKIND_USESEARCH = 0;
+    public static int CONDITIONKIND_INTERVIEWDATECODE = 1;
+    public static int CONDITIONKIND_INTERVIEWDATEREGION = 2;
+    public static int CONDITIONKIND_INTERVIEWDATELAST = 3;
+    public static int CONDITIONKIND_INTERVIEWTIME = 4;
+    public static int CONDITIONKIND_DISCLOSE = 5;
+    public static int CONDITIONKIND_CONTENTJOB = 6;
+    public static int CONDITIONKIND_CONTENTPRIVATE = 7;
+    public static int CONDITIONKIND_INTERVIEWERCOMMENT = 8;
+    public static int CONDITIONKIND_ADMINCOMMENT = 9;
+    public static int CONDITIONKIND_HIREREGION = 10;
+    public static int CONDITIONKIND_ADOPT = 11;
+    public static int CONDITIONKIND_SUPPORT = 12;
+    public static int CONDITIONKIND_EMPLOY = 13;
 }

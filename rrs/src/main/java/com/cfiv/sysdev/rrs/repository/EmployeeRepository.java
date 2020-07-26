@@ -5,6 +5,9 @@ import org.springframework.stereotype.Repository;
 
 import com.cfiv.sysdev.rrs.entity.Employee;
 
+/**
+ * 従業員情報 Repository
+ */
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 }

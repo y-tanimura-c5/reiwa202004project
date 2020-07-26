@@ -2,7 +2,6 @@ package com.cfiv.sysdev.rrs.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -21,13 +20,16 @@ import org.springframework.web.multipart.MultipartFile;
 import com.cfiv.sysdev.rrs.Consts;
 import com.cfiv.sysdev.rrs.LogUtils;
 import com.cfiv.sysdev.rrs.Utils;
+import com.cfiv.sysdev.rrs.dto.InterviewConditionRequest;
 import com.cfiv.sysdev.rrs.dto.InterviewRequest;
 import com.cfiv.sysdev.rrs.dto.InterviewSearchRequest;
 import com.cfiv.sysdev.rrs.entity.Employee;
 import com.cfiv.sysdev.rrs.entity.InterviewAttach;
+import com.cfiv.sysdev.rrs.entity.InterviewCondition;
 import com.cfiv.sysdev.rrs.entity.InterviewContent;
 import com.cfiv.sysdev.rrs.entity.InterviewResult;
 import com.cfiv.sysdev.rrs.repository.InterviewAttachRepository;
+import com.cfiv.sysdev.rrs.repository.InterviewConditionRepository;
 import com.cfiv.sysdev.rrs.repository.InterviewContentRepository;
 import com.cfiv.sysdev.rrs.repository.InterviewResultRepository;
 
@@ -70,6 +72,12 @@ public class InterviewService {
      */
     @Autowired
     private InterviewAttachRepository interviewAttachRepository;
+
+    /**
+     * 面談結果検索条件 Repository
+     */
+    @Autowired
+    private InterviewConditionRepository interviewConditionRepository;
 
     /**
      * IDでの面談結果検索
@@ -164,11 +172,11 @@ public class InterviewService {
             if (req.getInterviewDateStartDate() != null && req.getInterviewDateEndDate() != null) {
                 if (req.getInterviewDateStartDate().compareTo(req.getInterviewDateEndDate()) < 0) {
                     startDate = req.getInterviewDateStartDate();
-                    endDate = tommorow(req.getInterviewDateEndDate());
+                    endDate = Utils.tommorow(req.getInterviewDateEndDate());
                 }
                 else {
                     startDate = req.getInterviewDateEndDate();
-                    endDate = tommorow(req.getInterviewDateStartDate());
+                    endDate = Utils.tommorow(req.getInterviewDateStartDate());
                 }
 
                 sql.append(AND + interviewDateStartCond + AND + interviewDateEndCond);
@@ -176,7 +184,7 @@ public class InterviewService {
         }
         else if (req.getInterviewDateCode() == Consts.INTERVIEWDATECODE_LAST) {
             if (req.getInterviewDateLastDate() != null) {
-                endDate = tommorow(req.getInterviewDateLastDate());
+                endDate = Utils.tommorow(req.getInterviewDateLastDate());
 
                 sql.append(AND + interviewDateEndCond);
             }
@@ -189,13 +197,13 @@ public class InterviewService {
         // 面談内容(会社関連、プライベート)条件文字列を作成する
         sql.append(createContentJobCondition(AND, req.getContentJobCheckedList(), req.getContentJobMemos(),
                 contentJobCodeCond, contentJobMemoCond));
-        List<String> pMemos = trimMemos(req.getContentPrivateMemos());
+        List<String> pMemos = Utils.trimMemos(req.getContentPrivateMemos());
         sql.append(createMultiCondition(AND, pMemos.size(), contentPriMemoCond));
 
         // 相談内容、管理者記入欄条件文字列を作成する
-        List<String> iMemos = trimMemos(req.getInterviewerCommentMemos());
+        List<String> iMemos = Utils.trimMemos(req.getInterviewerCommentMemos());
         sql.append(createMultiCondition(AND, iMemos.size(), interviewerCommentCond));
-        List<String> aMemos = trimMemos(req.getAdminCommentMemos());
+        List<String> aMemos = Utils.trimMemos(req.getAdminCommentMemos());
         sql.append(createMultiCondition(AND, aMemos.size(), adminCommentCond));
 
         sql.append(orderBy);
@@ -664,6 +672,13 @@ public class InterviewService {
         result = interviewResultRepository.save(result);
     }
 
+    /**
+     * 面談内容保存
+     * @param resultID 面談結果ID
+     * @param contentKind 面談内容種別
+     * @param items 面談内容
+     */
+    @Transactional
     private void saveContents(Long resultID, int contentKind, Map<Integer, String> items) {
         Date now = new Date();
 
@@ -692,6 +707,12 @@ public class InterviewService {
         }
     }
 
+    /**
+     * 面談添付ファイル保存
+     * @param resultID 面談結果ID
+     * @param files 面談添付ファイル
+     */
+    @Transactional
     private void saveAttaches(Long resultID, List<MultipartFile> files) {
         Date now = new Date();
 
@@ -737,6 +758,11 @@ public class InterviewService {
         }
     }
 
+    /**
+     * 面談添付ファイル削除
+     * @param resultID 面談結果ID
+     */
+    @Transactional
     private void deleteAttaches(Long resultID) {
         List<InterviewAttach> attaches = searchAttachFromResultID(resultID);
 
@@ -844,32 +870,240 @@ public class InterviewService {
     }
 
     /**
-     * メモリストの空文字列削除
-     * @param memos
-     * @return
+     * 面談結果検索条件保存
+     * @param username ユーザーID
      */
-    private List<String> trimMemos(List<String> memos) {
-        List<String> result = new ArrayList<String>();
+    public InterviewSearchRequest getSearchRequestFromCondition(String username) {
+        InterviewSearchRequest req = new InterviewSearchRequest();
+        InterviewConditionRequest cond = getCondition(username);
 
-        for (String memo : memos) {
-            if (!memo.isEmpty()) {
-                result.add(memo);
-            }
-        }
+        req.setInterviewDateStart(cond.getInterviewDateStart());
+        req.setInterviewDateEnd(cond.getInterviewDateEnd());
+        req.setInterviewDateLastCode(cond.getInterviewDateLastCode());
+        req.setInterviewDateCode(cond.getInterviewDateCode());
+        req.setInterviewTimeCheckedList(cond.getInterviewTimeCheckedList());
+        req.setDiscloseCheckedList(cond.getDiscloseCheckedList());
+        req.setContentJobCheckedList(cond.getContentJobCheckedList());
+        req.setContentJobMemos(cond.getContentJobMemos());
+        req.setContentPrivateCheckedList(cond.getContentPrivateCheckedList());
+        req.setContentPrivateMemos(cond.getContentPrivateMemos());
+        req.setInterviewerCommentMemos(cond.getInterviewerCommentMemos());
+        req.setAdminCommentMemos(cond.getAdminCommentMemos());
+        req.setHireLengthStartCode(cond.getHireLengthStartCode());
+        req.setHireLengthEndCode(cond.getHireLengthEndCode());
+        req.setAdoptCheckedList(cond.getAdoptCheckedList());
+        req.setSupportCheckedList(cond.getSupportCheckedList());
+        req.setEmployCheckedList(cond.getEmployCheckedList());
 
-        return result;
+        return req;
     }
 
     /**
-     * 翌日設定
-     * @param date 元日付
-     * @return 翌日日付
+     * 面談結果検索条件
+     * @param username ユーザーID
      */
-    private Date tommorow(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.DATE, 1);
+    public InterviewConditionRequest getCondition(String username) {
+        InterviewConditionRequest req = new InterviewConditionRequest();
+        List<InterviewCondition> list;
+        List<Integer> iList;
+        List<String> sList;
 
-        return calendar.getTime();
+        list = interviewConditionRepository.findByUsernameAndConditionKind(username, Consts.CONDITIONKIND_USESEARCH);
+        if (!list.isEmpty()) {
+            req.setUseInterviewSearch(list.get(0).getConditionString());
+        }
+
+        list = interviewConditionRepository.findByUsernameAndConditionKind(username, Consts.CONDITIONKIND_INTERVIEWDATECODE);
+        if (!list.isEmpty()) {
+            req.setInterviewDateCode(list.get(0).getConditionCode());
+        }
+
+        list = interviewConditionRepository.findByUsernameAndConditionKind(username, Consts.CONDITIONKIND_INTERVIEWDATEREGION);
+        if (list.size() >= 2) {
+            req.setInterviewDateMin(list.get(0).getConditionCode());
+            req.setInterviewDateMax(list.get(1).getConditionCode());
+        }
+
+        list = interviewConditionRepository.findByUsernameAndConditionKind(username, Consts.CONDITIONKIND_INTERVIEWDATELAST);
+        if (!list.isEmpty()) {
+            req.setInterviewDateLastCode(list.get(0).getConditionCode());
+        }
+
+        req.setInterviewTimeCheckedList(getConditionCheckedList(username, Consts.CONDITIONKIND_INTERVIEWTIME));
+        req.setDiscloseCheckedList(getConditionCheckedList(username, Consts.CONDITIONKIND_DISCLOSE));
+
+        list = interviewConditionRepository.findByUsernameAndConditionKind(username, Consts.CONDITIONKIND_CONTENTJOB);
+        sList = new ArrayList<String>();
+        for (int i = 0; i < req.getContentJobCheckItems().size(); i ++) {
+            sList.add("");
+        }
+        iList = new ArrayList<Integer>();
+        for (InterviewCondition cond : list) {
+            iList.add(cond.getConditionCode());
+            sList.set(cond.getConditionCode(), cond.getConditionString());
+        }
+        req.setContentJobCheckedList(iList);
+        req.setContentJobMemos(sList);
+
+        req.setContentPrivateMemos(getConditionMemos(username, Consts.CONDITIONKIND_CONTENTPRIVATE, req.getContentPrivateCheckItems().size()));
+        req.setInterviewerCommentMemos(getConditionMemos(username, Consts.CONDITIONKIND_INTERVIEWERCOMMENT, Consts.INTERVIEWERCOMMENT_CONDNUM));
+        req.setAdminCommentMemos(getConditionMemos(username, Consts.CONDITIONKIND_ADMINCOMMENT, Consts.ADMINCOMMENT_CONDNUM));
+
+        list = interviewConditionRepository.findByUsernameAndConditionKind(username, Consts.CONDITIONKIND_HIREREGION);
+        if (list.size() >= 2) {
+            req.setHireLengthStartCode(list.get(0).getConditionCode());
+            req.setHireLengthEndCode(list.get(1).getConditionCode());
+        }
+        req.setAdoptCheckedList(getConditionCheckedList(username, Consts.CONDITIONKIND_ADOPT));
+        req.setSupportCheckedList(getConditionCheckedList(username, Consts.CONDITIONKIND_SUPPORT));
+        req.setEmployCheckedList(getConditionCheckedList(username, Consts.CONDITIONKIND_EMPLOY));
+
+        return req;
+    }
+
+    /**
+     * 面談結果検索条件
+     * @param username ユーザーID
+     */
+    public boolean isUseInitSearchCondition(String username) {
+        List<InterviewCondition> list = interviewConditionRepository.findByUsernameAndConditionKind(username, Consts.CONDITIONKIND_USESEARCH);
+        if (!list.isEmpty()) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * ユーザーID、検索条件コードからのチェック結果リスト
+     * @param username ユーザーID
+     * @param code 検索条件コード
+     * @return ユーザーID、検索条件コードからのチェック結果リスト
+     */
+    private List<Integer> getConditionCheckedList(String username, int code) {
+        List<InterviewCondition> list = interviewConditionRepository.findByUsernameAndConditionKind(username, code);
+        List<Integer> iList = new ArrayList<Integer>();
+        for (InterviewCondition cond : list) {
+            iList.add(cond.getConditionCode());
+        }
+
+        return iList;
+    }
+
+    private List<String> getConditionMemos(String username, int code, int size) {
+        List<InterviewCondition> list = interviewConditionRepository.findByUsernameAndConditionKind(username, code);
+        List<String> sList = new ArrayList<String>();
+        for (int i = 0; i < size; i ++) {
+            sList.add("");
+        }
+        for (InterviewCondition cond : list) {
+            sList.set(cond.getConditionCode(), cond.getConditionString());
+        }
+
+        return sList;
+    }
+
+    /**
+     * 面談結果検索条件保存
+     * @param username ユーザーID
+     * @param req 面談結果検索条件
+     */
+    @Transactional
+    public void saveCondition(String username, InterviewConditionRequest req) {
+        List<InterviewCondition> list = interviewConditionRepository.findByUsername(username);
+        interviewConditionRepository.deleteAll(list);
+
+        list.clear();
+
+        if (req.getUseInterviewSearch() != null) {
+            list.add(new InterviewCondition(username, Consts.CONDITIONKIND_USESEARCH, 0, req.getUseInterviewSearch()));
+        }
+        list.add(new InterviewCondition(username, Consts.CONDITIONKIND_INTERVIEWDATECODE, req.getInterviewDateCode(), ""));
+        list.add(new InterviewCondition(username, Consts.CONDITIONKIND_INTERVIEWDATEREGION, req.getInterviewDateMin(), ""));
+        list.add(new InterviewCondition(username, Consts.CONDITIONKIND_INTERVIEWDATEREGION, req.getInterviewDateMax(), ""));
+        list.add(new InterviewCondition(username, Consts.CONDITIONKIND_INTERVIEWDATELAST, req.getInterviewDateLastCode(), ""));
+        for (int i : req.getInterviewTimeCheckedList()) {
+            list.add(new InterviewCondition(username, Consts.CONDITIONKIND_INTERVIEWTIME, i, ""));
+        }
+        for (int i : req.getDiscloseCheckedList()) {
+            list.add(new InterviewCondition(username, Consts.CONDITIONKIND_DISCLOSE, i, ""));
+        }
+
+        for (int i = 0; i < req.getContentJobCheckItems().size(); i ++) {
+            if (!req.containsContentJobChecked(i) && !req.getContentJobMemos().isEmpty() && !req.getContentJobMemos().get(i).isEmpty()) {
+                req.getContentJobCheckedList().add(i);
+            }
+        }
+        for (int i = 0; i < req.getContentJobCheckedList().size(); i ++) {
+            list.add(new InterviewCondition(username, Consts.CONDITIONKIND_CONTENTJOB,
+                    req.getContentJobCheckedList().get(i), req.getContentJobMemos().get(req.getContentJobCheckedList().get(i))));
+        }
+        for (int i = 0; i < Utils.trimMemos(req.getContentPrivateMemos()).size(); i ++) {
+            list.add(new InterviewCondition(username, Consts.CONDITIONKIND_CONTENTPRIVATE, i, req.getContentPrivateMemos().get(i)));
+        }
+
+        for (int i = 0; i < Utils.trimMemos(req.getInterviewerCommentMemos()).size(); i ++) {
+            list.add(new InterviewCondition(username, Consts.CONDITIONKIND_INTERVIEWERCOMMENT, i, req.getInterviewerCommentMemos().get(i)));
+        }
+        for (int i = 0; i < Utils.trimMemos(req.getAdminCommentMemos()).size(); i ++) {
+            list.add(new InterviewCondition(username, Consts.CONDITIONKIND_ADMINCOMMENT, i, req.getAdminCommentMemos().get(i)));
+        }
+
+        list.add(new InterviewCondition(username, Consts.CONDITIONKIND_HIREREGION, req.getHireLengthStartCode(), ""));
+        list.add(new InterviewCondition(username, Consts.CONDITIONKIND_HIREREGION, req.getHireLengthEndCode(), ""));
+
+        for (int i : req.getAdoptCheckedList()) {
+            list.add(new InterviewCondition(username, Consts.CONDITIONKIND_ADOPT, i, ""));
+        }
+        for (int i : req.getSupportCheckedList()) {
+            list.add(new InterviewCondition(username, Consts.CONDITIONKIND_SUPPORT, i, ""));
+        }
+        for (int i : req.getEmployCheckedList()) {
+            list.add(new InterviewCondition(username, Consts.CONDITIONKIND_EMPLOY, i, ""));
+        }
+
+        LogUtils.info("useInterviewSearch = " + req.getUseInterviewSearch());
+        LogUtils.info("interviewDateCode = " + req.getInterviewDateCode());
+        LogUtils.info("interviewDateMin = " + req.getInterviewDateMin());
+        LogUtils.info("interviewDateMax = " + req.getInterviewDateMax());
+        LogUtils.info("interviewDateLastCode = " + req.getInterviewDateLastCode());
+
+/*
+        for (int i : req.getInterviewTimeCheckedList()) {
+            LogUtils.info("InterviewTimeChecked = " + i);
+        }
+        for (int i : req.getDiscloseCheckedList()) {
+            LogUtils.info("DiscloseChecked = " + i);
+        }
+        for (int i : req.getContentJobCheckedList()) {
+            LogUtils.info("ContentJobChecked = " + i);
+        }
+        for (String s : req.getContentJobMemos()) {
+            LogUtils.info("ContentJobMemo = " + s);
+        }
+        for (int i : req.getContentPrivateCheckedList()) {
+            LogUtils.info("ContentPrivateChecked = " + i);
+        }
+        for (String s : req.getContentPrivateMemos()) {
+            LogUtils.info("ContentPrivateMemo = " + s);
+        }
+        for (String s : req.getInterviewerCommentMemos()) {
+            LogUtils.info("InterviewerCommentMemo = " + s);
+        }
+        for (String s : req.getAdminCommentMemos()) {
+            LogUtils.info("AdminCommentMemo = " + s);
+        }
+        for (int i : req.getAdoptCheckedList()) {
+            LogUtils.info("AdoptChecked = " + i);
+        }
+        for (int i : req.getSupportCheckedList()) {
+            LogUtils.info("SupportChecked = " + i);
+        }
+        for (int i : req.getEmployCheckedList()) {
+            LogUtils.info("EmployChecked = " + i);
+        }
+*/
+        interviewConditionRepository.saveAll(list);
     }
 }

@@ -16,10 +16,8 @@ import com.cfiv.sysdev.rrs.Utils;
 import lombok.Data;
 
 @Data
-public class InterviewSearchRequest implements Serializable {
-    public InterviewSearchRequest() {
-        Date now = new Date();
-
+public class InterviewConditionRequest implements Serializable {
+    public InterviewConditionRequest() {
         interviewDateLastItems = Arrays.asList(Consts.INTERVIEWDATELAST_NAMES);
         hireLengthItems = Arrays.asList(Consts.HIRELENGTH_NAMES);
         adoptCheckItems = Arrays.asList(Consts.ADOPT_NAMES);
@@ -30,17 +28,20 @@ public class InterviewSearchRequest implements Serializable {
         contentPrivateCheckItems = Arrays.asList(Consts.PRIVATE_NAMES);
         interviewTimeItems = Arrays.asList(Consts.INTERVIEWTIME_NAMES);
         discloseItems = Arrays.asList(Consts.DISCLOSE_NAMES);
-        interviewDateStart = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-        interviewDateEnd = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         interviewDateLastCode = 0;
 
-        interviewerCommentMemos = Arrays.asList("", "", "");
-        adminCommentMemos = Arrays.asList("", "", "");
+        interviewerCommentMemos = new ArrayList<String>() ;
+        for (int i = 0;  i < Consts.INTERVIEWERCOMMENT_CONDNUM; i ++) {
+            interviewerCommentMemos.add("");
+        }
+        adminCommentMemos = new ArrayList<String>() ;
+        for (int i = 0;  i < Consts.ADMINCOMMENT_CONDNUM; i ++) {
+            adminCommentMemos.add("");
+        }
 
-        companyID = "";
-        employeeCode = "";
-        interviewDateStart = Utils.getStringDashFromDate(now);
-        interviewDateEnd = Utils.getStringDashFromDate(now);
+        useInterviewSearch = "0";
+        interviewDateMin = 0;
+        interviewDateMax = 0;
         interviewTimeCheckedList = new ArrayList<Integer>();
         discloseCheckedList = new ArrayList<Integer>();
         contentJobCheckedList = new ArrayList<Integer>();
@@ -58,24 +59,19 @@ public class InterviewSearchRequest implements Serializable {
     private String id;
 
     /**
-     * 企業コード
+     * 検索画面利用
      */
-    private String companyID;
+    private String useInterviewSearch;
 
     /**
-     * 従業員番号
+     * 面談日(最小)
      */
-    private String employeeCode;
+    private int interviewDateMin;
 
     /**
-     * 面談日(開始)
+     * 面談日(最大)
      */
-    private String interviewDateStart;
-
-    /**
-     * 面談日(終了)
-     */
-    private String interviewDateEnd;
+    private int interviewDateMax;
 
     /**
      * 面談日(nヶ月前)ドロップダウンコード
@@ -161,6 +157,7 @@ public class InterviewSearchRequest implements Serializable {
      * 勤続年数(開始)ドロップダウンコード
      */
     private int hireLengthStartCode;
+
     /**
      * 勤続年数(終了)ドロップダウンコード
      */
@@ -196,19 +193,6 @@ public class InterviewSearchRequest implements Serializable {
      */
     private List<Integer> employCheckedList;
 
-    /**
-     * 企業コードLong値
-     * @param cs 企業コード文字列
-     */
-    public Long getCompanyIDLong() {
-        try {
-            return Long.parseLong(companyID);
-        }
-        catch (NumberFormatException e) {
-            return 0L;
-        }
-    }
-
     public boolean containsContentJobChecked(int c) {
         return containsContentChecked(contentJobCheckedList, c);
     }
@@ -225,24 +209,6 @@ public class InterviewSearchRequest implements Serializable {
         }
 
         return false;
-    }
-
-    /**
-     * Date形式の面談日(開始)
-     * @param id id
-     * @param nDigits 0埋め桁数
-     */
-    public Date getInterviewDateStartFromString() {
-        return getDateFromString(interviewDateStart);
-    }
-
-    /**
-     * Date形式の面談日(終了)
-     * @param id id
-     * @param nDigits 0埋め桁数
-     */
-    public Date getInterviewDateEndFromString() {
-        return getDateFromString(interviewDateEnd);
     }
 
     /**
@@ -313,21 +279,42 @@ public class InterviewSearchRequest implements Serializable {
         return result;
     }
 
+    public String getInterviewDateStart() {
+        return Utils.getStringDashFromDate(getInterviewDateStartDate());
+    }
+
+    public String getInterviewDateEnd() {
+        return Utils.getStringDashFromDate(getInterviewDateEndDate());
+    }
+
     public Date getInterviewDateStartDate() {
-        return getInterviewDateFromString(interviewDateStart);
+        if (interviewDateMin < interviewDateMax) {
+            return getInterviewDateBeforeDay(interviewDateMax);
+        }
+        else {
+            return getInterviewDateBeforeDay(interviewDateMin);
+        }
     }
 
     public Date getInterviewDateEndDate() {
-        return getInterviewDateFromString(interviewDateEnd);
+        if (interviewDateMin < interviewDateMax) {
+            return getInterviewDateBeforeDay(interviewDateMin);
+        }
+        else {
+            return getInterviewDateBeforeDay(interviewDateMax);
+        }
     }
 
-    public Date getInterviewDateFromString(String str) {
+    public Date getInterviewDateBeforeDay(int before) {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Date now = new Date();
         try {
-            return new SimpleDateFormat("yyyy-MM-dd").parse(str);
+            now = df.parse(df.format(now));
         }
         catch (ParseException e) {
-            return null;
         }
+
+        return Utils.dayAfter(now, (-1) * before);
     }
 
     public Date getInterviewDateLastDate() {
@@ -356,4 +343,5 @@ public class InterviewSearchRequest implements Serializable {
 
         return result;
     }
+
 }

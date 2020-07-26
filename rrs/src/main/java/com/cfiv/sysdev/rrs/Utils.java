@@ -8,7 +8,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -125,5 +128,44 @@ public class Utils {
      */
     public static String loginUsername(){
         return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    /**
+     * メモリストの空文字列削除
+     * @param memos
+     * @return
+     */
+    public static List<String> trimMemos(List<String> memos) {
+        List<String> result = new ArrayList<String>();
+
+        for (String memo : memos) {
+            if (!memo.isEmpty()) {
+                result.add(memo);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * 翌日設定
+     * @param date 元日付
+     * @return 翌日日付
+     */
+    public static Date tommorow(Date date) {
+        return dayAfter(date, 1);
+    }
+
+    /**
+     * n日後設定
+     * @param date 元日付
+     * @return n日後日付
+     */
+    public static Date dayAfter(Date date, int after) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DATE, after);
+
+        return calendar.getTime();
     }
 }

@@ -19,7 +19,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cfiv.sysdev.rrs.Consts;
 import com.cfiv.sysdev.rrs.LogUtils;
+import com.cfiv.sysdev.rrs.Utils;
 import com.cfiv.sysdev.rrs.dto.EmployeeRequest;
+import com.cfiv.sysdev.rrs.dto.InterviewConditionRequest;
 import com.cfiv.sysdev.rrs.dto.InterviewRequest;
 import com.cfiv.sysdev.rrs.dto.InterviewSearchRequest;
 import com.cfiv.sysdev.rrs.entity.Company;
@@ -53,23 +55,35 @@ public class InterviewController {
     CompanyService companyService;
 
     /**
-     * 従業員情報検索画面初期表示
+     * 面談結果検索画面初期表示
      * @param model Model
-     * @return 従業員情報検索画面
+     * @return 面談結果検索画面
      */
     @RequestMapping(value = "/interview/listinit", method = RequestMethod.GET)
     public String init(Model model) {
-        model.addAttribute("interview_request_list", new ArrayList<InterviewRequest>());
-        model.addAttribute("interview_request_size", 0);
-        model.addAttribute("interview_search_request", new InterviewSearchRequest());
+        String username = Utils.loginUsername();
+
+        if (interviewService.isUseInitSearchCondition(username)) {
+            InterviewSearchRequest req = interviewService.getSearchRequestFromCondition(username);
+            List<InterviewRequest> req_list = interviewService.search(req);
+
+            model.addAttribute("interview_search_request", req);
+            model.addAttribute("interview_request_list", req_list);
+            model.addAttribute("interview_request_size", req_list.size());
+        }
+        else {
+            model.addAttribute("interview_request_list", new ArrayList<InterviewRequest>());
+            model.addAttribute("interview_request_size", 0);
+            model.addAttribute("interview_search_request", new InterviewSearchRequest());
+        }
 
         return "interview/list";
     }
 
     /**
-     * 従業員情報検索画面
+     * 面談結果検索画面
      * @param model Model
-     * @return 従業員情報検索画面
+     * @return 面談結果検索画面
      */
     @RequestMapping(value = "/interview/list", method = RequestMethod.GET)
     public String list(Model model) {
@@ -310,5 +324,29 @@ public class InterviewController {
         else {
             return "/interview/edit";
         }
+    }
+
+    /**
+     * 初期表示設定画面初期表示
+     * @param model Model
+     * @return 初期表示設定画面
+     */
+    @RequestMapping(value = "/interview/condinit", method = RequestMethod.GET)
+    public String initCondition(Model model) {
+        model.addAttribute("interview_condition_request", interviewService.getCondition(Utils.loginUsername()));
+
+        return "interview/condinit";
+    }
+
+    /**
+     * 面談結果検索画面初期表示
+     * @param model Model
+     * @return 面談結果検索画面
+     */
+    @RequestMapping(value = "/interview/condconfirm", method = RequestMethod.POST)
+    public String confirmCondition(Model model, @ModelAttribute("interview_condition_request") InterviewConditionRequest req) {
+        interviewService.saveCondition(Utils.loginUsername(), req);
+
+        return "redirect:/";
     }
 }

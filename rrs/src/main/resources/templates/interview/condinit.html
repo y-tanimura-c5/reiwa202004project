@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common :: meta_header('面談結果検索',~{::link},~{::script})">
+</head>
+<body>
+<div class="box">
+	<div th:replace="header :: header"></div>
+
+	<div class="container-fluid">
+		<div class="card mt-2 p-3">
+			<div class="card-heading"><h2>初期表示設定編集</h2></div>
+			<div class="card-body">
+				<form th:action="@{/interview/condconfirm}" th:method="post" th:object="${interview_condition_request}">
+					<div class="row align-items-center">
+						<div class="col-md-12 col-lg-12">
+<!-- 							<div class="form-check"> -->
+<!-- 								<input class="form-check-input" type="checkbox" id="useInterviewSearch" value="0" th:field="*{useInterviewSearch}"> -->
+<!-- 								<label class="form-check-label" for="useInterviewSearch">面談結果検索画面の初期値として使用する</label> -->
+								<input type="checkbox" name="useInterviewSearch" value="1" th:text="'面談結果検索画面の初期値として使用する'" th:field="*{useInterviewSearch}" />
+<!-- 							</div> -->
+						</div>
+					</div>
+
+					<div class="my-box mb-3"></div>
+					<div class="row align-items-start">
+						<div class="col-md-12 col-lg-12">
+							従業員情報：
+						</div>
+					</div>
+					<div class="card">
+						<div class="card-body">
+							<div class="row align-items-center" style="height:40px;">
+								<div class="col-md-2 col-lg-2">
+									勤続年数：
+								</div>
+								<div class="col-md-2 col-lg-2">
+									<select class="form-control" th:field="*{hireLengthStartCode}">
+										<option th:each="hirelengthstart, stat : *{hireLengthItems}" th:value="${stat.index}">[[*{hireLengthItems[__${stat.index}__]}]]</option>
+									</select>
+								</div>
+								<div class="col-md-2 col-lg-1">
+									　年　～
+								</div>
+								<div class="col-md-2 col-lg-2">
+									<select class="form-control" th:field="*{hireLengthEndCode}">
+										<option th:each="hirelengthend, stat : *{hireLengthItems}" th:value="${stat.index}">[[*{hireLengthItems[__${stat.index}__]}]]</option>
+									</select>
+								</div>
+								<div class="col-md-1 col-lg-1">
+									　年
+								</div>
+							</div>
+
+							<div class="row align-items-center">
+								<div class="col-md-12 col-lg-2">
+									採用種別：
+								</div>
+								<div class="col-md-12 col-lg-10">
+    								<div class="row align-items-center" style="height:40px;">
+										<div th:each="adopt, stat : *{adoptCheckItems}" class="col-md-2 col-lg-2 mt-1">
+									        <input type="checkbox" name="adoptCheck" th:value="${stat.index}" th:text="*{adoptCheckItems[__${stat.index}__]}" th:field="*{adoptCheckedList}" />
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="row align-items-center">
+								<div class="col-md-12 col-lg-2">
+									扶養有無：
+								</div>
+								<div class="col-md-12 col-lg-10">
+    								<div class="row align-items-center" style="height:40px;">
+										<div th:each="support, stat : *{supportCheckItems}" class="col-md-2 col-lg-2 mt-1">
+									        <input type="checkbox" name="supportCheck" th:value="${stat.index}" th:text="*{supportCheckItems[__${stat.index}__]}" th:field="*{supportCheckedList}" />
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="row align-items-center">
+								<div class="col-md-12 col-lg-2">
+									就業種別：
+								</div>
+								<div class="col-md-12 col-lg-10">
+    								<div class="row align-items-center" style="height:40px;">
+										<div th:each="employ, stat : *{employCheckItems}" class="col-md-2 col-lg-2 mt-1">
+									        <input type="checkbox" name="employCheck" th:value="${stat.index}" th:text="*{employCheckItems[__${stat.index}__]}" th:field="*{employCheckedList}" />
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="my-box mb-2"></div>
+					<div class="row align-items-start">
+						<div class="col-md-12 col-lg-12">
+							面談情報：
+						</div>
+					</div>
+					<div class="card">
+						<div class="card-body">
+							<div class="row align-items-center">
+								<div class="col-md-2 col-lg-2">
+									面談日：
+								</div>
+								<div class="col-md-10 col-lg-10">
+									<div class="row align-items-center" style="height:40px;">
+										<div class="col-md-1 col-lg-1">
+											<input type="radio" name="interviewDateCode" th:value="0" th:field="*{interviewDateCode}" />
+										</div>
+										<div class="col-md-3 col-lg-3">
+											最終面談日が今日から
+										</div>
+										<div class="col-md-2 col-lg-2">
+											<select class="form-control" th:field="*{interviewDateLastCode}">
+												<option th:each="interviewDateLast, stat : *{interviewDateLastItems}" th:value="${stat.index}">[[*{interviewDateLastItems[__${stat.index}__]}]]</option>
+											</select>
+  										</div>
+										<div class="col-md-2 col-lg-2">
+											ヶ月以上前
+										</div>
+									</div>
+									<div class="row align-items-center" style="height:40px;">
+										<div class="col-md-1 col-lg-1">
+											<input type="radio" name="interviewDateCode" th:value="1" th:field="*{interviewDateCode}" />
+										</div>
+										<div class="col-md-2 col-lg-2">
+											今日を基準に
+										</div>
+										<div class="col-md-2 col-lg-2">
+											<input class="form-control" type="number" min="0" max="99" th:field="*{interviewDateMin}" />
+										</div>
+										<div class="col-md-2 col-lg-2">
+											日前 から
+										</div>
+										<div class="col-md-2 col-lg-2">
+											<input class="form-control" type="number" min="0" max="99" th:field="*{interviewDateMax}" />
+										</div>
+										<div class="col-md-2 col-lg-2">
+											日前までの期間
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="my-box mb-1"></div>
+							<div class="row align-items-start">
+								<div class="col-md-2 col-lg-2">
+									面談時間：
+								</div>
+								<div class="col-md-8 col-lg-10">
+									<div th:each="interviewTime, stat : *{interviewTimeItems}">
+										<div class="row align-items-center">
+											<div class="col-md-12 col-lg-12">
+												<input type="checkbox" name="interviewTimeCode" th:value="${stat.index}" th:text="*{interviewTimeItems[__${stat.index}__]}" th:field="*{interviewTimeCheckedList}" />
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="my-box mb-1"></div>
+							<div class="row align-items-start">
+								<div class="col-md-2 col-lg-2">
+									情報開示：
+								</div>
+								<div class="col-md-10 col-lg-10">
+									<div th:each="disclose, stat : *{discloseItems}">
+										<div class="row align-items-center">
+											<div class="col-md-12 col-lg-12">
+												<input type="checkbox" name="discloseCode" th:value="${stat.index}" th:text="*{discloseItems[__${stat.index}__]}" th:field="*{discloseCheckedList}" />
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="my-box mb-2"></div>
+					<div class="row align-items-start">
+						<div class="col-md-12 col-lg-12">
+							面談内容：
+						</div>
+					</div>
+					<div class="card">
+						<div class="card-body">
+							<div class="row align-items-start">
+								<div class="col-md-2 col-lg-2">
+									会社関連について
+								</div>
+								<div class="col-md-10 col-lg-10">
+									<div th:each="jobitem, stat : *{contentJobCheckItems}">
+    									<div class="row align-items-center">
+											<div class="col-md-12 col-lg-3 mt-1">
+										        <input type="checkbox" name="inputMultiCheck" th:value="${stat.index}" th:text="*{contentJobCheckItems[__${stat.index}__]}" th:field="*{contentJobCheckedList}" />
+											</div>
+											<div class="col-md-12 col-lg-9">
+												<div class="row align-items-center">
+													<div class="col-md-2 col-lg-3">
+														キーワード：
+													</div>
+													<div class="col-md-10 col-lg-9">
+														<input class="form-control" type="text" th:field="*{contentJobMemos[__${stat.index}__]}" />
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="my-box mb-1"></div>
+							<div class="row align-items-start">
+								<div class="col-md-2 col-lg-2">
+									プライベートについて
+								</div>
+								<div class="col-md-10 col-lg-10">
+									<div th:each="privateitem, stat : *{contentPrivateCheckItems}">
+										<div class="row align-items-center">
+											<div class="col-md-2 col-lg-3">
+												キーワード：
+											</div>
+											<div class="col-md-10 col-lg-9">
+												<input class="form-control" type="text" th:field="*{contentPrivateMemos[__${stat.index}__]}" />
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="my-box mb-2"></div>
+					<div class="row align-items-start">
+						<div class="col-md-12 col-lg-12">
+							相談内容：
+						</div>
+					</div>
+					<div class="card">
+						<div class="card-body">
+							<div class="row align-items-center">
+								<div class="col-md-2 col-lg-2">
+									検索キーワード：
+								</div>
+								<div class="col-md-10 col-lg-10">
+									<div class="row align-items-center">
+										<div th:each="icomment, stat : *{interviewerCommentMemos}" class="col-md-12 col-lg-4">
+											<input class="form-control" type="text" th:field="*{interviewerCommentMemos[__${stat.index}__]}" />
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="my-box mb-2"></div>
+					<div class="row align-items-start">
+						<div class="col-md-12 col-lg-12">
+							管理者記入欄：
+						</div>
+					</div>
+					<div class="card">
+						<div class="card-body">
+							<div class="row align-items-center">
+								<div class="col-md-2 col-lg-2">
+									検索キーワード：
+								</div>
+								<div class="col-md-10 col-lg-10">
+									<div class="row align-items-center">
+										<div th:each="acomment, stat : *{adminCommentMemos}" class="col-md-12 col-lg-4">
+											<input class="form-control" type="text" th:field="*{adminCommentMemos[__${stat.index}__]}" />
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="my-box mb-3"></div>
+					<div class="col text-center">
+						<button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#modalconfirm">
+							更新
+						</button>
+						<div class="modal fade" id="modalconfirm" tabindex="-1" role="dialog" aria-labelledby="labelconfirm" aria-hidden="true">
+							<div class="modal-dialog modal-dialog-centered" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title" id="labelconfirm">初期表示設定更新</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+									<div class="modal-body">
+										入力した内容で初期表示設定を更新します。
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-secondary" data-dismiss="modal">キャンセル</button>
+										<button class="btn btn-primary" type="submit">更新</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div th:replace="footer :: footer"></div>
+</div>
+</body>

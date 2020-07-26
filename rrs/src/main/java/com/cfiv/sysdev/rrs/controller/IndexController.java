@@ -40,7 +40,10 @@ public class IndexController {
 
     @RequestMapping(path = "/", method = RequestMethod.GET)
     public String index(Model model) {
-        InterviewSearchRequest req = new InterviewSearchRequest();
+
+        String username = Utils.loginUsername();
+
+        InterviewSearchRequest req = interviewService.getSearchRequestFromCondition(username);
         List<InterviewRequest> req_list = interviewService.search(req);
 
         model.addAttribute("interview_search_request", req);
@@ -58,7 +61,7 @@ public class IndexController {
         Account account = userAccountService.findByUsername(username);
         loginTimeService.save(username, account.getCompanyID());
 
-        InterviewSearchRequest req = new InterviewSearchRequest();
+        InterviewSearchRequest req = interviewService.getSearchRequestFromCondition(username);
         List<InterviewRequest> req_list = interviewService.search(req);
 
         model.addAttribute("interview_search_request", req);
