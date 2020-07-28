@@ -29,8 +29,8 @@ public class AttachFileValidator implements ConstraintValidator<AttachedFile, Mu
 
             try {
                 byte[] filedata = multipartFile.getBytes();
-                if (multipartFile.getOriginalFilename().toLowerCase().endsWith(".pdf") && filedata.length > 1024 * 1024) {
-                    message = "1Mバイトを超えるサイズのPDFファイルは登録できません。";
+                if (multipartFile.getOriginalFilename().toLowerCase().endsWith(".pdf") && filedata.length > 10 * 1024 * 1024) {
+                    message = "10Mバイトを超えるサイズのPDFファイルは登録できません。";
                 }
             }
             catch (IOException e) {
