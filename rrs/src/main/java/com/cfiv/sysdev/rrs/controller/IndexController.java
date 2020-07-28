@@ -51,7 +51,7 @@ public class IndexController {
         int pageSize = size.orElse(Consts.PAGENATION_PAGESIZE);
         UserRequest uReq = userService.getLoginAccount();
 
-        Page<InterviewRequest> reqPage = interviewService.search(cond, uReq, PageRequest.of(currentPage - 1, pageSize));
+        Page<InterviewRequest> reqPage = interviewService.searchRequest(cond, uReq, PageRequest.of(currentPage - 1, pageSize));
 
         model.addAttribute("page", reqPage);
         model.addAttribute("url", "/");

@@ -32,7 +32,7 @@ public class InterviewRequest implements Serializable {
         interviewDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
     }
 
-    public InterviewRequest(InterviewResult _result, EmployeeRequest _employee, String _companyName) {
+    public InterviewRequest(InterviewResult _result, EmployeeRequest _employee, String _companyName, String _displayName) {
         this();
 
         setId(_result.getIdString(1));
@@ -40,6 +40,8 @@ public class InterviewRequest implements Serializable {
         setEmployeeCode(_result.getEmployeeCode());
         setEmployee(_employee);
         setCompanyName(_companyName);
+        setRefinerUsername(_result.getRefinerUserID());
+        setRefinerDisplayName(_displayName);
         setInterviewDate(_result.getInteviewDateStringDash());
         setInterviewTimeCode(_result.getInterviewTimeCode());
         setDiscloseCode(_result.getDiscloseCode());
@@ -93,6 +95,16 @@ public class InterviewRequest implements Serializable {
      * 従業員情報
      */
     private EmployeeRequest employee;
+
+    /**
+     * リファイナーユーザーID
+     */
+    private String refinerUsername;
+
+    /**
+     * リファイナー名
+     */
+    private String refinerDisplayName;
 
     /**
      * 面談日
@@ -324,5 +336,124 @@ public class InterviewRequest implements Serializable {
      */
     public String getInterviewDateResult() {
         return getInterviewDateSlash() + " 面談結果";
+    }
+
+    /**
+     * 面談結果(CSV形式)
+     * @param
+     * @return 面談結果(InterviewCSV)
+     */
+    public InterviewCSV toCSV(int userRole) {
+        InterviewCSV csv = new InterviewCSV();
+
+        csv.setCompanyID(companyID);
+        csv.setCompanyName(companyName);
+        csv.setEmployeeCode(employeeCode);
+        csv.setEmployeeFName(employee.getEmployeeFName());
+        csv.setInterviewDate(interviewDate);
+        csv.setRefinerName(refinerDisplayName);
+        csv.setInterviewTime(interviewTimeItems.get(interviewTimeCode));
+        csv.setDisclose(discloseItems.get(discloseCode));
+
+        if (userRole == Consts.USERROLECODE_CLIENTADMIN && discloseCode != Consts.DISCLOSECODE_OK) {
+            csv.setInterviewerComment("－");
+            csv.setAdminComment("－");
+            csv.setContentJobStatus1("－");
+            csv.setContentJobMemo1("－");
+            csv.setContentJobStatus2("－");
+            csv.setContentJobMemo2("－");
+            csv.setContentJobStatus3("－");
+            csv.setContentJobMemo3("－");
+            csv.setContentJobStatus4("－");
+            csv.setContentJobMemo4("－");
+            csv.setContentJobStatus5("－");
+            csv.setContentJobMemo5("－");
+            csv.setContentJobStatus6("－");
+            csv.setContentJobMemo6("－");
+            csv.setContentPrivateMemo1("－");
+            csv.setContentPrivateMemo2("－");
+            csv.setContentPrivateMemo3("－");
+        }
+        else {
+            csv.setInterviewerComment(interviewerComment);
+            csv.setAdminComment(adminComment);
+
+            for (int i = 0; i < contentJobCheckItems.size(); i ++) {
+                switch (i) {
+                case 0:
+                    if (containsContentJobChecked(i)) {
+                        csv.setContentJobStatus1(Consts.EXIST_NAME);
+                        csv.setContentJobMemo1(contentJobMemos.get(i));
+                    }
+                    else {
+                        csv.setContentJobStatus1(Consts.NOTEXIST_NAME);
+                    }
+                    break;
+                case 1:
+                    if (containsContentJobChecked(i)) {
+                        csv.setContentJobStatus2(Consts.EXIST_NAME);
+                        csv.setContentJobMemo2(contentJobMemos.get(i));
+                    }
+                    else {
+                        csv.setContentJobStatus2(Consts.NOTEXIST_NAME);
+                    }
+                    break;
+                case 2:
+                    if (containsContentJobChecked(i)) {
+                        csv.setContentJobStatus3(Consts.EXIST_NAME);
+                        csv.setContentJobMemo3(contentJobMemos.get(i));
+                    }
+                    else {
+                        csv.setContentJobStatus3(Consts.NOTEXIST_NAME);
+                    }
+                    break;
+                case 3:
+                    if (containsContentJobChecked(i)) {
+                        csv.setContentJobStatus4(Consts.EXIST_NAME);
+                        csv.setContentJobMemo4(contentJobMemos.get(i));
+                    }
+                    else {
+                        csv.setContentJobStatus4(Consts.NOTEXIST_NAME);
+                    }
+                    break;
+                case 4:
+                    if (containsContentJobChecked(i)) {
+                        csv.setContentJobStatus5(Consts.EXIST_NAME);
+                        csv.setContentJobMemo5(contentJobMemos.get(i));
+                    }
+                    else {
+                        csv.setContentJobStatus5(Consts.NOTEXIST_NAME);
+                    }
+                    break;
+                case 5:
+                    if (containsContentJobChecked(i)) {
+                        csv.setContentJobStatus6(Consts.EXIST_NAME);
+                        csv.setContentJobMemo6(contentJobMemos.get(i));
+                    }
+                    else {
+                        csv.setContentJobStatus6(Consts.NOTEXIST_NAME);
+                    }
+                    break;
+                }
+            }
+
+            for (int i = 0; i < contentJobCheckItems.size(); i ++) {
+                if (i < contentPrivateMemos.size()) {
+                    switch (i) {
+                    case 0:
+                        csv.setContentPrivateMemo1(contentPrivateMemos.get(i));
+                        break;
+                    case 1:
+                        csv.setContentPrivateMemo2(contentPrivateMemos.get(i));
+                        break;
+                    case 2:
+                        csv.setContentPrivateMemo3(contentPrivateMemos.get(i));
+                        break;
+                    }
+                }
+            }
+        }
+
+        return csv;
     }
 }

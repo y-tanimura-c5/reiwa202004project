@@ -83,6 +83,15 @@ public class Utils {
     }
 
     /**
+     * Date→文字列(YYYYMMDDHHmmss)形式
+     * @param date 日時
+     * @return YYYYMMDDHHmmss形式文字列
+     */
+    public static String getYYYYMMDDHHmmssFromDate(Date date) {
+        return new SimpleDateFormat("YYYYMMDDHHmmss").format(date);
+    }
+
+    /**
      * 画像データ(JPG)のサイズ変更
      * @param input 変換元ファイル
      * @return 変換後ファイル
@@ -167,5 +176,20 @@ public class Utils {
         calendar.add(Calendar.DATE, after);
 
         return calendar.getTime();
+    }
+
+    public static String interviewCSVHeaderString() {
+        StringBuffer header = new StringBuffer();
+
+        for (int i = 0; i < Consts.INTERVIEWCSV_HEADER.length; i ++) {
+            header.append("\"" + Consts.INTERVIEWCSV_HEADER[i] + "\"");
+
+            if (i != Consts.INTERVIEWCSV_HEADER.length - 1) {
+                header.append(",");
+            }
+        }
+        header.append("\n");
+
+        return header.toString();
     }
 }

@@ -6,8 +6,8 @@
 <body>
     <div th:fragment="header" class="sticky-top">
 		<div class="container-fluid">
-			<nav class="navbar navbar-expand-lg navbar-light bg-light">
-				<a class="navbar-brand" href="/">Reiwa Refiner System</a>
+			<nav class="navbar navbar-expand-lg navbar-dark" style="background-color:#02325F;">
+				<a class="navbar-brand" href="/">Reiwa Refine System</a>
 				<button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navber"
 				aria-controls="Navber" aria-expanded="false" aria-label="ナビゲーションの切替">
 					<span class="navbar-toggler-icon"></span>
@@ -50,13 +50,13 @@
 							</div>
 						</li>
 					</ul>
-					<div th:if="${loginUser.userRoleCode == 0}">
+					<div th:if="${loginUser.userRoleCode == 0}" style="color:#FFF;">
 						全体管理者：[[${loginUser.displayName}]]　
 					</div>
-					<div th:if="${loginUser.userRoleCode == 1}">
+					<div th:if="${loginUser.userRoleCode == 1}" style="color:#FFF;">
 						企業管理者：[[${loginUser.displayName}]]　
 					</div>
-					<div th:if="${loginUser.userRoleCode == 10}">
+					<div th:if="${loginUser.userRoleCode == 10}" style="color:#FFF;">
 						リファイナー：[[${loginUser.displayName}]]さん　
 					</div>
 					<form class="form-inline my-2 my-lg-0" id="logout" th:action="@{/logout}" method="post">

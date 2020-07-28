@@ -26,6 +26,7 @@ import com.cfiv.sysdev.rrs.Consts;
 import com.cfiv.sysdev.rrs.LogUtils;
 import com.cfiv.sysdev.rrs.Utils;
 import com.cfiv.sysdev.rrs.dto.EmployeeRequest;
+import com.cfiv.sysdev.rrs.dto.InterviewCSV;
 import com.cfiv.sysdev.rrs.dto.InterviewConditionRequest;
 import com.cfiv.sysdev.rrs.dto.InterviewRequest;
 import com.cfiv.sysdev.rrs.dto.InterviewSearchRequest;
@@ -67,6 +68,12 @@ public class InterviewService {
      */
     @Autowired
     CompanyService companyService;
+
+    /**
+     * ユーザー情報 Service
+     */
+    @Autowired
+    UserService userService;
 
     /**
      * 面談結果 Repository
@@ -113,16 +120,7 @@ public class InterviewService {
      * @return 検索結果(Employee)
      */
     public InterviewRequest findOneRequest(Long id) {
-        InterviewResult result = findOne(id);
-
-        if (result != null) {
-            EmployeeRequest eReq = employeeService.findOneRequestFromID(result.getCompanyID(),
-                    result.getEmployeeCode());
-            String cName = companyService.getCompanyName(result.getCompanyID());
-            return new InterviewRequest(result, eReq, cName);
-        } else {
-            return null;
-        }
+        return resultToRequest(findOne(id));
     }
 
     /**
@@ -132,13 +130,13 @@ public class InterviewService {
      * @return 検索結果(InterviewRequest)
      */
     @SuppressWarnings("unchecked")
-    public List<InterviewRequest> search(InterviewSearchRequest sReq, UserRequest uReq) {
-        List<InterviewRequest> reqList = new ArrayList<InterviewRequest>();
+    public List<InterviewResult> searchResult(InterviewSearchRequest sReq, UserRequest uReq) {
+        List<InterviewResult> resultList = new ArrayList<InterviewResult>();
 
         List<Employee> employeeList = searchEmployees(sReq);
 
         if (employeeList == null || employeeList.isEmpty()) {
-            return reqList;
+            return resultList;
         }
 
         for (int i = 0; i < sReq.getContentJobCheckItems().size(); i ++) {
@@ -231,7 +229,6 @@ public class InterviewService {
         LogUtils.debug("interviewSQL = " + sql);
 
         // 作成したSQLに対応するパラメータを設定する
-        List<InterviewResult> resultList = new ArrayList<InterviewResult>();
         Query query = entityManager.createQuery(sql.toString());
         for (Employee employee : employeeList) {
             query.setParameter(deletedTag, Consts.EXIST);
@@ -281,14 +278,11 @@ public class InterviewService {
 
     //        LogUtils.info("resultList.size = " + resultList.size());
 
-        // 取得した面談結果を面談結果リクエストに変換する
-        for (InterviewResult result : resultList) {
-            EmployeeRequest eReq = employeeService.findOneRequestFromID(result.getCompanyID(), result.getEmployeeCode());
-            String cName = companyService.getCompanyName(result.getCompanyID());
-            reqList.add(new InterviewRequest(result, eReq, cName));
-        }
+        return resultList;
+    }
 
-        return reqList;
+    public List<InterviewRequest> searchRequest(InterviewSearchRequest sReq, UserRequest uReq) {
+        return resultToRequestList(searchResult(sReq, uReq));
     }
 
     /**
@@ -297,8 +291,8 @@ public class InterviewService {
      * @param pageable ページング条件
      * @return 検索結果ページ(InterviewRequest)
      */
-    public Page<InterviewRequest> search(InterviewSearchRequest sReq, UserRequest uReq, Pageable pageable) {
-        List<InterviewRequest> reqList = search(sReq, uReq);
+    public Page<InterviewRequest> searchRequest(InterviewSearchRequest sReq, UserRequest uReq, Pageable pageable) {
+        List<InterviewRequest> reqList = searchRequest(sReq, uReq);
 
         int pageSize = pageable.getPageSize();
         int currentPage = pageable.getPageNumber();
@@ -316,6 +310,24 @@ public class InterviewService {
         Page<InterviewRequest> reqPage = new PageImpl<InterviewRequest>(pageList, PageRequest.of(currentPage, pageSize), reqList.size());
 
         return reqPage;
+    }
+
+    /**
+     * 企業コード、従業員番号での面談結果検索
+     * @param sReq 検索条件
+     * @param uReq ユーザー情報
+     * @return 検索結果(InterviewCSV)
+     */
+    public List<InterviewCSV> searchCSV(InterviewSearchRequest sReq, UserRequest uReq) {
+        List<InterviewRequest> reqList = searchRequest(sReq, uReq);
+        List<InterviewCSV> csvList = new ArrayList<>();
+
+        // 取得した面談結果を面談結果リクエストに変換する
+        for (InterviewRequest req : reqList) {
+            csvList.add(req.toCSV(uReq.getUserRoleCode()));
+        }
+
+        return csvList;
     }
 
     /**
@@ -501,13 +513,28 @@ public class InterviewService {
     public List<InterviewRequest> resultToRequestList(List<InterviewResult> list) {
         List<InterviewRequest> res = new ArrayList<InterviewRequest>();
         for (InterviewResult result : list) {
-            EmployeeRequest eReq = employeeService.findOneRequestFromID(result.getCompanyID(),
-                    result.getEmployeeCode());
-            String cName = companyService.getCompanyName(result.getCompanyID());
-            res.add(new InterviewRequest(result, eReq, cName));
+            res.add(resultToRequest(result));
         }
 
         return res;
+    }
+
+    /**
+     * 面談結果の型変換(InterviewResult→InterviewRequest)
+     * @param list 面談結果(InterviewResult)
+     * @return 面談結果(InterviewRequest)
+     */
+    public InterviewRequest resultToRequest(InterviewResult result) {
+        if (result != null) {
+            EmployeeRequest eReq = employeeService.findOneRequestFromID(result.getCompanyID(),
+                    result.getEmployeeCode());
+            String cName = companyService.getCompanyName(result.getCompanyID());
+            String rName = userService.getDisplayNameFromUsername(result.getRefinerUserID());
+            return new InterviewRequest(result, eReq, cName, rName);
+        }
+        else {
+            return null;
+        }
     }
 
     /**

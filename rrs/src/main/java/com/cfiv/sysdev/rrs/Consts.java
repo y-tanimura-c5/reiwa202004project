@@ -1,14 +1,46 @@
 package com.cfiv.sysdev.rrs;
 
 public class Consts {
+    public static final int PAGENATION_PAGESIZE = 5;
+    public static final int PASTINTERVIEW_NUM = 3;
+    public static final int INTERVIEWERCOMMENT_CONDNUM = 3;
+    public static final int ADMINCOMMENT_CONDNUM = 3;
+    public static final int CONVERTEDIMAGE_WIDTH = 1600;
+
     public static final boolean EXIST = false;
     public static final boolean DELETED = true;
+
+    public static final String EXIST_NAME = "あり";
+    public static final String NOTEXIST_NAME = "なし";
 
     public static final int CONTENTKIND_JOB = 0;
     public static final int CONTENTKIND_PRIVATE = 1;
 
     public static final int INTERVIEWDATECODE_LAST = 0;
     public static final int INTERVIEWDATECODE_REGION = 1;
+
+    public static final int USERROLECODE_ADMIN = 0;
+    public static final int USERROLECODE_CLIENTADMIN = 1;
+    public static final int USERROLECODE_REFINER = 10;
+
+    public static final int CONDITIONKIND_USESEARCH = 0;
+    public static final int CONDITIONKIND_INTERVIEWDATECODE = 1;
+    public static final int CONDITIONKIND_INTERVIEWDATEREGION = 2;
+    public static final int CONDITIONKIND_INTERVIEWDATELAST = 3;
+    public static final int CONDITIONKIND_INTERVIEWTIME = 4;
+    public static final int CONDITIONKIND_DISCLOSE = 5;
+    public static final int CONDITIONKIND_CONTENTJOB = 6;
+    public static final int CONDITIONKIND_CONTENTPRIVATE = 7;
+    public static final int CONDITIONKIND_INTERVIEWERCOMMENT = 8;
+    public static final int CONDITIONKIND_ADMINCOMMENT = 9;
+    public static final int CONDITIONKIND_HIREREGION = 10;
+    public static final int CONDITIONKIND_ADOPT = 11;
+    public static final int CONDITIONKIND_SUPPORT = 12;
+    public static final int CONDITIONKIND_EMPLOY = 13;
+
+    public static final int DISCLOSECODE_OK = 0;
+    public static final int DISCLOSECODE_PARTIALNG = 1;
+    public static final int DISCLOSECODE_ALLNG = 2;
 
     public static final String[] JOB_NAMES = {
             "人間関係の相談",
@@ -99,10 +131,6 @@ public class Consts {
             "10"
             };
 
-    public static int USERROLECODE_ADMIN = 0;
-    public static int USERROLECODE_CLIENTADMIN = 1;
-    public static int USERROLECODE_REFINER = 10;
-
     public static final int[] USERROLE_CODES = {
             USERROLECODE_ADMIN,
             USERROLECODE_CLIENTADMIN,
@@ -125,25 +153,36 @@ public class Consts {
             "無効"
             };
 
-    public static int PASTINTERVIEW_NUM = 3;
-    public static int INTERVIEWERCOMMENT_CONDNUM = 3;
-    public static int ADMINCOMMENT_CONDNUM = 3;
-    public static int CONVERTEDIMAGE_WIDTH = 1600;
+    public static final String[] EXIST_NAMES = {
+            NOTEXIST_NAME,
+            EXIST_NAME
+            };
 
-    public static int CONDITIONKIND_USESEARCH = 0;
-    public static int CONDITIONKIND_INTERVIEWDATECODE = 1;
-    public static int CONDITIONKIND_INTERVIEWDATEREGION = 2;
-    public static int CONDITIONKIND_INTERVIEWDATELAST = 3;
-    public static int CONDITIONKIND_INTERVIEWTIME = 4;
-    public static int CONDITIONKIND_DISCLOSE = 5;
-    public static int CONDITIONKIND_CONTENTJOB = 6;
-    public static int CONDITIONKIND_CONTENTPRIVATE = 7;
-    public static int CONDITIONKIND_INTERVIEWERCOMMENT = 8;
-    public static int CONDITIONKIND_ADMINCOMMENT = 9;
-    public static int CONDITIONKIND_HIREREGION = 10;
-    public static int CONDITIONKIND_ADOPT = 11;
-    public static int CONDITIONKIND_SUPPORT = 12;
-    public static int CONDITIONKIND_EMPLOY = 13;
-
-    public static int PAGENATION_PAGESIZE = 5;
+    public static final String[] INTERVIEWCSV_HEADER = {
+            "企業コード",
+            "企業名称",
+            "従業員番号",
+            "従業員名字",
+            "リファイナー名",
+            "面談日",
+            "面談時間",
+            "情報開示",
+            "相談内容",
+            "管理者コメント",
+            JOB_SHORTNAMES[0],
+            JOB_SHORTNAMES[0] + "メモ",
+            JOB_SHORTNAMES[1],
+            JOB_SHORTNAMES[1] + "メモ",
+            JOB_SHORTNAMES[2],
+            JOB_SHORTNAMES[2] + "メモ",
+            JOB_SHORTNAMES[3],
+            JOB_SHORTNAMES[3] + "メモ",
+            JOB_SHORTNAMES[4],
+            JOB_SHORTNAMES[4] + "メモ",
+            JOB_SHORTNAMES[5],
+            JOB_SHORTNAMES[5] + "メモ",
+            "プライベート1メモ",
+            "プライベート2メモ",
+            "プライベート3メモ"
+            };
 }

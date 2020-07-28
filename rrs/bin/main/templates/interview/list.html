@@ -57,20 +57,20 @@
 								<div class="col-md-2 col-lg-2">
 									勤続年数：
 								</div>
-								<div class="col-md-5 col-lg-2">
+								<div class="col-md-2 col-lg-2">
 									<select class="form-control" th:field="*{hireLengthStartCode}">
 										<option th:each="hirelengthstart, stat : *{hireLengthItems}" th:value="${stat.index}">[[*{hireLengthItems[__${stat.index}__]}]]</option>
 									</select>
 								</div>
-								<div class="col-md-5 col-lg-1">
+								<div class="col-md-1 col-lg-1">
 									　年　～
 								</div>
-								<div class="col-md-6 col-lg-2">
+								<div class="col-md-2 col-lg-2">
 									<select class="form-control" th:field="*{hireLengthEndCode}">
 										<option th:each="hirelengthend, stat : *{hireLengthItems}" th:value="${stat.index}">[[*{hireLengthItems[__${stat.index}__]}]]</option>
 									</select>
 								</div>
-								<div class="col-md-4 col-lg-1">
+								<div class="col-md-1 col-lg-1">
 									　年
 								</div>
 							</div>
@@ -130,14 +130,14 @@
 									面談日：
 								</div>
 								<div class="col-md-10 col-lg-10">
-									<div class="row align-items-center" style="height:40px;">
-										<div class="col-md-6 col-lg-1">
+									<div class="row align-items-center">
+										<div class="col-md-1 col-lg-1">
 											<input type="radio" name="interviewDateCode" th:value="0" th:field="*{interviewDateCode}" />
 										</div>
 										<div class="col-md-3 col-lg-3">
 											最終面談日が今日から
 										</div>
-										<div class="col-md-1 col-lg-2">
+										<div class="col-md-3 col-lg-2">
 											<select class="form-control" th:field="*{interviewDateLastCode}">
 												<option th:each="interviewDateLast, stat : *{interviewDateLastItems}" th:value="${stat.index}">[[*{interviewDateLastItems[__${stat.index}__]}]]</option>
 											</select>
@@ -146,20 +146,20 @@
 											ヶ月以上前
 										</div>
 									</div>
-									<div class="row align-items-center" style="height:40px;">
-										<div class="col-md-6 col-lg-1">
+									<div class="row align-items-center">
+										<div class="col-md-1 col-lg-1">
 											<input type="radio" name="interviewDateCode" th:value="1" th:field="*{interviewDateCode}" />
 										</div>
-										<div class="col-md-6 col-lg-3">
+										<div class="col-md-4 col-lg-3">
 											<input class="form-control" type="date" th:field="*{interviewDateStart}" />
 										</div>
-										<div class="col-md-4 col-lg-1 text-center">
+										<div class="col-md-1 col-lg-1 text-center">
 											から
 										</div>
-										<div class="col-md-6 col-lg-3">
+										<div class="col-md-4 col-lg-3">
 											<input class="form-control" type="date" th:field="*{interviewDateEnd}" />
 										</div>
-										<div class="col-md-4 col-lg-2">
+										<div class="col-md-2 col-lg-2">
 											までの期間
 										</div>
 									</div>
@@ -303,89 +303,104 @@
 					<div class="my-box mb-3"></div>
 					<div class="col text-center">
 						<button class="btn btn-primary btn-block" type="submit">検索</button>
+<!-- 						<button class="btn btn-primary btn-block" type="submit" name="search">検索</button> -->
+					</div>
+
+					<div class="my-box mb-3"></div>
+					<div class="row align-items-center no-gutters" style="height:40px;">
+						<div class="col-md-2 col-lg-1">
+							<a id="search_result">検索結果：</a>
+						</div>
+						<div class="col-md-3 col-lg-3">
+							[[${page.totalElements}]] 件
+						</div>
+						<div class="col-md-3 col-lg-4">
+						</div>
+						<div class="col-md-3 col-lg-4">
+							<div th:if="${loginUser.userRoleCode == 0 || loginUser.userRoleCode == 1}">
+								<button class="btn btn-primary btn-block" type="submit" name="download">CSV出力</button>
+							</div>
+						</div>
+					</div>
+					<div th:if="${loginUser.userRoleCode == 1}">
+						<table class="table table-hover table-bordered">
+							<thead class="thead-darknavy">
+								<tr>
+									<th><div class="text-center">企業コード</div></th>
+									<th><div class="text-center">従業員番号</div></th>
+									<th><div class="text-center">従業員名字</div></th>
+									<th><div class="text-center">面談日</div></th>
+									<th><div class="text-center">面談時間</div></th>
+									<th><div class="text-center">情報開示</div></th>
+									<th><div class="text-center">面談内容</div></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="interview, iStat : ${page.content}"
+									th:class="${interview.discloseCode == 0} ? 'clickable-row'"
+									th:data-href="@{/interview/{id}/edit(id=${interview.id})}"
+									th:style="${interview.discloseCode != 0} ? 'background-color:lightgray'">
+									<td><div class="text-center" th:text="${interview.companyID}"></div></td>
+									<td><div class="text-center" th:text="${interview.employeeCode}"></div></td>
+									<td><div class="text-center" th:text="${interview.employee.employeeFName}"></div></td>
+									<td><div class="text-center" th:text="${interview.interviewDateSlash}"></div></td>
+									<td><div class="text-center" th:text="${interview.interviewTimeShort}"></div></td>
+									<td>
+										<div th:if="${interview.discloseCode == 0}" class="text-center">
+											<a th:text="${interview.discloseShort}"></a>
+										</div>
+										<div th:if="${interview.discloseCode == 1 || interview.discloseCode == 2}" class="text-center text-danger">
+											<a th:text="${interview.discloseShort}"></a>
+										</div>
+									</td>
+									<td>
+										<div th:if="${interview.discloseCode == 0}">
+											<a th:text="${interview.contentJobNamesShort}"></a>
+										</div>
+										<div th:if="${interview.discloseCode == 1 || interview.discloseCode == 2}">
+											<a th:text="'－'"></a>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div th:if="${loginUser.userRoleCode != 1}">
+						<table class="table table-hover table-bordered">
+							<thead class="thead-darknavy">
+								<tr>
+									<th><div class="text-center">企業コード</div></th>
+									<th><div class="text-center">従業員番号</div></th>
+									<th><div class="text-center">従業員名字</div></th>
+									<th><div class="text-center">面談日</div></th>
+									<th><div class="text-center">面談時間</div></th>
+									<th><div class="text-center">情報開示</div></th>
+									<th><div class="text-center">面談内容</div></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="interview, iStat : ${page.content}"
+									class="clickable-row"
+									th:data-href="@{/interview/{id}/edit(id=${interview.id})}">
+									<td><div class="text-center" th:text="${interview.companyID}"></div></td>
+									<td><div class="text-center" th:text="${interview.employeeCode}"></div></td>
+									<td><div class="text-center" th:text="${interview.employee.employeeFName}"></div></td>
+									<td><div class="text-center" th:text="${interview.interviewDateSlash}"></div></td>
+									<td><div class="text-center" th:text="${interview.interviewTimeShort}"></div></td>
+									<td>
+										<div th:if="${interview.discloseCode == 0}" class="text-center">
+											<a th:text="${interview.discloseShort}"></a>
+										</div>
+										<div th:if="${interview.discloseCode == 1 || interview.discloseCode == 2}" class="text-center text-danger">
+											<a th:text="${interview.discloseShort}"></a>
+										</div>
+									</td>
+									<td th:text="${interview.contentJobNamesShort}"></td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 				</form>
-
-				<div class="my-box mb-3"></div>
-				<div class="row align-items-center no-gutters" style="height:40px;">
-					<div class="col-md-2 col-lg-1">
-						<a id="search_result">検索結果：</a>
-					</div>
-					<div class="col-md-3 col-lg-3">
-						[[${page.totalElements}]] 件
-					</div>
-				</div>
-				<div th:if="${loginUser.userRoleCode == 1}">
-					<table class="table table-hover table-bordered">
-						<thead class="thead-darknavy">
-							<tr>
-								<th><div class="text-center">企業コード</div></th>
-								<th><div class="text-center">従業員番号</div></th>
-								<th><div class="text-center">従業員名字</div></th>
-								<th><div class="text-center">面談日</div></th>
-								<th><div class="text-center">面談時間</div></th>
-								<th><div class="text-center">情報開示</div></th>
-								<th><div class="text-center">面談内容</div></th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr th:each="interview, iStat : ${page.content}"
-								th:class="${interview.discloseCode == 0} ? 'clickable-row'"
-								th:data-href="@{/interview/{id}/edit(id=${interview.id})}"
-								th:style="${interview.discloseCode != 0} ? 'background-color:lightgray'">
-								<td><div class="text-center" th:text="${interview.companyID}"></div></td>
-								<td><div class="text-center" th:text="${interview.employeeCode}"></div></td>
-								<td><div class="text-center" th:text="${interview.employee.employeeFName}"></div></td>
-								<td><div class="text-center" th:text="${interview.interviewDateSlash}"></div></td>
-								<td><div class="text-center" th:text="${interview.interviewTimeShort}"></div></td>
-								<td>
-									<div th:if="${interview.discloseCode == 0}" class="text-center">
-										<a th:text="${interview.discloseShort}"></a>
-									</div>
-									<div th:if="${interview.discloseCode == 1 || interview.discloseCode == 2}" class="text-center text-danger">
-										<a th:text="${interview.discloseShort}"></a>
-									</div>
-								</td>
-								<td th:text="${interview.contentJobNamesShort}"></td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-				<div th:if="${loginUser.userRoleCode != 1}">
-					<table class="table table-hover table-bordered">
-						<thead class="thead-darknavy">
-							<tr>
-								<th><div class="text-center">企業コード</div></th>
-								<th><div class="text-center">従業員番号</div></th>
-								<th><div class="text-center">従業員名字</div></th>
-								<th><div class="text-center">面談日</div></th>
-								<th><div class="text-center">面談時間</div></th>
-								<th><div class="text-center">情報開示</div></th>
-								<th><div class="text-center">面談内容</div></th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr th:each="interview, iStat : ${page.content}"
-								class="clickable-row"
-								th:data-href="@{/interview/{id}/edit(id=${interview.id})}">
-								<td><div class="text-center" th:text="${interview.companyID}"></div></td>
-								<td><div class="text-center" th:text="${interview.employeeCode}"></div></td>
-								<td><div class="text-center" th:text="${interview.employee.employeeFName}"></div></td>
-								<td><div class="text-center" th:text="${interview.interviewDateSlash}"></div></td>
-								<td><div class="text-center" th:text="${interview.interviewTimeShort}"></div></td>
-								<td>
-									<div th:if="${interview.discloseCode == 0}" class="text-center">
-										<a th:text="${interview.discloseShort}"></a>
-									</div>
-									<div th:if="${interview.discloseCode == 1 || interview.discloseCode == 2}" class="text-center text-danger">
-										<a th:text="${interview.discloseShort}"></a>
-									</div>
-								</td>
-								<td th:text="${interview.contentJobNamesShort}"></td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
 
 				<div th:if="${page.totalElements != 0}">
 					<form th:action="@{/interview/pagenate}" th:object="${page}" method="get">

@@ -12,7 +12,7 @@ import com.opencsv.bean.CsvBindByName;
 import lombok.Data;
 
 /**
- * 従業員情報 Entity(CSV用)
+ * 従業員情報CSV Entity
  */
 @Data
 public class EmployeeCSV {

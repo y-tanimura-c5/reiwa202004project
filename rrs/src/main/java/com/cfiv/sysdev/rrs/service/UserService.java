@@ -108,7 +108,7 @@ public class UserService implements UserDetailsService {
     }
 
     /**
-     * ユーザーIDからのユーザー情報(SpringSecurity用)
+     * ログインユーザー情報
      * @param username ユーザーID
      * @return ユーザー情報(Account)
      */
@@ -119,12 +119,22 @@ public class UserService implements UserDetailsService {
     }
 
     /**
-     * ログインユーザー情報
+     * ユーザーIDからのユーザー情報
      * @param username ユーザーID
      * @return ユーザー情報(Account)
      */
     public Account findByUsername(String username) {
         return accountRepository.findByUsername(username);
+    }
+
+    /**
+     * ユーザーIDからのユーザー表示名
+     * @param username ユーザーID
+     * @return ユーザー表示名
+     */
+    public String getDisplayNameFromUsername(String username) {
+        Account account = accountRepository.findByUsername(username);
+        return account.getDisplayName();
     }
 
     /**

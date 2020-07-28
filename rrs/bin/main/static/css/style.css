@@ -9,3 +9,7 @@
   background-color: #02325F;
   border-color: #95999c;
 }
+
+.navbar-nav > .dropdown.open > a.dropdown-toggle {
+  background-color: #ff8c00;
+}

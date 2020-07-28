@@ -1,10 +1,14 @@
 package com.cfiv.sysdev.rrs.controller;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -13,6 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,6 +34,7 @@ import com.cfiv.sysdev.rrs.Consts;
 import com.cfiv.sysdev.rrs.LogUtils;
 import com.cfiv.sysdev.rrs.Utils;
 import com.cfiv.sysdev.rrs.dto.EmployeeRequest;
+import com.cfiv.sysdev.rrs.dto.InterviewCSV;
 import com.cfiv.sysdev.rrs.dto.InterviewConditionRequest;
 import com.cfiv.sysdev.rrs.dto.InterviewRequest;
 import com.cfiv.sysdev.rrs.dto.InterviewSearchRequest;
@@ -37,6 +45,10 @@ import com.cfiv.sysdev.rrs.service.CompanyService;
 import com.cfiv.sysdev.rrs.service.EmployeeService;
 import com.cfiv.sysdev.rrs.service.InterviewService;
 import com.cfiv.sysdev.rrs.service.UserService;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 
 /**
  * 面談結果 Controller
@@ -96,7 +108,7 @@ public class InterviewController {
 
         if (interviewService.isUseInitSearchCondition(uReq.getUsername())) {
             cond = interviewService.getSearchRequestFromCondition(uReq.getUsername());
-            reqPage = interviewService.search(cond, uReq, PageRequest.of(currentPage - 1, pageSize));
+            reqPage = interviewService.searchRequest(cond, uReq, PageRequest.of(currentPage - 1, pageSize));
         }
 
         if (uReq.getUserRoleCode() != Consts.USERROLECODE_ADMIN) {
@@ -145,16 +157,18 @@ public class InterviewController {
      * @return 面談結果検索画面
      */
     @RequestMapping(value = "/interview/search", method = RequestMethod.POST)
+//    @RequestMapping(value = "/interview/search", params = "search", method = RequestMethod.POST)
     public String search(Model model
             , @ModelAttribute("interview_search_request") InterviewSearchRequest req
             , @RequestParam("page") Optional<Integer> page
             , @RequestParam("size") Optional<Integer> size) {
+        LogUtils.info("0");
 
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(Consts.PAGENATION_PAGESIZE);
         UserRequest uReq = userService.getLoginAccount();
 
-        Page<InterviewRequest> reqPage = interviewService.search(req, uReq, PageRequest.of(currentPage - 1, pageSize));
+        Page<InterviewRequest> reqPage = interviewService.searchRequest(req, uReq, PageRequest.of(currentPage - 1, pageSize));
 
         session.setAttribute(SESSION_FORM_ID, req);
 
@@ -211,6 +225,43 @@ public class InterviewController {
         }
 */
     }
+
+    /**
+     * 面談結果検索結果CSVダウンロード
+     * @param model モデル
+     * @param req 検索条件
+     * @param page ページ番号
+     * @param size 1ページ表示件数
+     * @return 面談結果検索画面
+     */
+    @RequestMapping(value = "/interview/search", params = "download", method = RequestMethod.POST)
+    public ResponseEntity<byte[]> download(Model model
+            , @ModelAttribute("interview_search_request") InterviewSearchRequest req
+            , HttpServletResponse response) throws IOException {
+        UserRequest uReq = userService.getLoginAccount();
+        List<InterviewCSV> csvList = interviewService.searchCSV(req, uReq);
+
+        StringWriter writer = new StringWriter();
+        try {
+            StatefulBeanToCsv<InterviewCSV> beanToCsv = new StatefulBeanToCsvBuilder<InterviewCSV>(writer).build();
+            beanToCsv.write(csvList);
+        } catch (CsvDataTypeMismatchException e) {
+            // TODO 自動生成された catch ブロック
+            e.printStackTrace();
+        } catch (CsvRequiredFieldEmptyException e) {
+            // TODO 自動生成された catch ブロック
+            e.printStackTrace();
+        }
+
+        HttpHeaders header = new HttpHeaders();
+        header.add("Content-Type", "text/csv; charset=shift_jis");
+        String filename = Utils.getYYYYMMDDHHmmssFromDate(new Date()) + ".csv";
+        header.setContentDispositionFormData("filename", filename);
+        StringBuffer csv = writer.getBuffer();
+        csv.insert(0, Utils.interviewCSVHeaderString());
+        return new ResponseEntity<>(csv.toString().getBytes("MS932"), header, HttpStatus.OK);
+    }
+
 
     /**
      * 従業員情報、過去面談結果表示
