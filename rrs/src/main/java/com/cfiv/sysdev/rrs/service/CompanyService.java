@@ -17,7 +17,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.cfiv.sysdev.rrs.Consts;
+import com.cfiv.sysdev.rrs.Utils;
 import com.cfiv.sysdev.rrs.dto.CompanyRequest;
+import com.cfiv.sysdev.rrs.dto.UserRequest;
 import com.cfiv.sysdev.rrs.entity.Company;
 import com.cfiv.sysdev.rrs.repository.CompanyRepository;
 
@@ -167,14 +170,21 @@ public class CompanyService {
      * リスト表示用企業情報(全件)
      * @return 検索結果
      */
-    public Map<String, String> getAllCompanyNamesForDropdown() {
-        List<Company> company_list = searchAll();
+    public Map<String, String> getAllCompanyNamesForDropdown(UserRequest loginUser) {
         Map<String, String> result = new LinkedHashMap<String, String>();
 
-        for (Company company : company_list) {
-            if (company.isEnabled()) {
-                result.put(company.getIdString(4), company.getIdString(4) + ":" + company.getName());
+        if (loginUser.getUserRoleCode() == Consts.USERROLECODE_ADMIN) {
+            List<Company> company_list = searchAll();
+
+            for (Company company : company_list) {
+                if (company.isEnabled()) {
+                    result.put(company.getIdString(4), company.getIdString(4) + ":" + company.getName());
+                }
             }
+        }
+        else {
+            String companyName = getCompanyName(Utils.getLongFromString(loginUser.getCompanyID()));
+            result.put(loginUser.getCompanyID(), loginUser.getCompanyID() + ":" + companyName);
         }
 
         return result;
@@ -195,8 +205,16 @@ public class CompanyService {
      * @return 検索結果
      */
     public String getCompanyNameForDropdown(Long id) {
-        Company company = findOne(id);
+        String result;
 
-        return company.getIdString(4) + ":" + company.getName();
+        if (id == Consts.COMPANYID_ADMIN) {
+            result = "－";
+        }
+        else {
+            Company company = findOne(id);
+            result = company.getIdString(4) + ":" + company.getName();
+        }
+
+        return result;
     }
 }

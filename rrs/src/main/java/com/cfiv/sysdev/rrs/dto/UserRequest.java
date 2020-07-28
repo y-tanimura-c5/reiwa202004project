@@ -20,10 +20,6 @@ import lombok.Data;
 @PasswordConfirm
 public class UserRequest implements Serializable {
     public UserRequest() {
-        userRoleItems = new LinkedHashMap<Integer, String>();
-        for (int i = 0; i < Consts.USERROLE_CODES.length; i ++) {
-            userRoleItems.put(Consts.USERROLE_CODES[i], Consts.USERROLE_NAMES[i]);
-        }
         enabledItems = new LinkedHashMap<Integer, String>();
         for (int i = 0; i < Consts.ENABLED_CODES.length; i ++) {
             enabledItems.put(Consts.ENABLED_CODES[i], Consts.ENABLED_NAMES[i]);
@@ -31,7 +27,7 @@ public class UserRequest implements Serializable {
     }
 
     public UserRequest(String _id, String _username, String _password, String _displayName,
-            int _userRoleCode, String _companyID, String _companyName, boolean _enabled) {
+            int _userRoleCode, String _companyID, String _companyName, boolean _enabled, UserRequest _loginUser) {
         this();
 
         setId(_id);
@@ -43,6 +39,20 @@ public class UserRequest implements Serializable {
         setCompanyID(_companyID);
         setCompanyName(_companyName);
         setEnabled(_enabled ? 1 : 0);
+
+        userRoleItems = new LinkedHashMap<Integer, String>();
+        if (_loginUser != null && _loginUser.getUserRoleCode() == Consts.USERROLECODE_ADMIN) {
+            for (int i = 0; i < Consts.USERROLE_CODES.length; i ++) {
+                userRoleItems.put(Consts.USERROLE_CODES[i], Consts.USERROLE_NAMES[i]);
+            }
+        }
+        else {
+            for (int i = 0; i < Consts.USERROLE_CODES.length; i ++) {
+                if (Consts.USERROLE_CODES[i] != Consts.USERROLECODE_ADMIN) {
+                    userRoleItems.put(Consts.USERROLE_CODES[i], Consts.USERROLE_NAMES[i]);
+                }
+            }
+        }
     }
 
     /**

@@ -47,7 +47,7 @@ public class UserController {
     CompanyService companyService;
 
     /**
-     * ユーザー情報一覧画面を表示
+     * ユーザー情報一覧画面
      * @param model Model
      * @return ユーザー情報一覧画面
      */
@@ -55,30 +55,34 @@ public class UserController {
     public String list(Model model
             , @RequestParam("page") Optional<Integer> page
             , @RequestParam("size") Optional<Integer> size) {
+        UserRequest lReq = userService.getLoginAccount();
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(Consts.PAGENATION_PAGESIZE);
-        Page<UserRequest> reqPage = userService.search(PageRequest.of(currentPage - 1, pageSize));
+        Page<UserRequest> reqPage = userService.search(PageRequest.of(currentPage - 1, pageSize), lReq);
 
         model.addAttribute("page", reqPage);
         model.addAttribute("url", "/user/list");
-        model.addAttribute("loginUser", userService.getLoginAccount());
+        model.addAttribute("loginUser", lReq);
 
         return "user/list";
     }
 
     /**
-     * ユーザー新規登録画面を表示
+     * ユーザー情報新規登録画面
      * @param model Model
      * @return ユーザー新規登録画面
      */
     @RequestMapping(value = "/user/add", method = RequestMethod.GET)
-    public String displayAdd(Model model) {
-        Map<String, String> companyItems = companyService.getAllCompanyNamesForDropdown();
+    public String add(Model model) {
+        UserRequest lReq = userService.getLoginAccount();
+        Map<String, String> companyItems = companyService.getAllCompanyNamesForDropdown(lReq);
         List<String> keys = new ArrayList<String>(companyItems.keySet());
 
-        model.addAttribute("user_request", new UserRequest("", "", "", "", Consts.USERROLECODE_REFINER, "", companyItems.get(keys.get(0)), true));
+        UserRequest uReq = new UserRequest("", "", "", "", Consts.USERROLECODE_REFINER, ""
+                , companyItems.get(keys.get(0)), true, lReq);
+        model.addAttribute("user_request", uReq);
         model.addAttribute("company_items", companyItems);
-        model.addAttribute("loginUser", userService.getLoginAccount());
+        model.addAttribute("loginUser", lReq);
 
         return "user/add";
     }
@@ -91,39 +95,44 @@ public class UserController {
      * @return ユーザー情報一覧画面(登録完了時)／新規登録画面(エラー発生時)
      */
     @RequestMapping(value = "/user/create", method = RequestMethod.POST)
-    public String create(RedirectAttributes attributes, @ModelAttribute("user_request") @Valid UserRequest req, BindingResult result, Model model) {
-        UserRequest uReq = userService.getLoginAccount();
+    public String create(RedirectAttributes attributes
+            , @ModelAttribute("user_request") @Valid UserRequest req
+            , BindingResult result
+            , Model model) {
+        UserRequest lReq = userService.getLoginAccount();
 
         if (result.hasErrors()) {
 //            for(FieldError err: result.getFieldErrors()) {
 //                LogUtils.info("error field  [" + err.getField() + "], error code = [" + err.getCode() + "]");
 //            }
 
-            model.addAttribute("company_items", companyService.getAllCompanyNamesForDropdown());
-            model.addAttribute("loginUser", uReq);
+            model.addAttribute("company_items", companyService.getAllCompanyNamesForDropdown(lReq));
+            model.addAttribute("loginUser", lReq);
 
             return "/user/add";
         }
 
         userService.create(req);
 
-        attributes.addFlashAttribute("loginUser", uReq);
+        attributes.addFlashAttribute("loginUser", lReq);
 
         return "redirect:/user/list";
     }
 
     /**
-     * ユーザー情報更新画面を表示
+     * ユーザー情報更新画面
      * @param id ID
      * @param model Model
      * @return ユーザー情報更新画面
      */
     @RequestMapping(value = "/user/{id}/edit", method = RequestMethod.GET)
     public String edit(@PathVariable Long id, ModelMap model) {
+        UserRequest lReq = userService.getLoginAccount();
         Account account = userService.findOne(id);
-        Map<String, String> companyItems = companyService.getAllCompanyNamesForDropdown();
+        Map<String, String> companyItems = companyService.getAllCompanyNamesForDropdown(lReq);
 
-        model.addAttribute("user_request", account.toRequest(companyService.getCompanyNameForDropdown(account.getCompanyID())));
+        UserRequest uReq = account.toRequest(companyService.getCompanyNameForDropdown(account.getCompanyID()), lReq);
+        model.addAttribute("user_request", uReq);
         model.addAttribute("company_items", companyItems);
 
         String key = BindingResult.MODEL_KEY_PREFIX + "user_request";
@@ -131,7 +140,31 @@ public class UserController {
             model.addAttribute(key, model.get("errors"));
         }
 
-        model.addAttribute("loginUser", userService.getLoginAccount());
+        model.addAttribute("loginUser", lReq);
+
+        return "user/edit";
+    }
+
+    /**
+     * ログインユーザー情報更新画面
+     * @param id ID
+     * @param model Model
+     * @return ユーザー情報更新画面
+     */
+    @RequestMapping(value = "/user/editlogin", method = RequestMethod.GET)
+    public String editLoginUser(ModelMap model) {
+        UserRequest lReq = userService.getLoginAccount();
+        Map<String, String> companyItems = companyService.getAllCompanyNamesForDropdown(lReq);
+
+        model.addAttribute("user_request", lReq);
+        model.addAttribute("company_items", companyItems);
+
+        String key = BindingResult.MODEL_KEY_PREFIX + "user_request";
+        if (model.containsKey("errors")) {
+            model.addAttribute(key, model.get("errors"));
+        }
+
+        model.addAttribute("loginUser", lReq);
 
         return "user/edit";
     }
@@ -149,6 +182,7 @@ public class UserController {
     public String update(RedirectAttributes attributes, @PathVariable Long id,
             @ModelAttribute("user_request") @Valid UserRequest req, BindingResult result, Model model) {
         boolean error = true;
+        UserRequest lReq = userService.getLoginAccount();
 
         if (result.hasErrors()) {
             for(FieldError err: result.getFieldErrors()) {
@@ -179,8 +213,13 @@ public class UserController {
 
         userService.save(id, req);
 
-        attributes.addFlashAttribute("loginUser", userService.getLoginAccount());
+        attributes.addFlashAttribute("loginUser", lReq);
 
-        return "redirect:/user/list";
+        if (lReq.getUserRoleCode() == Consts.USERROLECODE_REFINER) {
+            return "redirect:/";
+        }
+        else {
+            return "redirect:/user/list";
+        }
     }
 }

@@ -1,7 +1,7 @@
 package com.cfiv.sysdev.rrs;
 
 public class Consts {
-    public static final int PAGENATION_PAGESIZE = 5;
+    public static final int PAGENATION_PAGESIZE = 50;
     public static final int PASTINTERVIEW_NUM = 3;
     public static final int INTERVIEWERCOMMENT_CONDNUM = 3;
     public static final int ADMINCOMMENT_CONDNUM = 3;
@@ -41,6 +41,8 @@ public class Consts {
     public static final int DISCLOSECODE_OK = 0;
     public static final int DISCLOSECODE_PARTIALNG = 1;
     public static final int DISCLOSECODE_ALLNG = 2;
+
+    public static final Long COMPANYID_ADMIN = 0L;
 
     public static final String[] JOB_NAMES = {
             "人間関係の相談",

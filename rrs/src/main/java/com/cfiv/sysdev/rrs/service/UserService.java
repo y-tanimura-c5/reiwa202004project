@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.util.StringUtils;
 
+import com.cfiv.sysdev.rrs.Consts;
 import com.cfiv.sysdev.rrs.Utils;
 import com.cfiv.sysdev.rrs.dto.UserRequest;
 import com.cfiv.sysdev.rrs.entity.Account;
@@ -53,15 +54,31 @@ public class UserService implements UserDetailsService {
     }
 
     /**
+     * ユーザー情報 企業コード指定検索
+     * @return 検索結果
+     */
+    public List<Account> searchFromCompanyID(Long companyID) {
+        return accountRepository.findByCompanyID(companyID);
+    }
+
+    /**
      * 企業コード 全検索
      * @param pageable ページング条件
      * @return 検索結果ページ(UserRequest)
      */
-    public Page<UserRequest> search(Pageable pageable) {
+    public Page<UserRequest> search(Pageable pageable, UserRequest lReq) {
         List<UserRequest> reqList = new ArrayList<UserRequest>();
-        List<Account> list = searchAll();
+        List<Account> list;
+
+        if (lReq.getUserRoleCode() == Consts.USERROLECODE_ADMIN) {
+            list = searchAll();
+        }
+        else {
+            list = searchFromCompanyID(Utils.getLongFromString(lReq.getCompanyID()));
+        }
+
         for (Account account : list) {
-            reqList.add(account.toRequest(companyService.getCompanyNameForDropdown(account.getCompanyID())));
+            reqList.add(account.toRequest(companyService.getCompanyNameForDropdown(account.getCompanyID()), lReq));
         }
 
         int pageSize = pageable.getPageSize();
@@ -115,7 +132,7 @@ public class UserService implements UserDetailsService {
     public UserRequest getLoginAccount() {
         Account account = accountRepository.findByUsername(Utils.loginUsername());
 //        LogUtils.info("account.getUsername() = " + account.getUsername());
-        return account.toRequest(companyService.getCompanyNameForDropdown(account.getCompanyID()));
+        return account.toRequest(companyService.getCompanyNameForDropdown(account.getCompanyID()), null);
     }
 
     /**
@@ -187,7 +204,18 @@ public class UserService implements UserDetailsService {
 
         account.setDisplayName(req.getDisplayName());
         account.setUserRole(req.getUserRoleCode());
-        account.setCompanyIDFromName(req.getCompanyName());
+        if (req.getCompanyName() != null) {
+            if (req.getUserRoleCode() == Consts.USERROLECODE_ADMIN) {
+                account.setCompanyID(Consts.COMPANYID_ADMIN);
+            }
+            else {
+                account.setCompanyIDFromName(req.getCompanyName());
+            }
+        }
+        else {
+            UserRequest lReq = getLoginAccount();
+            account.setCompanyID(Utils.getLongFromString(lReq.getCompanyID()));
+        }
         account.setEnabled(req.getEnabled() == 1 ? true : false);
         account.setUpdateTime(now);
         account.setUpdateUser(Utils.loginUsername());

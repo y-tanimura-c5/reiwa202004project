@@ -41,7 +41,7 @@
 									<a class="dropdown-item" href="/user/list">ユーザー情報一覧</a>
 								</div>
 								<div th:if="${loginUser.userRoleCode == 10}">
-									<a class="dropdown-item" href="/user/list">ユーザー情報変更</a>
+									<a class="dropdown-item" href="/user/editlogin">ユーザー情報変更</a>
 								</div>
 								<div th:if="${loginUser.userRoleCode == 0}">
 									<a class="dropdown-item" href="/company/list">企業情報一覧</a>
@@ -60,7 +60,7 @@
 						リファイナー：[[${loginUser.displayName}]]さん　
 					</div>
 					<form class="form-inline my-2 my-lg-0" id="logout" th:action="@{/logout}" method="post">
-		       			<button type="submit" class="btn btn-primary">ログアウト</button>
+		       			<button class="btn btn-primary" type="submit">ログアウト</button>
 					</form>
 				</div>
 			</nav>

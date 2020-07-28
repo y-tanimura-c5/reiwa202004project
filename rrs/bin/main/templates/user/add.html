@@ -3,6 +3,29 @@
 <head th:replace="common :: meta_header('ユーザー情報新規登録',~{::link},~{::script})">
 </head>
 <body>
+<script>
+function userRoleCheck0(ischecked){
+    if(ischecked == true){
+        document.getElementById("companyItems").disabled = false;
+      } else {
+        document.getElementById("companyItems").disabled = true;
+      }
+}
+function userRoleCheck1(ischecked){
+    if(ischecked == true){
+        document.getElementById("companyItems").disabled = true;
+      } else {
+        document.getElementById("companyItems").disabled = false;
+      }
+}
+function userRoleCheck2(ischecked){
+    if(ischecked == true){
+        document.getElementById("companyItems").disabled = true;
+      } else {
+        document.getElementById("companyItems").disabled = false;
+      }
+}
+</script>
 <div class="box">
 	<div th:replace="header :: header"></div>
 
@@ -59,39 +82,48 @@
 						</div>
 					</div>
 
-					<div class="row align-items-center" style="height:40px;">
-						<div class="col-md-2 col-lg-3">
-							ユーザー権限：
-						</div>
-						<div class="col-md-10 col-lg-9">
-							<div class="row align-items-center" style="height:40px;">
-								<div th:each="item : *{userRoleItems}" class="col-md-12 col-lg-3">
-									<input type="radio" name="userRole" th:value="${item.key}" th:text="${item.value}" th:field="*{userRoleCode}" />
+					<div th:if="${loginUser.userRoleCode == 0 || loginUser.userRoleCode == 1}">
+						<div class="row align-items-center" style="height:40px;">
+							<div class="col-md-2 col-lg-3">
+								ユーザー権限：
+							</div>
+							<div class="col-md-10 col-lg-9">
+								<div class="row align-items-center" style="height:40px;">
+									<div th:each="item : *{userRoleItems}" class="col-md-12 col-lg-3">
+										<input type="radio" name="userRole" th:value="${item.key}" th:text="${item.value}" th:field="*{userRoleCode}"
+											th:onclick="'userRoleCheck0(true);'" />
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 
-					<div class="row align-items-center" style="height:40px;">
-						<div class="col-md-2 col-lg-3">
-							企業名称：
-						</div>
-						<div class="col-md-3 col-lg-3">
-							<select class="form-control" th:field="*{companyName}">
-								<option th:each="companyItem : ${company_items}" th:value="${companyItem.value}" th:text="${companyItem.value}"
-									 th:selected="${companyItem.value} == *{companyName}"></option>
-							</select>
+					<div th:if="${loginUser.userRoleCode == 0}">
+						<div class="row align-items-center" style="height:40px;">
+							<div class="col-md-2 col-lg-3">
+								企業名称：
+							</div>
+							<div class="col-md-3 col-lg-3">
+								<div th:if="${loginUser.userRoleCode != 1}">
+									<select class="form-control" th:field="*{companyName}">
+										<option th:each="companyItem : ${company_items}" th:value="${companyItem.value}" th:text="${companyItem.value}"
+											 th:selected="${companyItem.value} == *{companyName}"></option>
+									</select>
+								</div>
+							</div>
 						</div>
 					</div>
 
-					<div class="row align-items-center" style="height:40px;">
-						<div class="col-md-2 col-lg-3">
-							有効／無効：
-						</div>
-						<div class="col-md-8 col-lg-9">
-							<div class="row align-items-center" style="height:40px;">
-								<div th:each="item : *{enabledItems}" class="col-md-3 col-lg-3">
-									<input type="radio" name="enabled" th:value="${item.key}" th:text="${item.value}" th:field="*{enabled}" />
+					<div th:if="${loginUser.userRoleCode == 0 || loginUser.userRoleCode == 1}">
+						<div class="row align-items-center" style="height:40px;">
+							<div class="col-md-2 col-lg-3">
+								有効／無効：
+							</div>
+							<div class="col-md-8 col-lg-9">
+								<div class="row align-items-center" style="height:40px;">
+									<div th:each="item : *{enabledItems}" class="col-md-3 col-lg-3">
+										<input type="radio" name="enabled" th:value="${item.key}" th:text="${item.value}" th:field="*{enabled}" />
+									</div>
 								</div>
 							</div>
 						</div>
