@@ -58,7 +58,7 @@
 									採用種別：
 								</div>
 								<div class="col-md-10 col-lg-6">
-									<input class="form-control" type="text" th:field="*{employee.adoptCode}" readonly="readonly" />
+									<input class="form-control" type="text" th:field="*{employee.adopt}" readonly="readonly" />
 								</div>
 							</div>
 							<div class="row align-items-center">
@@ -66,7 +66,7 @@
 									扶養有無：
 								</div>
 								<div class="col-md-10 col-lg-6">
-									<input class="form-control" type="text" th:field="*{employee.supportCode}" readonly="readonly" />
+									<input class="form-control" type="text" th:field="*{employee.support}" readonly="readonly" />
 								</div>
 							</div>
 							<div class="row align-items-center">
@@ -74,7 +74,7 @@
 									就業種別：
 								</div>
 								<div class="col-md-10 col-lg-6">
-									<input class="form-control" type="text" th:field="*{employee.employCode}" readonly="readonly" />
+									<input class="form-control" type="text" th:field="*{employee.employ}" readonly="readonly" />
 								</div>
 							</div>
 						</div>
@@ -227,8 +227,13 @@
 							管理者記入欄：
 						</div>
 						<div class="col-md-12 col-lg-12">
-							<textarea id="textarea1" class="form-control" th:field="*{adminComment}"></textarea>
-							<label th:if="${#fields.hasErrors('adminComment')}" th:errors="*{adminComment}" style="color: red"></label>
+							<div th:if="${loginUser.userRoleCode == 0}">
+								<textarea id="textarea" class="form-control" th:field="*{adminComment}"></textarea>
+								<label th:if="${#fields.hasErrors('adminComment')}" th:errors="*{adminComment}" style="color: red"></label>
+							</div>
+							<div th:if="${loginUser.userRoleCode != 0}">
+								<textarea id="textarea" class="form-control" th:field="*{adminComment}" readonly></textarea>
+							</div>
 						</div>
 					</div>
 

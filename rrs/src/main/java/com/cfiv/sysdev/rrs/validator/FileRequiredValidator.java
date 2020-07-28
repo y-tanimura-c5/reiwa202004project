@@ -8,15 +8,26 @@ import java.util.List;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cfiv.sysdev.rrs.Consts;
 import com.cfiv.sysdev.rrs.LogUtils;
 import com.cfiv.sysdev.rrs.annotation.FileRequired;
 import com.cfiv.sysdev.rrs.dto.EmployeeCSV;
+import com.cfiv.sysdev.rrs.dto.UserRequest;
+import com.cfiv.sysdev.rrs.service.UserService;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 
 public class FileRequiredValidator implements ConstraintValidator<FileRequired, MultipartFile> {
+
+    /**
+     * ユーザー情報 Service
+     */
+    @Autowired
+    UserService userService;
+
     @Override
     public void initialize(FileRequired constraint) {
     }
@@ -24,6 +35,7 @@ public class FileRequiredValidator implements ConstraintValidator<FileRequired, 
     @Override
     public boolean isValid(MultipartFile multipartFile, ConstraintValidatorContext context) {
         String message = "";
+        UserRequest uReq = userService.getLoginAccount();
 
         if (multipartFile == null || multipartFile.getOriginalFilename().isEmpty()) {
             message = "ファイルの取得に失敗しました。";
@@ -47,7 +59,13 @@ public class FileRequiredValidator implements ConstraintValidator<FileRequired, 
             int row = 2;
             if (items != null) {
                 for (EmployeeCSV item : items) {
-                    item.check();
+                    if (uReq.getUserRoleCode() == Consts.USERROLECODE_ADMIN) {
+                        item.check(null);
+                    }
+                    else {
+                        item.check(uReq.getCompanyID());
+                    }
+
                     if (!item.isResult()) {
                         message = row + "行目："+ item.getReason();
                         break;

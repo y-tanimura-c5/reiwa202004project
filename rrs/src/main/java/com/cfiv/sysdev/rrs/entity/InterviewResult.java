@@ -84,18 +84,6 @@ public class InterviewResult implements Serializable {
     private String adminComment;
 
     /**
-     *  添付ファイル名
-     */
-    @Column (name="FILENAME")
-    private String filename;
-
-    /**
-     *  添付ファイルデータ
-     */
-    @Column (name="FILEDATA")
-    private byte filedata[];
-
-    /**
      * 削除
      */
     @Column(name="DELETED")

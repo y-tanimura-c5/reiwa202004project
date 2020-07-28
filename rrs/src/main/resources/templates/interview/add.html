@@ -13,12 +13,22 @@
 				<form th:action="@{/interview/submit}" enctype="multipart/form-data" th:method="post" th:object="${interview_request}">
 					<div class="row align-items-center">
 						<div class="col-md-2 col-lg-2">
-							企業コード：
-							<span class="badge badge-danger">必須</span>
+							<div th:if="${loginUser.userRoleCode == 0}">
+								企業コード：
+								<span class="badge badge-danger">必須</span>
+							</div>
+							<div th:if="${loginUser.userRoleCode != 0}">
+								企業コード：
+							</div>
 						</div>
 						<div class="col-md-3 col-lg-3">
-							<input class="form-control" type="text" th:field="*{companyID}" />
-							<label th:if="${#fields.hasErrors('companyID')}" th:errors="*{companyID}" style="color: red"></label>
+							<div th:if="${loginUser.userRoleCode == 0}">
+								<input class="form-control" type="text" th:field="*{companyID}" />
+								<label th:if="${#fields.hasErrors('companyID')}" th:errors="*{companyID}" style="color: red"></label>
+							</div>
+							<div th:if="${loginUser.userRoleCode != 0}">
+								<input class="form-control" type="text" th:field="*{companyID}" readonly/>
+							</div>
 						</div>
 						<div class="col-md-7 col-lg-5">
 							<input class="form-control" type="text" th:field="*{companyName}" readonly="readonly" />
@@ -285,7 +295,7 @@
 							相談内容【自由記述】(リファイナー所感)：
 						</div>
 						<div class="col-md-12 col-lg-12">
-							<textarea id="textarea1" class="form-control" th:field="*{interviewerComment}"></textarea>
+							<textarea id="textarea" class="form-control" th:field="*{interviewerComment}"></textarea>
 							<label th:if="${#fields.hasErrors('interviewerComment')}" th:errors="*{interviewerComment}" style="color: red"></label>
 						</div>
 					</div>
@@ -322,8 +332,13 @@
 							管理者記入欄：
 						</div>
 						<div class="col-md-12 col-lg-12">
-							<textarea id="textarea1" class="form-control" th:field="*{adminComment}"></textarea>
-							<label th:if="${#fields.hasErrors('adminComment')}" th:errors="*{adminComment}" style="color: red"></label>
+							<div th:if="${loginUser.userRoleCode == 0}">
+								<textarea id="textarea" class="form-control" th:field="*{adminComment}"></textarea>
+								<label th:if="${#fields.hasErrors('adminComment')}" th:errors="*{adminComment}" style="color: red"></label>
+							</div>
+							<div th:if="${loginUser.userRoleCode != 0}">
+								<textarea id="textarea" class="form-control" th:field="*{adminComment}" readonly></textarea>
+							</div>
 						</div>
 					</div>
 

@@ -1,20 +1,24 @@
 package com.cfiv.sysdev.rrs.controller;
 
-import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import com.cfiv.sysdev.rrs.Consts;
 import com.cfiv.sysdev.rrs.Utils;
 import com.cfiv.sysdev.rrs.dto.InterviewRequest;
 import com.cfiv.sysdev.rrs.dto.InterviewSearchRequest;
-import com.cfiv.sysdev.rrs.entity.Account;
+import com.cfiv.sysdev.rrs.dto.UserRequest;
 import com.cfiv.sysdev.rrs.service.InterviewService;
 import com.cfiv.sysdev.rrs.service.LoginTimeService;
-import com.cfiv.sysdev.rrs.service.UserAccountService;
+import com.cfiv.sysdev.rrs.service.UserService;
 
 @Controller
 @RequestMapping("/")
@@ -36,38 +40,29 @@ public class IndexController {
      * ユーザー情報 Service
      */
     @Autowired
-    UserAccountService userAccountService;
+    UserService userService;
 
     @RequestMapping(path = "/", method = RequestMethod.GET)
-    public String index(Model model) {
-
+    public String index(Model model, @RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
         String username = Utils.loginUsername();
+        InterviewSearchRequest cond = interviewService.getSearchRequestFromCondition(username);
 
-        InterviewSearchRequest req = interviewService.getSearchRequestFromCondition(username);
-        List<InterviewRequest> req_list = interviewService.search(req);
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(Consts.PAGENATION_PAGESIZE);
+        UserRequest uReq = userService.getLoginAccount();
 
-        model.addAttribute("interview_search_request", req);
-        model.addAttribute("interview_request_list", req_list);
-        model.addAttribute("interview_request_size", req_list.size());
+        Page<InterviewRequest> reqPage = interviewService.search(cond, uReq, PageRequest.of(currentPage - 1, pageSize));
+
+        model.addAttribute("page", reqPage);
+        model.addAttribute("url", "/");
+        model.addAttribute("interview_search_request", cond);
+        model.addAttribute("loginUser", uReq);
 
         return "index";
     }
 
     @RequestMapping(path = "/", method = RequestMethod.POST)
-    public String indexForward(Model model) {
-
-        String username = Utils.loginUsername();
-
-        Account account = userAccountService.findByUsername(username);
-        loginTimeService.save(username, account.getCompanyID());
-
-        InterviewSearchRequest req = interviewService.getSearchRequestFromCondition(username);
-        List<InterviewRequest> req_list = interviewService.search(req);
-
-        model.addAttribute("interview_search_request", req);
-        model.addAttribute("interview_request_list", req_list);
-        model.addAttribute("interview_request_size", req_list.size());
-
-        return "index";
+    public String indexForward(Model model, @RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
+        return index(model, page, size);
     }
 }

@@ -1,6 +1,7 @@
 package com.cfiv.sysdev.rrs.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +12,10 @@ import javax.persistence.Query;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.cfiv.sysdev.rrs.Consts;
@@ -114,8 +119,8 @@ public class EmployeeService {
      * @param employeeCode 従業員番号
      * @return 検索結果(EmployeeRequest)
      */
-    public EmployeeRequest findOneFromID(Long companyID, String employeeCode) {
-        return findOneFromID(Long.toString(companyID), employeeCode);
+    public EmployeeRequest findOneRequestFromID(Long companyID, String employeeCode) {
+        return findOneRequestFromID(Long.toString(companyID), employeeCode);
     }
 
     /**
@@ -124,7 +129,7 @@ public class EmployeeService {
      * @param employeeCode 従業員番号
      * @return 検索結果(EmployeeRequest)
      */
-    public EmployeeRequest findOneFromID(String companyID, String employeeCode) {
+    public EmployeeRequest findOneRequestFromID(String companyID, String employeeCode) {
         List<Employee> emp_list = searchFromID(companyID, employeeCode);
         if (!emp_list.isEmpty()) {
             return emp_list.get(0).toRequest();
@@ -152,6 +157,33 @@ public class EmployeeService {
      */
     public List<EmployeeRequest> searchRequestFromID(String companyID, String employeeCode) {
         return employeeToRequestList(searchFromID(companyID, employeeCode));
+    }
+
+    /**
+     * 企業コード、従業員番号での面談結果検索
+     * @param req 検索条件
+     * @param pageable ページング条件
+     * @return 検索結果ページ(InterviewRequest)
+     */
+    public Page<EmployeeRequest> searchRequestFromID(String companyID, String employeeCode, Pageable pageable) {
+        List<EmployeeRequest> reqList = searchRequestFromID(companyID, employeeCode);
+
+        int pageSize = pageable.getPageSize();
+        int currentPage = pageable.getPageNumber();
+        int startItem = currentPage * pageSize;
+        List<EmployeeRequest> pageList;
+
+        if (reqList.size() < startItem) {
+            pageList = Collections.emptyList();
+        }
+        else {
+            int toIndex = Math.min(startItem + pageSize, reqList.size());
+            pageList = reqList.subList(startItem, toIndex);
+        }
+
+        Page<EmployeeRequest> reqPage = new PageImpl<EmployeeRequest>(pageList, PageRequest.of(currentPage, pageSize), reqList.size());
+
+        return reqPage;
     }
 
     /**

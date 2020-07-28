@@ -24,15 +24,34 @@
 						</tr>
 					</thead>
 					<tbody>
-					    <tr th:each="company : ${company_request_list}" th:object="${company}" class="clickable-row" th:data-href="@{/company/{id}/edit(id=*{id})}">
-					        <td><div class="text-center" th:text="*{id}"></div></td>
-					        <td><div class="text-center" th:text="*{name}"></div></td>
-					        <td><div class="text-center" th:text="*{enabledName}"></div></td>
-					        <td><div class="text-center" th:text="*{lastLoginDateString}"></div></td>
-					        <td><div class="text-center" th:text="*{lastInterviewDateString}"></div></td>
+					    <tr th:each="company : ${page.content}" th:object="${company}" class="clickable-row" th:data-href="@{/company/{id}/edit(id=*{id})}">
+					        <td><div class="text-center" th:text="${company.id}"></div></td>
+					        <td><div class="text-center" th:text="${company.name}"></div></td>
+					        <td><div class="text-center" th:text="${company.enabledName}"></div></td>
+					        <td><div class="text-center" th:text="${company.lastLoginDateString}"></div></td>
+					        <td><div class="text-center" th:text="${company.lastInterviewDateString}"></div></td>
 					    </tr>
 					</tbody>
 				</table>
+
+				<div th:if="${page.totalElements != 0}">
+					<ul>
+						<li th:class="${page.first} ? 'disabled':''" style="display:inline">
+							<span th:if="${page.first}">＜＜先頭</span>
+							<a th:if="${not page.first}" th:href="@{${url}(page=1)}">＜＜先頭</a>
+						</li>
+						<li th:each="i : ${#numbers.sequence(1, page.totalPages)}" th:class="(${i}==${page.number})? 'active' : ''" style="display:inline">
+							<span th:if="${i}==${page.number + 1}" th:text="'　' + ${i}">1</span>
+							<a th:if="${i}!=${page.number + 1}" th:href="@{${url}(page=${i})}">
+								<span th:text="'　' + ${i}">1</span>
+							</a>
+						</li>
+						<li th:class="${page.last} ? 'disabled':''" style="display:inline">
+							<span th:if="${page.last}">　末尾＞＞</span>
+							<a th:if="${not page.last}" th:href="@{${url}(page=(${page.totalPages}))}">　末尾＞＞</a>
+						</li>
+					</ul>
+				</div>
 			</div>
 		</div>
 	</div>

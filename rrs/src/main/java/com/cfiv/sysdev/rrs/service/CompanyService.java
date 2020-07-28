@@ -1,5 +1,7 @@
 package com.cfiv.sysdev.rrs.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -9,6 +11,10 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.cfiv.sysdev.rrs.dto.CompanyRequest;
@@ -29,11 +35,56 @@ public class CompanyService {
     CompanyRepository companyRepository;
 
     /**
+     * ログイン日時情報 Service
+     */
+    @Autowired
+    LoginTimeService loginTimeService;
+
+    /**
+     * 面談情報 Service
+     */
+    @Autowired
+    InterviewService interviewService;
+
+    /**
      * 企業情報 全検索
      * @return 検索結果
      */
     public List<Company> searchAll() {
         return companyRepository.findAll();
+    }
+
+    /**
+     * 企業コード 全検索
+     * @param pageable ページング条件
+     * @return 検索結果ページ(CompanyRequest)
+     */
+    public Page<CompanyRequest> search(Pageable pageable) {
+        List<CompanyRequest> reqList = new ArrayList<CompanyRequest>();
+        List<Company> list = searchAll();
+        for (Company company : list) {
+            Date lastlogin = loginTimeService.getLastLoginTimeFromCompanyID(company.getId());
+            Date lastInterview = interviewService.getLastInterviewDateFromCompanyID(company.getId());
+
+            reqList.add(company.toRequest(lastlogin, lastInterview));
+        }
+
+        int pageSize = pageable.getPageSize();
+        int currentPage = pageable.getPageNumber();
+        int startItem = currentPage * pageSize;
+        List<CompanyRequest> pageList;
+
+        if (list.size() < startItem) {
+            pageList = Collections.emptyList();
+        }
+        else {
+            int toIndex = Math.min(startItem + pageSize, list.size());
+            pageList = reqList.subList(startItem, toIndex);
+        }
+
+        Page<CompanyRequest> reqPage = new PageImpl<CompanyRequest>(pageList, PageRequest.of(currentPage, pageSize), reqList.size());
+
+        return reqPage;
     }
 
     /**
@@ -116,7 +167,7 @@ public class CompanyService {
      * リスト表示用企業情報(全件)
      * @return 検索結果
      */
-    public Map<String, String> getAllCompanyNames() {
+    public Map<String, String> getAllCompanyNamesForDropdown() {
         List<Company> company_list = searchAll();
         Map<String, String> result = new LinkedHashMap<String, String>();
 
@@ -130,10 +181,20 @@ public class CompanyService {
     }
 
     /**
-     * リスト表示用企業情報(id指定)
+     * 企業名称
      * @return 検索結果
      */
     public String getCompanyName(Long id) {
+        Company company = findOne(id);
+
+        return company.getName();
+    }
+
+    /**
+     * リスト表示用企業情報(id指定)
+     * @return 検索結果
+     */
+    public String getCompanyNameForDropdown(Long id) {
         Company company = findOne(id);
 
         return company.getIdString(4) + ":" + company.getName();

@@ -58,8 +58,8 @@ public class EmployeeCSV {
 
     private String reason = "";
 
-    public void check() {
-        checkCompanyID();
+    public void check(String checkCompanyID) {
+        checkCompanyID(checkCompanyID);
         checkEmployeeCode();
         checkEmployeeFName();
         checkHireYM();
@@ -67,11 +67,20 @@ public class EmployeeCSV {
         checkSupportCode();
     }
 
-    private void checkCompanyID() {
+    private void checkCompanyID(String checkCompanyID) {
         // 数字のみか
         if (!companyID.matches("^[0-9]*$")) {
             result = false;
             reason += "企業コードに数字以外の文字が含まれています。";
+        }
+
+        if (companyID != null) {
+            Long mcID = Utils.getLongFromString(companyID);
+            Long ccID = Utils.getLongFromString(checkCompanyID);
+            if (mcID != ccID) {
+                result = false;
+                reason += "別の企業の従業員情報は登録できません。";
+            }
         }
     }
 

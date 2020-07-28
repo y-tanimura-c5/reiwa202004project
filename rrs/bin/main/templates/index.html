@@ -16,7 +16,7 @@
 						<a id="search_result">検索結果：</a>
 					</div>
 					<div class="col-md-3 col-lg-3">
-						[[${interview_request_size}]] 件
+						[[${page.totalElements}]] 件
 					</div>
 				</div>
 				<table class="table table-hover table-bordered">
@@ -32,24 +32,76 @@
 						</tr>
 					</thead>
 					<tbody>
-					    <tr th:each="interview : ${interview_request_list}" th:object="${interview}" class="clickable-row" th:data-href="@{/interview/{id}/edit(id=*{id})}">
-							<td><div class="text-center" th:text="*{companyID}"></div></td>
-							<td><div class="text-center" th:text="*{employeeCode}"></div></td>
-							<td><div class="text-center" th:text="*{employee.employeeFName}"></div></td>
-							<td><div class="text-center" th:text="*{interviewDateSlash}"></div></td>
-							<td><div class="text-center" th:text="*{interviewTimeShort}"></div></td>
+						<tr th:each="interview, iStat : ${page.content}"
+							class="clickable-row" th:data-href="@{/interview/{id}/edit(id=${interview.id})}">
+							<td><div class="text-center" th:text="${interview.companyID}"></div></td>
+							<td><div class="text-center" th:text="${interview.employeeCode}"></div></td>
+							<td><div class="text-center" th:text="${interview.employee.employeeFName}"></div></td>
+							<td><div class="text-center" th:text="${interview.interviewDateSlash}"></div></td>
+							<td><div class="text-center" th:text="${interview.interviewTimeShort}"></div></td>
 							<td>
-								<div th:if="*{discloseCode == 0}" class="text-center">
-									<a th:text="*{discloseShort}"></a>
+								<div th:if="${interview.discloseCode == 0}" class="text-center">
+									<a th:text="${interview.discloseShort}"></a>
 								</div>
-								<div th:if="*{discloseCode == 1 || discloseCode == 2}" class="text-center text-danger">
-									<a th:text="*{discloseShort}"></a>
+								<div th:if="${interview.discloseCode == 1 || interview.discloseCode == 2}" class="text-center text-danger">
+									<a th:text="${interview.discloseShort}"></a>
 								</div>
 							</td>
-							<td th:text="*{contentJobNamesShort}"></td>
-					    </tr>
+							<td th:text="${interview.contentJobNamesShort}"></td>
+						</tr>
 					</tbody>
 				</table>
+
+				<div th:if="${page.totalElements != 0}">
+					<ul>
+						<li th:class="${page.first} ? 'disabled':''" style="display:inline">
+							<span th:if="${page.first}">＜＜先頭</span>
+							<a th:if="${not page.first}" th:href="@{${url}(page=1)}">＜＜先頭</a>
+						</li>
+						<li th:each="i : ${#numbers.sequence(1, page.totalPages)}" th:class="(${i}==${page.number})? 'active' : ''" style="display:inline">
+							<span th:if="${i}==${page.number + 1}" th:text="'　' + ${i}">1</span>
+							<a th:if="${i}!=${page.number + 1}" th:href="@{${url}(page=${i})}">
+								<span th:text="'　' + ${i}">1</span>
+							</a>
+						</li>
+						<li th:class="${page.last} ? 'disabled':''" style="display:inline">
+							<span th:if="${page.last}">　末尾＞＞</span>
+							<a th:if="${not page.last}" th:href="@{${url}(page=(${page.totalPages}))}">　末尾＞＞</a>
+						</li>
+					</ul>
+				</div>
+
+<!-- 				<table class="table table-hover table-bordered"> -->
+<!-- 					<thead class="thead-darknavy"> -->
+<!-- 						<tr> -->
+<!-- 							<th><div class="text-center">企業コード</div></th> -->
+<!-- 							<th><div class="text-center">従業員番号</div></th> -->
+<!-- 							<th><div class="text-center">従業員名字</div></th> -->
+<!-- 							<th><div class="text-center">面談日</div></th> -->
+<!-- 							<th><div class="text-center">面談時間</div></th> -->
+<!-- 							<th><div class="text-center">情報開示</div></th> -->
+<!-- 							<th><div class="text-center">面談内容</div></th> -->
+<!-- 						</tr> -->
+<!-- 					</thead> -->
+<!-- 					<tbody> -->
+<!-- 					    <tr th:each="interview : ${interview_request_list}" th:object="${interview}" class="clickable-row" th:data-href="@{/interview/{id}/edit(id=*{id})}"> -->
+<!-- 							<td><div class="text-center" th:text="*{companyID}"></div></td> -->
+<!-- 							<td><div class="text-center" th:text="*{employeeCode}"></div></td> -->
+<!-- 							<td><div class="text-center" th:text="*{employee.employeeFName}"></div></td> -->
+<!-- 							<td><div class="text-center" th:text="*{interviewDateSlash}"></div></td> -->
+<!-- 							<td><div class="text-center" th:text="*{interviewTimeShort}"></div></td> -->
+<!-- 							<td> -->
+<!-- 								<div th:if="*{discloseCode == 0}" class="text-center"> -->
+<!-- 									<a th:text="*{discloseShort}"></a> -->
+<!-- 								</div> -->
+<!-- 								<div th:if="*{discloseCode == 1 || discloseCode == 2}" class="text-center text-danger"> -->
+<!-- 									<a th:text="*{discloseShort}"></a> -->
+<!-- 								</div> -->
+<!-- 							</td> -->
+<!-- 							<td th:text="*{contentJobNamesShort}"></td> -->
+<!-- 					    </tr> -->
+<!-- 					</tbody> -->
+<!-- 				</table> -->
 			</div>
 		</div>
 	</div>

@@ -32,23 +32,24 @@ public class InterviewRequest implements Serializable {
         interviewDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
     }
 
-    public InterviewRequest(InterviewResult result, EmployeeRequest employee) {
+    public InterviewRequest(InterviewResult _result, EmployeeRequest _employee, String _companyName) {
         this();
 
-        setId(result.getIdString(1));
-        setCompanyID(result.getCompanyIDString(4));
-        setEmployeeCode(result.getEmployeeCode());
-        setEmployee(employee);
-        setInterviewDate(result.getInteviewDateStringDash());
-        setInterviewTimeCode(result.getInterviewTimeCode());
-        setDiscloseCode(result.getDiscloseCode());
-        setInterviewerComment(result.getInterviewerComment());
-        setAdminComment(result.getAdminComment());
+        setId(_result.getIdString(1));
+        setCompanyID(_result.getCompanyIDString(4));
+        setEmployeeCode(_result.getEmployeeCode());
+        setEmployee(_employee);
+        setCompanyName(_companyName);
+        setInterviewDate(_result.getInteviewDateStringDash());
+        setInterviewTimeCode(_result.getInterviewTimeCode());
+        setDiscloseCode(_result.getDiscloseCode());
+        setInterviewerComment(_result.getInterviewerComment());
+        setAdminComment(_result.getAdminComment());
 
         List<Integer> job_checked = new ArrayList<Integer>();
         List<String> job_memos = new ArrayList<String>();
         List<String> pri_memos = new ArrayList<String>();
-        for (InterviewContent content : result.getInterviewContents()) {
+        for (InterviewContent content : _result.getInterviewContents()) {
             if (content.getContentKind() == Consts.CONTENTKIND_JOB) {
                 job_checked.add(content.getContentCode());
                 job_memos.add(content.getContentComment());
@@ -61,7 +62,7 @@ public class InterviewRequest implements Serializable {
         setContentJobMemos(job_memos);
         setContentPrivateMemos(pri_memos);
 
-        for (InterviewAttach attach : result.getInterviewAttaches()) {
+        for (InterviewAttach attach : _result.getInterviewAttaches()) {
             setAttachedFilename(attach.getFilename());
         }
     }

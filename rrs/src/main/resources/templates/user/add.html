@@ -77,9 +77,9 @@
 							企業名称：
 						</div>
 						<div class="col-md-3 col-lg-3">
-							<select class="form-control" th:field="*{company}">
+							<select class="form-control" th:field="*{companyName}">
 								<option th:each="companyItem : ${company_items}" th:value="${companyItem.value}" th:text="${companyItem.value}"
-									 th:selected="${companyItem.value} == *{company}"></option>
+									 th:selected="${companyItem.value} == *{companyName}"></option>
 							</select>
 						</div>
 					</div>

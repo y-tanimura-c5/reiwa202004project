@@ -31,7 +31,7 @@ public class UserRequest implements Serializable {
     }
 
     public UserRequest(String _id, String _username, String _password, String _displayName,
-            int _userRoleCode, String _company, boolean _enabled) {
+            int _userRoleCode, String _companyID, String _companyName, boolean _enabled) {
         this();
 
         setId(_id);
@@ -40,7 +40,8 @@ public class UserRequest implements Serializable {
         setPasswordCheck(_password);
         setDisplayName(_displayName);
         setUserRoleCode(_userRoleCode);
-        setCompany(_company);
+        setCompanyID(_companyID);
+        setCompanyName(_companyName);
         setEnabled(_enabled ? 1 : 0);
     }
 
@@ -83,9 +84,14 @@ public class UserRequest implements Serializable {
     private int userRoleCode;
 
     /**
+     * 企業コード
+     */
+    private String companyID;
+
+    /**
      * 企業名称(リスト選択)
      */
-    private String company;
+    private String companyName;
 
     /**
      * 有効／無効

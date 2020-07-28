@@ -3,10 +3,13 @@ package com.cfiv.sysdev.rrs.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -16,13 +19,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cfiv.sysdev.rrs.Consts;
 import com.cfiv.sysdev.rrs.dto.UserRequest;
 import com.cfiv.sysdev.rrs.entity.Account;
 import com.cfiv.sysdev.rrs.service.CompanyService;
-import com.cfiv.sysdev.rrs.service.UserAccountService;
+import com.cfiv.sysdev.rrs.service.UserService;
 
 /**
  * ユーザー情報 Controller
@@ -34,7 +38,7 @@ public class UserController {
      * ユーザー情報 Service
      */
     @Autowired
-    UserAccountService userAccountService;
+    UserService userService;
 
     /**
      * 企業情報 Service
@@ -48,23 +52,16 @@ public class UserController {
      * @return ユーザー情報一覧画面
      */
     @RequestMapping(value = "/user/list", method = RequestMethod.GET)
-    public String list(Model model) {
-        List<UserRequest> req_list = new ArrayList<UserRequest>();
-        List<Account> account_list = userAccountService.searchAll();
+    public String list(Model model
+            , @RequestParam("page") Optional<Integer> page
+            , @RequestParam("size") Optional<Integer> size) {
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(Consts.PAGENATION_PAGESIZE);
+        Page<UserRequest> reqPage = userService.search(PageRequest.of(currentPage - 1, pageSize));
 
-        for (Account account : account_list) {
-            req_list.add(new UserRequest(account.getIdString(1), account.getUsername(), account.getPassword(),
-                    account.getDisplayName(), account.getUserRole(), companyService.getCompanyName(account.getCompanyID()),
-                    account.isEnabled()));
-        }
-
-//        List<String> keys = new ArrayList<String>(company_items.keySet());
-//        LogUtils.info("companyList");
-//        for (String key : keys) {
-//            LogUtils.info("company = " + key + " " + company_items.get(key));
-//        }
-
-        model.addAttribute("user_request_list", req_list);
+        model.addAttribute("page", reqPage);
+        model.addAttribute("url", "/user/list");
+        model.addAttribute("loginUser", userService.getLoginAccount());
 
         return "user/list";
     }
@@ -76,11 +73,12 @@ public class UserController {
      */
     @RequestMapping(value = "/user/add", method = RequestMethod.GET)
     public String displayAdd(Model model) {
-        Map<String, String> company_items = companyService.getAllCompanyNames();
-        List<String> keys = new ArrayList<String>(company_items.keySet());
+        Map<String, String> companyItems = companyService.getAllCompanyNamesForDropdown();
+        List<String> keys = new ArrayList<String>(companyItems.keySet());
 
-        model.addAttribute("user_request", new UserRequest("", "", "", "", Consts.USERROLE_REFINER_CODE, company_items.get(keys.get(0)), true));
-        model.addAttribute("company_items", company_items);
+        model.addAttribute("user_request", new UserRequest("", "", "", "", Consts.USERROLECODE_REFINER, "", companyItems.get(keys.get(0)), true));
+        model.addAttribute("company_items", companyItems);
+        model.addAttribute("loginUser", userService.getLoginAccount());
 
         return "user/add";
     }
@@ -93,17 +91,24 @@ public class UserController {
      * @return ユーザー情報一覧画面(登録完了時)／新規登録画面(エラー発生時)
      */
     @RequestMapping(value = "/user/create", method = RequestMethod.POST)
-    public String create(@ModelAttribute("user_request") @Valid UserRequest req, BindingResult result, Model model) {
+    public String create(RedirectAttributes attributes, @ModelAttribute("user_request") @Valid UserRequest req, BindingResult result, Model model) {
+        UserRequest uReq = userService.getLoginAccount();
+
         if (result.hasErrors()) {
 //            for(FieldError err: result.getFieldErrors()) {
 //                LogUtils.info("error field  [" + err.getField() + "], error code = [" + err.getCode() + "]");
 //            }
 
-            model.addAttribute("company_items", companyService.getAllCompanyNames());
+            model.addAttribute("company_items", companyService.getAllCompanyNamesForDropdown());
+            model.addAttribute("loginUser", uReq);
+
             return "/user/add";
         }
 
-        userAccountService.create(req);
+        userService.create(req);
+
+        attributes.addFlashAttribute("loginUser", uReq);
+
         return "redirect:/user/list";
     }
 
@@ -115,18 +120,18 @@ public class UserController {
      */
     @RequestMapping(value = "/user/{id}/edit", method = RequestMethod.GET)
     public String edit(@PathVariable Long id, ModelMap model) {
-        Account account = userAccountService.findOne(id);
-        Map<String, String> company_items = companyService.getAllCompanyNames();
+        Account account = userService.findOne(id);
+        Map<String, String> companyItems = companyService.getAllCompanyNamesForDropdown();
 
-        model.addAttribute("user_request", new UserRequest(account.getIdString(1), account.getUsername(), account.getPassword(),
-                account.getDisplayName(), account.getUserRole(), companyService.getCompanyName(account.getCompanyID()),
-                account.isEnabled()));
-        model.addAttribute("company_items", company_items);
+        model.addAttribute("user_request", account.toRequest(companyService.getCompanyNameForDropdown(account.getCompanyID())));
+        model.addAttribute("company_items", companyItems);
 
         String key = BindingResult.MODEL_KEY_PREFIX + "user_request";
         if (model.containsKey("errors")) {
             model.addAttribute(key, model.get("errors"));
         }
+
+        model.addAttribute("loginUser", userService.getLoginAccount());
 
         return "user/edit";
     }
@@ -172,7 +177,9 @@ public class UserController {
             }
         }
 
-        userAccountService.save(id, req);
+        userService.save(id, req);
+
+        attributes.addFlashAttribute("loginUser", userService.getLoginAccount());
 
         return "redirect:/user/list";
     }

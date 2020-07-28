@@ -99,12 +99,15 @@ public class Consts {
             "10"
             };
 
-    public static final int[] USERROLE_CODES = {
-            0,
-            1,
-            10
-            };
+    public static int USERROLECODE_ADMIN = 0;
+    public static int USERROLECODE_CLIENTADMIN = 1;
+    public static int USERROLECODE_REFINER = 10;
 
+    public static final int[] USERROLE_CODES = {
+            USERROLECODE_ADMIN,
+            USERROLECODE_CLIENTADMIN,
+            USERROLECODE_REFINER
+            };
 
     public static final String[] USERROLE_NAMES = {
             "全体管理者",
@@ -122,7 +125,6 @@ public class Consts {
             "無効"
             };
 
-    public static int USERROLE_REFINER_CODE = USERROLE_CODES[2];
     public static int PASTINTERVIEW_NUM = 3;
     public static int INTERVIEWERCOMMENT_CONDNUM = 3;
     public static int ADMINCOMMENT_CONDNUM = 3;
@@ -142,4 +144,6 @@ public class Consts {
     public static int CONDITIONKIND_ADOPT = 11;
     public static int CONDITIONKIND_SUPPORT = 12;
     public static int CONDITIONKIND_EMPLOY = 13;
+
+    public static int PAGENATION_PAGESIZE = 5;
 }

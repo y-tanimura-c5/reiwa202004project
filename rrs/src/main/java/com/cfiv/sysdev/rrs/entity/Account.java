@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.cfiv.sysdev.rrs.Utils;
+import com.cfiv.sysdev.rrs.dto.UserRequest;
 
 import lombok.Data;
 
@@ -111,6 +112,15 @@ public class Account {
     }
 
     /**
+     * 文字列形式の企業コード
+     * @param nDigits 0埋め桁数
+     * @return 指定桁で0埋め後の企業コード文字列
+     */
+    public String getCompanyIDString(int n) {
+        return Utils.getStringFromLong(companyID, n);
+    }
+
+    /**
      * 企業名称文字列からの企業コード設定
      * @param cs 企業名称文字列
      */
@@ -126,5 +136,15 @@ public class Account {
                 // 何もしない
             }
         }
+    }
+
+    /**
+     * Account→UserRequest変換
+     * @param _companyName 企業名称
+     * @return CompanyRequest
+     */
+    public UserRequest toRequest(String _cDropdown) {
+        return new UserRequest(getIdString(1), getUsername(), getPassword(),
+                getDisplayName(), getUserRole(), getCompanyIDString(4), _cDropdown, isEnabled());
     }
 }

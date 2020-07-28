@@ -1,22 +1,24 @@
 package com.cfiv.sysdev.rrs.controller;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.cfiv.sysdev.rrs.Consts;
 import com.cfiv.sysdev.rrs.dto.CompanyRequest;
 import com.cfiv.sysdev.rrs.entity.Company;
 import com.cfiv.sysdev.rrs.service.CompanyService;
-import com.cfiv.sysdev.rrs.service.InterviewService;
-import com.cfiv.sysdev.rrs.service.LoginTimeService;
+import com.cfiv.sysdev.rrs.service.UserService;
 
 /**
  * 企業情報 Controller
@@ -31,16 +33,10 @@ public class CompanyController {
     CompanyService companyService;
 
     /**
-     * 面談情報 Service
+     * ユーザー情報 Service
      */
     @Autowired
-    InterviewService interviewService;
-
-    /**
-     * ログイン日時情報 Service
-     */
-    @Autowired
-    LoginTimeService loginTimeService;
+    UserService userService;
 
     /**
      * 企業情報一覧画面を表示
@@ -48,19 +44,16 @@ public class CompanyController {
      * @return 企業情報一覧画面
      */
     @RequestMapping(value = "/company/list", method = RequestMethod.GET)
-    public String list(Model model) {
-        List<CompanyRequest> req_list = new ArrayList<CompanyRequest>();
+    public String list(Model model
+            , @RequestParam("page") Optional<Integer> page
+            , @RequestParam("size") Optional<Integer> size) {
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(Consts.PAGENATION_PAGESIZE);
+        Page<CompanyRequest> reqPage = companyService.search(PageRequest.of(currentPage - 1, pageSize));
 
-        List<Company> company_list = companyService.searchAll();
-
-        for (Company company : company_list) {
-            Date lastlogin = loginTimeService.getLastLoginTimeFromCompanyID(company.getId());
-            Date lastInterview = interviewService.getLastInterviewDateFromCompanyID(company.getId());
-
-            req_list.add(company.toRequest(lastlogin, lastInterview));
-        }
-
-        model.addAttribute("company_request_list", req_list);
+        model.addAttribute("page", reqPage);
+        model.addAttribute("url", "/company/list");
+        model.addAttribute("loginUser", userService.getLoginAccount());
 
         return "company/list";
     }
@@ -73,6 +66,7 @@ public class CompanyController {
     @RequestMapping(value = "/company/add", method = RequestMethod.GET)
     public String displayAdd(Model model) {
         model.addAttribute("company_request", new CompanyRequest("", "", true, null, null));
+        model.addAttribute("loginUser", userService.getLoginAccount());
 
         return "company/add";
     }
@@ -88,6 +82,7 @@ public class CompanyController {
         Company company = companyService.findOne(id);
 
         model.addAttribute("company_request", company.toRequest());
+        model.addAttribute("loginUser", userService.getLoginAccount());
 
         return "company/edit";
     }
@@ -99,8 +94,9 @@ public class CompanyController {
      * @return 企業情報一覧画面
      */
     @RequestMapping(value = "/company/{id}", method = RequestMethod.POST)
-    public String update(@PathVariable Long id, @ModelAttribute CompanyRequest req) {
+    public String update(RedirectAttributes attributes, @PathVariable Long id, @ModelAttribute CompanyRequest req) {
         companyService.save(id, req);
+        attributes.addFlashAttribute("loginUser", userService.getLoginAccount());
 
         return "redirect:/company/list";
     }
@@ -112,8 +108,9 @@ public class CompanyController {
      * @return 企業情報一覧画面
      */
     @RequestMapping(value = "/company/create", method = RequestMethod.POST)
-    public String create(@ModelAttribute CompanyRequest req, Model model) {
+    public String create(RedirectAttributes attributes, @ModelAttribute CompanyRequest req, Model model) {
         companyService.create(req);
+        attributes.addFlashAttribute("loginUser", userService.getLoginAccount());
 
         return "redirect:/company/list";
     }

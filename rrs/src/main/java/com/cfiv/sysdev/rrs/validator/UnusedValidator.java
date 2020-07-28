@@ -7,19 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cfiv.sysdev.rrs.annotation.Unused;
 import com.cfiv.sysdev.rrs.entity.Account;
-import com.cfiv.sysdev.rrs.service.UserAccountService;
+import com.cfiv.sysdev.rrs.service.UserService;
 
 public class UnusedValidator implements ConstraintValidator<Unused, String> {
 
     @Autowired
-    UserAccountService userAccountService;
+    UserService userService;
 
     public void initialize(Unused constraintAnnotation) {
     }
 
     public boolean isValid(String value, ConstraintValidatorContext context) {
 
-        Account account = userAccountService.findByUsername(value);
+        Account account = userService.findByUsername(value);
 
         if(account == null){
             return true;
