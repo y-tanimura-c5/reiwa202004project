@@ -33,5 +33,5 @@ test {
 }
 
 tasks.withType(JavaCompile) {
-    options.encoding = 'MS932'
+    options.encoding = 'UTF-8'
 }
