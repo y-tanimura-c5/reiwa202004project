@@ -207,6 +207,7 @@ public class UserController {
 
             if (error) {
                 attributes.addFlashAttribute("errors", result);
+                attributes.addFlashAttribute("loginUser", lReq);
                 return "redirect:/user/{id}/edit";
             }
         }

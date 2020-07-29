@@ -195,6 +195,7 @@ public class UserService implements UserDetailsService {
      */
     @Transactional
     public Account save(Long id, UserRequest req) {
+        UserRequest lReq = getLoginAccount();
         Date now = new Date();
         Account account = findOne(id);
 
@@ -203,20 +204,23 @@ public class UserService implements UserDetailsService {
         }
 
         account.setDisplayName(req.getDisplayName());
-        account.setUserRole(req.getUserRoleCode());
-        if (req.getCompanyName() != null) {
+
+        switch (lReq.getUserRoleCode()) {
+        case Consts.USERROLECODE_ADMIN:
             if (req.getUserRoleCode() == Consts.USERROLECODE_ADMIN) {
                 account.setCompanyID(Consts.COMPANYID_ADMIN);
             }
             else {
                 account.setCompanyIDFromName(req.getCompanyName());
             }
+            break;
+
+        case Consts.USERROLECODE_CLIENTADMIN:
+            account.setUserRole(req.getUserRoleCode());
+            account.setEnabled(req.getEnabled() == 1 ? true : false);
+            break;
         }
-        else {
-            UserRequest lReq = getLoginAccount();
-            account.setCompanyID(Utils.getLongFromString(lReq.getCompanyID()));
-        }
-        account.setEnabled(req.getEnabled() == 1 ? true : false);
+
         account.setUpdateTime(now);
         account.setUpdateUser(Utils.loginUsername());
         account.setUpdateCount(account.getUpdateCount() + 1);
