@@ -295,7 +295,7 @@ public class InterviewController {
         model.addAttribute("interview_request", req);
         model.addAttribute("loginUser", userService.getLoginAccount());
 
-        return "/interview/add";
+        return "interview/add";
     }
 
 
@@ -318,7 +318,7 @@ public class InterviewController {
         model.addAttribute("interview_request", req);
         model.addAttribute("loginUser", userService.getLoginAccount());
 
-        return "/interview/add";
+        return "interview/add";
     }
 
     /**
@@ -350,7 +350,7 @@ public class InterviewController {
             model.addAttribute("interview_request", req);
             model.addAttribute("loginUser", uReq);
 
-            return "/interview/add";
+            return "interview/add";
         }
     }
 
@@ -380,11 +380,11 @@ public class InterviewController {
         String url;
         if (filename.endsWith(".pdf")) {
             data.append("data:application/pdf;base64,");
-            url = "/interview/previewpdf";
+            url = "interview/previewpdf";
         }
         else {
             data.append("data:image/jpeg;base64,");
-            url = "/interview/previewimg";
+            url = "interview/previewimg";
         }
 
         data.append(base64);
@@ -431,7 +431,7 @@ public class InterviewController {
             model.addAttribute("interview_request", req);
             model.addAttribute("loginUser", userService.getLoginAccount());
 
-            return "/interview/edit";
+            return "interview/edit";
         }
     }
 
@@ -455,7 +455,7 @@ public class InterviewController {
             model.addAttribute("interview_request", req);
             model.addAttribute("loginUser", userService.getLoginAccount());
 
-            return "/interview/edit";
+            return "interview/edit";
         }
     }
 
