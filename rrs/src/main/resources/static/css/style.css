@@ -10,6 +10,7 @@
   border-color: #95999c;
 }
 
-.navbar-nav > .dropdown.open > a.dropdown-toggle {
-  background-color: #ff8c00;
+html {
+	/* ページ全体の基準フォントサイズ */
+    font-size: 12px;
 }
