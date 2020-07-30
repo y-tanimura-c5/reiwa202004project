@@ -102,10 +102,6 @@ public class UserController {
         UserRequest lReq = userService.getLoginAccount();
 
         if (result.hasErrors()) {
-//            for(FieldError err: result.getFieldErrors()) {
-//                LogUtils.info("error field  [" + err.getField() + "], error code = [" + err.getCode() + "]");
-//            }
-
             model.addAttribute("company_items", companyService.getAllCompanyNamesForDropdown(lReq));
             model.addAttribute("loginUser", lReq);
 
@@ -186,8 +182,6 @@ public class UserController {
 
         if (result.hasErrors()) {
             for(FieldError err: result.getFieldErrors()) {
-//                LogUtils.info("error field = [" + err.getField() + "], error code = [" + err.getCode() + "]");
-
                 // 空パスワードが来た場合は、前回設定パスワードで更新するためバリデーションチェック外とする
                 if ((err.getField().equals("password") && err.getCode().equals("Size")) && req.getPassword().isEmpty() ||
                         (err.getField().equals("passwordCheck") && err.getCode().equals("Size") && req.getPasswordCheck().isEmpty()) ||

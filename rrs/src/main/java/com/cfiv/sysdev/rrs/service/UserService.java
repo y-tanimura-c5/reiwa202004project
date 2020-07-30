@@ -131,7 +131,6 @@ public class UserService implements UserDetailsService {
      */
     public UserRequest getLoginAccount() {
         Account account = accountRepository.findByUsername(Utils.loginUsername());
-//      LogUtils.info("account.getUsername() = " + account.getUsername());
         return account.toRequest(companyService.getCompanyNameForDropdown(account.getCompanyID()), null);
     }
 

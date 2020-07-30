@@ -74,7 +74,7 @@ public class EmployeeCSV {
             reason += "企業コードに数字以外の文字が含まれています。";
         }
 
-        if (companyID != null) {
+        if (checkCompanyID != null) {
             Long mcID = Utils.getLongFromString(companyID);
             Long ccID = Utils.getLongFromString(checkCompanyID);
             if (mcID != ccID) {
