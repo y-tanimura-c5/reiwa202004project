@@ -632,7 +632,7 @@ public class InterviewService {
         result.setInterviewerComment(req.getInterviewerComment());
         result.setDiscloseCode(req.getDiscloseCode());
         result.setAdminComment(req.getAdminComment());
-        result.setDeleted(false);
+        result.setDeleted(Consts.EXIST);
         result.setRegistUser(Utils.loginUsername());
         result.setRegistTime(now);
         result.setUpdateUser(Utils.loginUsername());
@@ -763,7 +763,7 @@ public class InterviewService {
                 content.setContentKind(contentKind);
                 content.setContentCode(key);
                 content.setContentComment(items.get(key));
-                content.setDeleted(false);
+                content.setDeleted(Consts.EXIST);
                 content.setRegistUser(Utils.loginUsername());
                 content.setRegistTime(now);
                 content.setUpdateUser(Utils.loginUsername());
@@ -807,7 +807,7 @@ public class InterviewService {
                         attach.setFiledata(Utils.imageSizeConvert(file.getBytes()));
 
                     }
-                    attach.setDeleted(false);
+                    attach.setDeleted(Consts.EXIST);
                     attach.setRegistUser(Utils.loginUsername());
                     attach.setRegistTime(now);
                     attach.setUpdateUser(Utils.loginUsername());

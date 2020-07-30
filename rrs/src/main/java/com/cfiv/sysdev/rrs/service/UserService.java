@@ -177,8 +177,8 @@ public class UserService implements UserDetailsService {
         account.setDisplayName(req.getDisplayName());
         account.setUserRole(req.getUserRoleCode());
         account.setCompanyIDFromName(req.getCompanyName());
-        account.setEnabled(req.getEnabled() == 1 ? true : false);
-        account.setDeleted(false);
+        account.setEnabled(req.getEnabled() == 1 ? Consts.ENABLED : Consts.DISABLED);
+        account.setDeleted(Consts.EXIST);
         account.setRegistUser(Utils.loginUsername());
         account.setRegistTime(now);
         account.setUpdateUser(Utils.loginUsername());
@@ -216,7 +216,7 @@ public class UserService implements UserDetailsService {
 
         case Consts.USERROLECODE_CLIENTADMIN:
             account.setUserRole(req.getUserRoleCode());
-            account.setEnabled(req.getEnabled() == 1 ? true : false);
+            account.setEnabled(req.getEnabled() == 1 ? Consts.ENABLED : Consts.DISABLED);
             break;
         }
 
