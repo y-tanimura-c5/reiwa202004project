@@ -135,7 +135,7 @@ public class EmployeeService {
             return emp_list.get(0).toRequest();
         }
         else {
-            return new EmployeeRequest();
+            return null;
         }
     }
 

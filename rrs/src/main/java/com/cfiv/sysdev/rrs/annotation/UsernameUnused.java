@@ -10,15 +10,15 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-import com.cfiv.sysdev.rrs.validator.UnusedValidator;
+import com.cfiv.sysdev.rrs.validator.UsernameUnusedValidator;
 
 @Documented
-@Constraint(validatedBy = {UnusedValidator.class})
+@Constraint(validatedBy = {UsernameUnusedValidator.class})
 @Target({FIELD})
 @Retention(RUNTIME)
-public @interface Unused {
+public @interface UsernameUnused {
 
-    String message() default "{com.cfiv.sysdev.rrs.annotation.Unused.message}";;
+    String message() default "{com.cfiv.sysdev.rrs.annotation.UsernameUnused.message}";;
 
     Class<?>[] groups() default {};
 
@@ -28,6 +28,6 @@ public @interface Unused {
     @Retention(RUNTIME)
     @Documented
     public @interface List {
-        Unused[] value();
+        UsernameUnused[] value();
     }
 }

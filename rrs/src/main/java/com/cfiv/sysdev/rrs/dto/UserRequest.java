@@ -9,7 +9,7 @@ import javax.validation.constraints.Size;
 
 import com.cfiv.sysdev.rrs.Consts;
 import com.cfiv.sysdev.rrs.annotation.PasswordConfirm;
-import com.cfiv.sysdev.rrs.annotation.Unused;
+import com.cfiv.sysdev.rrs.annotation.UsernameUnused;
 
 import lombok.Data;
 
@@ -65,7 +65,7 @@ public class UserRequest implements Serializable {
      */
     @NotBlank
     @Size(min=1, max=30)
-    @Unused
+    @UsernameUnused
     private String username;
 
     /**
