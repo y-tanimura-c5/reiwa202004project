@@ -169,15 +169,33 @@ public class UserService implements UserDetailsService {
      */
     @Transactional
     public void create(UserRequest req) {
+        UserRequest lReq = getLoginAccount();
         Date now = new Date();
         Account account = new Account();
 
         account.setUsername(req.getUsername());
         account.setPassword(passwordEncoder.encode(req.getPassword()));
         account.setDisplayName(req.getDisplayName());
-        account.setUserRole(req.getUserRoleCode());
-        account.setCompanyIDFromName(req.getCompanyName());
-        account.setEnabled(req.getEnabled() == 1 ? Consts.ENABLED : Consts.DISABLED);
+
+        switch (lReq.getUserRoleCode()) {
+        case Consts.USERROLECODE_ADMIN:
+            if (req.getUserRoleCode() == Consts.USERROLECODE_ADMIN) {
+                account.setCompanyID(Consts.COMPANYID_ADMIN);
+            }
+            else {
+                account.setCompanyIDFromName(req.getCompanyName());
+            }
+            account.setUserRole(req.getUserRoleCode());
+            account.setEnabled(req.getEnabled() == 1 ? Consts.ENABLED : Consts.DISABLED);
+            break;
+
+        case Consts.USERROLECODE_CLIENTADMIN:
+            account.setCompanyIDFromName(lReq.getCompanyName());
+            account.setUserRole(req.getUserRoleCode());
+            account.setEnabled(req.getEnabled() == 1 ? Consts.ENABLED : Consts.DISABLED);
+            break;
+        }
+
         account.setDeleted(Consts.EXIST);
         account.setRegistUser(Utils.loginUsername());
         account.setRegistTime(now);

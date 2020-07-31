@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cfiv.sysdev.rrs.Consts;
+import com.cfiv.sysdev.rrs.LogUtils;
 import com.cfiv.sysdev.rrs.dto.UserRequest;
 import com.cfiv.sysdev.rrs.entity.Account;
 import com.cfiv.sysdev.rrs.service.CompanyService;
@@ -190,10 +191,11 @@ public class UserController {
                     error = false;
                 }
                 // 更新のためすでに存在するユーザーに対する更新はバリデーションチェック外とする
-                else if (err.getField().equals("username") && err.getCode().equals("Unused")) {
+                else if (err.getField().equals("username") && err.getCode().equals("UsernameUnused")) {
                     error = false;
                 }
                 else {
+                    LogUtils.info("err.getField() = " + err.getField() + "err.getCode() = " + err.getCode());
                     error = true;
                     break;
                 }
