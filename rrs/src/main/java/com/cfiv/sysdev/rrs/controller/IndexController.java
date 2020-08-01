@@ -44,12 +44,11 @@ public class IndexController {
 
     @RequestMapping(path = "/", method = RequestMethod.GET)
     public String index(Model model, @RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
-        String username = Utils.loginUsername();
-        InterviewSearchRequest cond = interviewService.getSearchRequestFromCondition(username);
+        UserRequest uReq = userService.getLoginAccount();
+        InterviewSearchRequest cond = interviewService.getSearchRequestFromCondition(uReq.getUsername());
 
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(Consts.PAGENATION_PAGESIZE);
-        UserRequest uReq = userService.getLoginAccount();
 
         Page<InterviewRequest> reqPage = interviewService.searchRequest(cond, uReq, PageRequest.of(currentPage - 1, pageSize));
 
@@ -63,6 +62,9 @@ public class IndexController {
 
     @RequestMapping(path = "/", method = RequestMethod.POST)
     public String indexForward(Model model, @RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
+        UserRequest uReq = userService.getLoginAccount();
+        loginTimeService.save(uReq.getUsername(), Utils.getLongFromString(uReq.getCompanyID()));
+
         return index(model, page, size);
     }
 }
