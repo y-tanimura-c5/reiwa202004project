@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cfiv.sysdev.rrs.Consts;
-import com.cfiv.sysdev.rrs.LogUtils;
 import com.cfiv.sysdev.rrs.Utils;
 import com.cfiv.sysdev.rrs.dto.EmployeeRequest;
 import com.cfiv.sysdev.rrs.dto.InterviewCSV;
@@ -162,7 +161,6 @@ public class InterviewController {
             , @ModelAttribute("interview_search_request") InterviewSearchRequest req
             , @RequestParam("page") Optional<Integer> page
             , @RequestParam("size") Optional<Integer> size) {
-        LogUtils.info("0");
 
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(Consts.PAGENATION_PAGESIZE);
@@ -179,51 +177,6 @@ public class InterviewController {
         model.addAttribute("loginUser", uReq);
 
         return "interview/list";
-
-/*
-        LogUtils.info("companyID = " + req.getCompanyID());
-        LogUtils.info("employeeCode = " + req.getEmployeeCode());
-        LogUtils.info("interviewDateStart = " + req.getInterviewDateStart());
-        LogUtils.info("interviewDateEnd = " + req.getInterviewDateEnd());
-        LogUtils.info("interviewDateLastCode = " + req.getInterviewDateLastCode());
-        LogUtils.info("interviewDateCode = " + req.getInterviewDateCode());
-
-        for (int i = 0; i < req.getInterviewTimeCheckedList().size(); i ++) {
-            LogUtils.info("interviewTimeChecked[" + i + "] = " + req.getInterviewTimeCheckedList().get(i));
-        }
-        for (int i = 0; i < req.getDiscloseCheckedList().size(); i ++) {
-            LogUtils.info("discloseChecked[" + i + "] = " + req.getDiscloseCheckedList().get(i));
-        }
-
-        for (int i = 0; i < req.getContentJobCheckedList().size(); i ++) {
-            LogUtils.info("contentJobChecked[" + i + "] = " + req.getContentJobCheckedList().get(i));
-        }
-        for (int i = 0; i < req.getContentJobMemos().size(); i ++) {
-            LogUtils.info("contentJobMemos[" + i + "] = " + req.getContentJobMemos().get(i));
-        }
-        for (int i = 0; i < req.getContentPrivateMemos().size(); i ++) {
-            LogUtils.info("contentPrivateMemos[" + i + "] = " + req.getContentPrivateMemos().get(i));
-        }
-        for (int i = 0; i < req.getInterviewerCommentMemos().size(); i ++) {
-            LogUtils.info("interviewerCommentMemos[" + i + "] = " + req.getInterviewerCommentMemos().get(i));
-        }
-        for (int i = 0; i < req.getAdminCommentMemos().size(); i ++) {
-            LogUtils.info("adminCommentMemos[" + i + "] = " + req.getAdminCommentMemos().get(i));
-        }
-
-        LogUtils.info("hireLengthStartCode = " + req.getHireLengthStartCode());
-        LogUtils.info("hireLengthEndCode = " + req.getHireLengthEndCode());
-
-        for (int i = 0; i < req.getAdoptCheckedList().size(); i ++) {
-            LogUtils.info("adoptChecked[" + i + "] = " + req.getAdoptCheckedList().get(i));
-        }
-        for (int i = 0; i < req.getSupportCheckedList().size(); i ++) {
-            LogUtils.info("supportChecked[" + i + "] = " + req.getSupportCheckedList().get(i));
-        }
-        for (int i = 0; i < req.getEmployCheckedList().size(); i ++) {
-            LogUtils.info("employChecked[" + i + "] = " + req.getEmployCheckedList().get(i));
-        }
-*/
     }
 
     /**
@@ -280,16 +233,6 @@ public class InterviewController {
             req.setCompanyName(company.getName());
             req.setEmployee(employee);
             req.setPastInterviews(past_list);
-
-//                LogUtils.info("Count = " + past_list.size());
-//                for (InterviewRequest past : past_list) {
-//                    LogUtils.info("InterviewDate = " + past.getInterviewDate());
-//                    LogUtils.info("InterviewTime = " + past.getInterviewTime());
-//                    LogUtils.info("Disclose = " + past.getDisclose());
-//                    LogUtils.info("InterviewerComment = " + past.getInterviewerComment());
-//                    LogUtils.info("AdminComment = " + past.getAdminComment());
-//                    LogUtils.info("AttachedFilename = " + past.getAttachedFilename());
-//                }
         }
 
         model.addAttribute("interview_request", req);
@@ -363,8 +306,6 @@ public class InterviewController {
      */
     @RequestMapping(value = "/interview/{id}/{filename}", method = RequestMethod.GET)
     public String preview(@PathVariable Long id, @PathVariable String filename, Model model) {
-        LogUtils.info("id = " + id + ", filename = " + filename);
-
         InterviewAttach attach = interviewService.findOneAttachFromKey(id, filename);
 
         StringBuffer data = new StringBuffer();

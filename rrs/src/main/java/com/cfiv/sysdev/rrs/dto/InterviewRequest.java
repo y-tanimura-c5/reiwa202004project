@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cfiv.sysdev.rrs.Consts;
 import com.cfiv.sysdev.rrs.annotation.AttachedFile;
+import com.cfiv.sysdev.rrs.annotation.EmployeeCodeUsed;
 import com.cfiv.sysdev.rrs.entity.InterviewAttach;
 import com.cfiv.sysdev.rrs.entity.InterviewContent;
 import com.cfiv.sysdev.rrs.entity.InterviewResult;
@@ -22,6 +23,7 @@ import com.cfiv.sysdev.rrs.entity.InterviewResult;
 import lombok.Data;
 
 @Data
+@EmployeeCodeUsed
 public class InterviewRequest implements Serializable {
 
     public InterviewRequest() {

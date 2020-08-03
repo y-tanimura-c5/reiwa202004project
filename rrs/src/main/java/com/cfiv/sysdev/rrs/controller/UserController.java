@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cfiv.sysdev.rrs.Consts;
+import com.cfiv.sysdev.rrs.LogUtils;
 import com.cfiv.sysdev.rrs.dto.UserRequest;
 import com.cfiv.sysdev.rrs.entity.Account;
 import com.cfiv.sysdev.rrs.service.CompanyService;
@@ -102,10 +103,6 @@ public class UserController {
         UserRequest lReq = userService.getLoginAccount();
 
         if (result.hasErrors()) {
-//            for(FieldError err: result.getFieldErrors()) {
-//                LogUtils.info("error field  [" + err.getField() + "], error code = [" + err.getCode() + "]");
-//            }
-
             model.addAttribute("company_items", companyService.getAllCompanyNamesForDropdown(lReq));
             model.addAttribute("loginUser", lReq);
 
@@ -186,8 +183,6 @@ public class UserController {
 
         if (result.hasErrors()) {
             for(FieldError err: result.getFieldErrors()) {
-//                LogUtils.info("error field = [" + err.getField() + "], error code = [" + err.getCode() + "]");
-
                 // 空パスワードが来た場合は、前回設定パスワードで更新するためバリデーションチェック外とする
                 if ((err.getField().equals("password") && err.getCode().equals("Size")) && req.getPassword().isEmpty() ||
                         (err.getField().equals("passwordCheck") && err.getCode().equals("Size") && req.getPasswordCheck().isEmpty()) ||
@@ -196,10 +191,11 @@ public class UserController {
                     error = false;
                 }
                 // 更新のためすでに存在するユーザーに対する更新はバリデーションチェック外とする
-                else if (err.getField().equals("username") && err.getCode().equals("Unused")) {
+                else if (err.getField().equals("username") && err.getCode().equals("UsernameUnused")) {
                     error = false;
                 }
                 else {
+                    LogUtils.info("err.getField() = " + err.getField() + "err.getCode() = " + err.getCode());
                     error = true;
                     break;
                 }

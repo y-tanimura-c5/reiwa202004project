@@ -11,6 +11,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cfiv.sysdev.rrs.Consts;
 import com.cfiv.sysdev.rrs.entity.LoginTime;
 import com.cfiv.sysdev.rrs.repository.LoginTimeRepository;
 
@@ -49,7 +50,7 @@ public class LoginTimeService {
         loginTime.setUsername(username);
         loginTime.setCompanyID(companyID);
         loginTime.setLoginTime(now);
-        loginTime.setDeleted(false);
+        loginTime.setDeleted(Consts.EXIST);
         loginTime.setRegistTime(now);
         loginTime.setRegistUser(username);
         loginTime.setUpdateTime(now);

@@ -10,6 +10,9 @@ public class Consts {
     public static final boolean EXIST = false;
     public static final boolean DELETED = true;
 
+    public static final boolean DISABLED = false;
+    public static final boolean ENABLED = true;
+
     public static final String EXIST_NAME = "あり";
     public static final String NOTEXIST_NAME = "なし";
 

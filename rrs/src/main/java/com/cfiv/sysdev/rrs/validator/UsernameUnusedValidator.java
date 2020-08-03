@@ -5,16 +5,16 @@ import javax.validation.ConstraintValidatorContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.cfiv.sysdev.rrs.annotation.Unused;
+import com.cfiv.sysdev.rrs.annotation.UsernameUnused;
 import com.cfiv.sysdev.rrs.entity.Account;
 import com.cfiv.sysdev.rrs.service.UserService;
 
-public class UnusedValidator implements ConstraintValidator<Unused, String> {
+public class UsernameUnusedValidator implements ConstraintValidator<UsernameUnused, String> {
 
     @Autowired
     UserService userService;
 
-    public void initialize(Unused constraintAnnotation) {
+    public void initialize(UsernameUnused constraintAnnotation) {
     }
 
     public boolean isValid(String value, ConstraintValidatorContext context) {

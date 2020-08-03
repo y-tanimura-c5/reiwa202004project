@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cfiv.sysdev.rrs.Consts;
-import com.cfiv.sysdev.rrs.LogUtils;
 import com.cfiv.sysdev.rrs.annotation.FileRequired;
 import com.cfiv.sysdev.rrs.dto.EmployeeCSV;
 import com.cfiv.sysdev.rrs.dto.UserRequest;
@@ -45,7 +44,6 @@ public class FileRequiredValidator implements ConstraintValidator<FileRequired, 
             try {
                 String csvStr = new String(multipartFile.getBytes(), "MS932");
                 Reader reader = new StringReader(csvStr);
-                LogUtils.info(csvStr);
                 CsvToBean<EmployeeCSV> csvToBean = new CsvToBeanBuilder<EmployeeCSV>(reader).withType(EmployeeCSV.class).build();
                 items = csvToBean.parse();
             }

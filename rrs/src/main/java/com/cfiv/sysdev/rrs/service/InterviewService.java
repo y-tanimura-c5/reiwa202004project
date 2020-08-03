@@ -276,8 +276,6 @@ public class InterviewService {
             resultList.addAll((List<InterviewResult>) query.getResultList());
         }
 
-    //        LogUtils.info("resultList.size = " + resultList.size());
-
         return resultList;
     }
 
@@ -590,11 +588,6 @@ public class InterviewService {
         query.setParameter(filenameTag, filename);
 
         List<InterviewAttach> list = (List<InterviewAttach>) query.getResultList();
-
-        for (InterviewAttach attach : list) {
-            LogUtils.info("attach.id = " + attach.getId());
-        }
-
         if (!list.isEmpty()) {
             return list.get(0);
         } else {
@@ -639,7 +632,7 @@ public class InterviewService {
         result.setInterviewerComment(req.getInterviewerComment());
         result.setDiscloseCode(req.getDiscloseCode());
         result.setAdminComment(req.getAdminComment());
-        result.setDeleted(false);
+        result.setDeleted(Consts.EXIST);
         result.setRegistUser(Utils.loginUsername());
         result.setRegistTime(now);
         result.setUpdateUser(Utils.loginUsername());
@@ -770,7 +763,7 @@ public class InterviewService {
                 content.setContentKind(contentKind);
                 content.setContentCode(key);
                 content.setContentComment(items.get(key));
-                content.setDeleted(false);
+                content.setDeleted(Consts.EXIST);
                 content.setRegistUser(Utils.loginUsername());
                 content.setRegistTime(now);
                 content.setUpdateUser(Utils.loginUsername());
@@ -814,7 +807,7 @@ public class InterviewService {
                         attach.setFiledata(Utils.imageSizeConvert(file.getBytes()));
 
                     }
-                    attach.setDeleted(false);
+                    attach.setDeleted(Consts.EXIST);
                     attach.setRegistUser(Utils.loginUsername());
                     attach.setRegistTime(now);
                     attach.setUpdateUser(Utils.loginUsername());
@@ -1144,47 +1137,6 @@ public class InterviewService {
             list.add(new InterviewCondition(username, Consts.CONDITIONKIND_EMPLOY, i, ""));
         }
 
-        LogUtils.info("useInterviewSearch = " + req.getUseInterviewSearch());
-        LogUtils.info("interviewDateCode = " + req.getInterviewDateCode());
-        LogUtils.info("interviewDateMin = " + req.getInterviewDateMin());
-        LogUtils.info("interviewDateMax = " + req.getInterviewDateMax());
-        LogUtils.info("interviewDateLastCode = " + req.getInterviewDateLastCode());
-
-        /*
-        for (int i : req.getInterviewTimeCheckedList()) {
-            LogUtils.info("InterviewTimeChecked = " + i);
-        }
-        for (int i : req.getDiscloseCheckedList()) {
-            LogUtils.info("DiscloseChecked = " + i);
-        }
-        for (int i : req.getContentJobCheckedList()) {
-            LogUtils.info("ContentJobChecked = " + i);
-        }
-        for (String s : req.getContentJobMemos()) {
-            LogUtils.info("ContentJobMemo = " + s);
-        }
-        for (int i : req.getContentPrivateCheckedList()) {
-            LogUtils.info("ContentPrivateChecked = " + i);
-        }
-        for (String s : req.getContentPrivateMemos()) {
-            LogUtils.info("ContentPrivateMemo = " + s);
-        }
-        for (String s : req.getInterviewerCommentMemos()) {
-            LogUtils.info("InterviewerCommentMemo = " + s);
-        }
-        for (String s : req.getAdminCommentMemos()) {
-            LogUtils.info("AdminCommentMemo = " + s);
-        }
-        for (int i : req.getAdoptCheckedList()) {
-            LogUtils.info("AdoptChecked = " + i);
-        }
-        for (int i : req.getSupportCheckedList()) {
-            LogUtils.info("SupportChecked = " + i);
-        }
-        for (int i : req.getEmployCheckedList()) {
-            LogUtils.info("EmployChecked = " + i);
-        }
-        */
         interviewConditionRepository.saveAll(list);
     }
 }

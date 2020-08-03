@@ -96,13 +96,14 @@ public class CompanyService {
      */
     public void create(Company company) {
         Date now = new Date();
+        String loginUser = Utils.loginUsername();
 
-        company.setEnabled(true);
-        company.setDeleted(false);
+        company.setEnabled(Consts.ENABLED);
+        company.setDeleted(Consts.EXIST);
         company.setRegistTime(now);
-        company.setRegistUser("user");
+        company.setRegistUser(loginUser);
         company.setUpdateTime(now);
-        company.setUpdateUser("user");
+        company.setUpdateUser(loginUser);
 
         companyRepository.save(company);
     }
@@ -110,14 +111,15 @@ public class CompanyService {
     public void create(CompanyRequest req) {
         Date now = new Date();
         Company company = new Company();
+        String loginUser = Utils.loginUsername();
 
         company.setName(req.getName());
-        company.setEnabled(req.getEnabled() == 1 ? true : false);
-        company.setDeleted(false);
+        company.setEnabled(req.getEnabled() == 1 ? Consts.ENABLED : Consts.DISABLED);
+        company.setDeleted(Consts.EXIST);
         company.setRegistTime(now);
-        company.setRegistUser("user");
+        company.setRegistUser(loginUser);
         company.setUpdateTime(now);
-        company.setUpdateUser("user");
+        company.setUpdateUser(loginUser);
 
         companyRepository.save(company);
     }
@@ -136,14 +138,15 @@ public class CompanyService {
     public Company save(Long id, CompanyRequest req) {
         Date now = new Date();
         Company company = findOne(id);
+        String loginUser = Utils.loginUsername();
 
         company.setName(req.getName());
-        company.setEnabled(req.getEnabled() == 1 ? true : false);
-        company.setDeleted(false);
+        company.setEnabled(req.getEnabled() == 1 ? Consts.ENABLED : Consts.DISABLED);
+        company.setDeleted(Consts.EXIST);
         company.setRegistTime(now);
-        company.setRegistUser("user");
+        company.setRegistUser(loginUser);
         company.setUpdateTime(now);
-        company.setUpdateUser("user");
+        company.setUpdateUser(loginUser);
         company.setUpdateCount(company.getUpdateCount() + 1);
 
         return companyRepository.save(company);
@@ -151,12 +154,13 @@ public class CompanyService {
 
     public Company save(Company company) {
         Date now = new Date();
+        String loginUser = Utils.loginUsername();
 
-        company.setDeleted(false);
+        company.setDeleted(Consts.EXIST);
         company.setRegistTime(now);
-        company.setRegistUser("user");
+        company.setRegistUser(loginUser);
         company.setUpdateTime(now);
-        company.setUpdateUser("user");
+        company.setUpdateUser(loginUser);
         company.setUpdateCount(company.getUpdateCount() + 1);
 
         return companyRepository.save(company);

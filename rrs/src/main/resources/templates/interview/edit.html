@@ -227,11 +227,11 @@
 							管理者記入欄：
 						</div>
 						<div class="col-md-12 col-lg-12">
-							<div th:if="${loginUser.userRoleCode == 0}">
+							<div th:if="${loginUser.userRoleCode != 10}">
 								<textarea id="textarea" class="form-control" th:field="*{adminComment}"></textarea>
 								<label th:if="${#fields.hasErrors('adminComment')}" th:errors="*{adminComment}" style="color: red"></label>
 							</div>
-							<div th:if="${loginUser.userRoleCode != 0}">
+							<div th:if="${loginUser.userRoleCode == 10}">
 								<textarea id="textarea" class="form-control" th:field="*{adminComment}" readonly></textarea>
 							</div>
 						</div>

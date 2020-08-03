@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.cfiv.sysdev.rrs.Consts;
+import com.cfiv.sysdev.rrs.Utils;
 import com.cfiv.sysdev.rrs.dto.EmployeeCSV;
 import com.cfiv.sysdev.rrs.dto.EmployeeRequest;
 import com.cfiv.sysdev.rrs.entity.Employee;
@@ -135,7 +136,7 @@ public class EmployeeService {
             return emp_list.get(0).toRequest();
         }
         else {
-            return new EmployeeRequest();
+            return null;
         }
     }
 
@@ -255,12 +256,13 @@ public class EmployeeService {
      */
     public void create(Employee employee) {
         Date now = new Date();
+        String loginUser = Utils.loginUsername();
 
-        employee.setDeleted(false);
+        employee.setDeleted(Consts.EXIST);
         employee.setRegistTime(now);
-        employee.setRegistUser("user");
+        employee.setRegistUser(loginUser);
         employee.setUpdateTime(now);
-        employee.setUpdateUser("user");
+        employee.setUpdateUser(loginUser);
         employee.setUpdateCount(0);
 
         employeeRepository.save(employee);
@@ -273,11 +275,12 @@ public class EmployeeService {
     public void create(EmployeeRequest req) {
         Date now = new Date();
         Employee employee = req.toEmployee();
+        String loginUser = Utils.loginUsername();
 
-        employee.setDeleted(false);
-        employee.setRegistUser("user");
+        employee.setDeleted(Consts.EXIST);
+        employee.setRegistUser(loginUser);
         employee.setRegistTime(now);
-        employee.setUpdateUser("user");
+        employee.setUpdateUser(loginUser);
         employee.setUpdateTime(now);
         employee.setUpdateCount(0);
 
@@ -291,12 +294,13 @@ public class EmployeeService {
     public void create(EmployeeCSV req) {
         Date now = new Date();
         Employee employee = req.toEmployee();
+        String loginUser = Utils.loginUsername();
 
         employee.setEmployCode(0);
-        employee.setDeleted(false);
-        employee.setRegistUser("user");
+        employee.setDeleted(Consts.EXIST);
+        employee.setRegistUser(loginUser);
         employee.setRegistTime(now);
-        employee.setUpdateUser("user");
+        employee.setUpdateUser(loginUser);
         employee.setUpdateTime(now);
         employee.setUpdateCount(0);
 
@@ -310,8 +314,9 @@ public class EmployeeService {
      */
     public Employee save(Employee employee) {
         Date now = new Date();
+        String loginUser = Utils.loginUsername();
 
-        employee.setUpdateUser("user");
+        employee.setUpdateUser(loginUser);
         employee.setUpdateTime(now);
         employee.setUpdateCount(employee.getUpdateCount() + 1);
 
@@ -332,8 +337,10 @@ public class EmployeeService {
         }
 
         Date now = new Date();
+        String loginUser = Utils.loginUsername();
+
         employee.setEmployCode(req.getEmployCode());
-        employee.setUpdateUser("user");
+        employee.setUpdateUser(loginUser);
         employee.setUpdateTime(now);
         employee.setUpdateCount(employee.getUpdateCount() + 1);
 
@@ -354,13 +361,15 @@ public class EmployeeService {
         }
 
         Date now = new Date();
+        String loginUser = Utils.loginUsername();
+
         employee.setCompanyID(req.getCompanyIDLong());
         employee.setEmployeeCode(req.getEmployeeCode());
         employee.setEmployeeFName(req.getEmployeeFName());
         employee.setHireYM(req.getHireYMDate());
         employee.setAdoptCode(req.getAdoptCodeInteger());
         employee.setSupportCode(req.getSupportCodeInteger());
-        employee.setUpdateUser("user");
+        employee.setUpdateUser(loginUser);
         employee.setUpdateTime(now);
         employee.setUpdateCount(employee.getUpdateCount() + 1);
 
@@ -378,7 +387,7 @@ public class EmployeeService {
             return;
         }
 
-        employee.setDeleted(true);
+        employee.setDeleted(Consts.DELETED);
         employeeRepository.save(employee);
     }
 

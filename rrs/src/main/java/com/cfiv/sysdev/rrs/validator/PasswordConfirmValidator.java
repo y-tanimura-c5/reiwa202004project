@@ -11,7 +11,6 @@ import org.springframework.beans.BeanWrapperImpl;
 import com.cfiv.sysdev.rrs.annotation.PasswordConfirm;
 
 public class PasswordConfirmValidator implements ConstraintValidator<PasswordConfirm, Object> {
-
     private String field1;
     private String field2;
     private String message;
@@ -29,10 +28,10 @@ public class PasswordConfirmValidator implements ConstraintValidator<PasswordCon
 
         if (Objects.equals(field1Value, field2Value)) {
             return true;
-        } else {
+        }
+        else {
             context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate(message)
-                    .addPropertyNode(field2).addConstraintViolation();
+            context.buildConstraintViolationWithTemplate(message).addPropertyNode(field2).addConstraintViolation();
             return false;
         }
     }
