@@ -72,6 +72,7 @@ public class EmployeeCSV {
         if (!companyID.matches("^[0-9]*$")) {
             result = false;
             reason += "企業コードに数字以外の文字が含まれています。";
+            return;
         }
 
         if (checkCompanyID != null) {
@@ -89,6 +90,7 @@ public class EmployeeCSV {
         if (employeeCode.length() > 50) {
             result = false;
             reason += "従業員番号が50文字を超えています。";
+            return;
         }
 
         // 数字、アルファベット、記号のみか
@@ -103,6 +105,7 @@ public class EmployeeCSV {
         if (employeeFName.length() > 20) {
             result = false;
             reason += "従業員名字が20文字を超えています。";
+            return;
         }
 
         // 全角カタカナのみか
@@ -116,13 +119,25 @@ public class EmployeeCSV {
         // 6文字か
         if (hireYM.length() != 6) {
             result = false;
-            reason += "入社年月が年(4桁)＋月(2桁)の形式になっていません。";
+            reason += "入社年月は6桁(年(4桁)＋月(2桁))としてください。";
+            return;
         }
 
         // 数字のみか
         if (!hireYM.matches("^[0-9]*$")) {
             result = false;
             reason += "入社年月に数字以外の文字が含まれています。";
+            return;
+        }
+
+        // 年、月が妥当な値か
+        int y = Utils.getIntegerFromString(hireYM.substring(0, 4));
+        int m = Utils.getIntegerFromString(hireYM.substring(4, 6));
+        int nowY = Utils.getNowYear();
+
+        if (y < 1970 || y > nowY || m < 1 || m > 12) {
+            result = false;
+            reason += "入社年月が年(4桁)＋月(2桁)の形式になっていません。";
         }
     }
 

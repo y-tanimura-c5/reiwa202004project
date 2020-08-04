@@ -92,6 +92,14 @@ public class Utils {
     }
 
     /**
+     * 現在年取得
+     * @return 年
+     */
+    public static int getNowYear() {
+        return getIntegerFromString(new SimpleDateFormat("YYYY").format(new Date()));
+    }
+
+    /**
      * 画像データ(JPG)のサイズ変更
      * @param input 変換元ファイル
      * @return 変換後ファイル

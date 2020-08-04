@@ -6,7 +6,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -50,21 +52,44 @@ public class InterviewRequest implements Serializable {
         setInterviewerComment(_result.getInterviewerComment());
         setAdminComment(_result.getAdminComment());
 
-        List<Integer> job_checked = new ArrayList<Integer>();
-        List<String> job_memos = new ArrayList<String>();
-        List<String> pri_memos = new ArrayList<String>();
+        Map<Integer, String> jobMap = new HashMap<>();
+        Map<Integer, String> priMap = new HashMap<>();
+
         for (InterviewContent content : _result.getInterviewContents()) {
-            if (content.getContentKind() == Consts.CONTENTKIND_JOB) {
-                job_checked.add(content.getContentCode());
-                job_memos.add(content.getContentComment());
-            }
-            else {
-                pri_memos.add(content.getContentComment());
+            if (!content.isDeleted()) {
+                if (content.getContentKind() == Consts.CONTENTKIND_JOB) {
+                    jobMap.put(content.getContentCode(), content.getContentComment());
+                }
+                else {
+                    priMap.put(content.getContentCode(), content.getContentComment());
+                }
             }
         }
-        setContentJobCheckedList(job_checked);
-        setContentJobMemos(job_memos);
-        setContentPrivateMemos(pri_memos);
+
+        List<Integer> jobChecked = new ArrayList<Integer>();
+        List<String> jobMemos = new ArrayList<String>();
+        for (int i = 0; i < contentJobCheckItems.size(); i ++) {
+            if (jobMap.containsKey(i)) {
+                jobChecked.add(i);
+                jobMemos.add(jobMap.get(i));
+            }
+            else {
+                jobMemos.add("");
+            }
+        }
+
+        List<String> priMemos = new ArrayList<String>();
+        for (int i = 0; i < contentPrivateCheckItems.size(); i ++) {
+            if (priMap.containsKey(i)) {
+                priMemos.add(priMap.get(i));
+            }
+            else {
+                priMemos.add("");
+            }
+        }
+        setContentJobCheckedList(jobChecked);
+        setContentJobMemos(jobMemos);
+        setContentPrivateMemos(priMemos);
 
         for (InterviewAttach attach : _result.getInterviewAttaches()) {
             setAttachedFilename(attach.getFilename());

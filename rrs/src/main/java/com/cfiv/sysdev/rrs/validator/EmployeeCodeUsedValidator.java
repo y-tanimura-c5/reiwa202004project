@@ -7,7 +7,6 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.cfiv.sysdev.rrs.LogUtils;
 import com.cfiv.sysdev.rrs.annotation.EmployeeCodeUsed;
 import com.cfiv.sysdev.rrs.dto.EmployeeRequest;
 import com.cfiv.sysdev.rrs.service.EmployeeService;
@@ -30,9 +29,6 @@ public class EmployeeCodeUsedValidator implements ConstraintValidator<EmployeeCo
         BeanWrapper beanWrapper = new BeanWrapperImpl(value);
         String companyID = (String) beanWrapper.getPropertyValue(field1);
         String employeeCode = (String) beanWrapper.getPropertyValue(field2);
-
-        LogUtils.info("companyID = " + companyID);
-        LogUtils.info("employeeCode = " + employeeCode);
 
         EmployeeRequest req = employeeService.findOneRequestFromID(companyID, employeeCode);
 

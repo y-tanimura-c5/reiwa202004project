@@ -230,6 +230,8 @@ public class UserService implements UserDetailsService {
             else {
                 account.setCompanyIDFromName(req.getCompanyName());
             }
+            account.setUserRole(req.getUserRoleCode());
+            account.setEnabled(req.getEnabled() == 1 ? Consts.ENABLED : Consts.DISABLED);
             break;
 
         case Consts.USERROLECODE_CLIENTADMIN:

@@ -109,7 +109,8 @@ public class InterviewService {
 
         try {
             return opt.get();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             return null;
         }
     }
@@ -139,8 +140,9 @@ public class InterviewService {
             return resultList;
         }
 
-        for (int i = 0; i < sReq.getContentJobCheckItems().size(); i ++) {
-            if (!sReq.containsContentJobChecked(i) && !sReq.getContentJobMemos().isEmpty() && !sReq.getContentJobMemos().get(i).isEmpty()) {
+        for (int i = 0; i < sReq.getContentJobCheckItems().size(); i++) {
+            if (!sReq.containsContentJobChecked(i) && !sReq.getContentJobMemos().isEmpty()
+                    && !sReq.getContentJobMemos().get(i).isEmpty()) {
                 sReq.getContentJobCheckedList().add(i);
             }
         }
@@ -171,9 +173,11 @@ public class InterviewService {
         String interviewDateEndCond = "r.interviewDate < :" + interviewDateEndTag;
         String interviewTimeCodeCond = "r.interviewTimeCode = :" + interviewTimeCodeTag;
         String discloseCodeCond = "r.discloseCode = :" + discloseCodeTag;
-        String contentJobCodeCond = "c.contentKind = " + Consts.CONTENTKIND_JOB + " AND c.contentCode = :" + contentJobCodeTag;
+        String contentJobCodeCond = "c.contentKind = " + Consts.CONTENTKIND_JOB + " AND c.contentCode = :"
+                + contentJobCodeTag;
         String contentJobMemoCond = "c.contentComment LIKE :" + contentJobMemoTag;
-        String contentPriMemoCond = "c.contentKind = " + Consts.CONTENTKIND_PRIVATE + " AND c.contentComment LIKE :" + contentPriMemoTag;
+        String contentPriMemoCond = "c.contentKind = " + Consts.CONTENTKIND_PRIVATE + " AND c.contentComment LIKE :"
+                + contentPriMemoTag;
         String interviewerCommentCond = "r.interviewerComment LIKE :" + interviewerCommentTag;
         String adminCommentCond = "r.adminComment LIKE :" + adminCommentTag;
 
@@ -246,14 +250,14 @@ public class InterviewService {
                 query.setParameter(interviewDateEndTag, endDate);
             }
 
-            for (int i = 0; i < sReq.getInterviewTimeCheckedList().size(); i ++) {
+            for (int i = 0; i < sReq.getInterviewTimeCheckedList().size(); i++) {
                 query.setParameter(interviewTimeCodeTag + i, sReq.getInterviewTimeCheckedList().get(i));
             }
-            for (int i = 0; i < sReq.getDiscloseCheckedList().size(); i ++) {
+            for (int i = 0; i < sReq.getDiscloseCheckedList().size(); i++) {
                 query.setParameter(discloseCodeTag + i, sReq.getDiscloseCheckedList().get(i));
             }
 
-            for (int i = 0; i < sReq.getContentJobCheckedList().size(); i ++) {
+            for (int i = 0; i < sReq.getContentJobCheckedList().size(); i++) {
                 query.setParameter(contentJobCodeTag + i, sReq.getContentJobCheckedList().get(i));
 
                 String jMemo = sReq.getContentJobMemos().get(sReq.getContentJobCheckedList().get(i));
@@ -262,14 +266,14 @@ public class InterviewService {
                 }
             }
 
-            for (int i = 0; i < pMemos.size(); i ++) {
+            for (int i = 0; i < pMemos.size(); i++) {
                 query.setParameter(contentPriMemoTag + i, "%" + pMemos.get(i) + "%");
             }
 
-            for (int i = 0; i < iMemos.size(); i ++) {
+            for (int i = 0; i < iMemos.size(); i++) {
                 query.setParameter(interviewerCommentTag + i, "%" + iMemos.get(i) + "%");
             }
-            for (int i = 0; i < aMemos.size(); i ++) {
+            for (int i = 0; i < aMemos.size(); i++) {
                 query.setParameter(adminCommentTag + i, "%" + aMemos.get(i) + "%");
             }
 
@@ -305,7 +309,8 @@ public class InterviewService {
             pageList = reqList.subList(startItem, toIndex);
         }
 
-        Page<InterviewRequest> reqPage = new PageImpl<InterviewRequest>(pageList, PageRequest.of(currentPage, pageSize), reqList.size());
+        Page<InterviewRequest> reqPage = new PageImpl<InterviewRequest>(pageList, PageRequest.of(currentPage, pageSize),
+                reqList.size());
 
         return reqPage;
     }
@@ -370,17 +375,20 @@ public class InterviewService {
             if (req.getHireYMDateFromLengthStartCode().compareTo(req.getHireYMDateFromLengthEndCode()) < 0) {
                 hireYMMin = req.getHireYMDateFromLengthStartCode();
                 hireYMMax = req.getHireYMDateFromLengthEndCode();
-            } else {
+            }
+            else {
                 hireYMMin = req.getHireYMDateFromLengthEndCode();
                 hireYMMax = req.getHireYMDateFromLengthStartCode();
             }
 
             sql.append(AND + hireYMMinCond + AND + hireYMMaxCond);
-        } else if (req.getHireYMDateFromLengthStartCode() != null && req.getHireYMDateFromLengthEndCode() == null) {
+        }
+        else if (req.getHireYMDateFromLengthStartCode() != null && req.getHireYMDateFromLengthEndCode() == null) {
             hireYMMax = req.getHireYMDateFromLengthStartCode();
 
             sql.append(AND + hireYMMaxCond);
-        } else if (req.getHireYMDateFromLengthStartCode() == null && req.getHireYMDateFromLengthEndCode() != null) {
+        }
+        else if (req.getHireYMDateFromLengthStartCode() == null && req.getHireYMDateFromLengthEndCode() != null) {
             hireYMMin = req.getHireYMDateFromLengthEndCode();
 
             sql.append(AND + hireYMMinCond);
@@ -473,7 +481,8 @@ public class InterviewService {
 
         if (!result.isEmpty()) {
             return result.get(0);
-        } else {
+        }
+        else {
             return null;
         }
     }
@@ -488,7 +497,8 @@ public class InterviewService {
 
         if (result != null) {
             return result.getInterviewDate();
-        } else {
+        }
+        else {
             return null;
         }
     }
@@ -562,7 +572,8 @@ public class InterviewService {
 
         if (!list.isEmpty()) {
             return list.get(0);
-        } else {
+        }
+        else {
             return null;
         }
     }
@@ -590,9 +601,30 @@ public class InterviewService {
         List<InterviewAttach> list = (List<InterviewAttach>) query.getResultList();
         if (!list.isEmpty()) {
             return list.get(0);
-        } else {
+        }
+        else {
             return null;
         }
+    }
+
+    /**
+     * 面談結果ID、添付ファイル名での面談内容検索
+     * @param companyID 企業コード
+     * @param employeeCode 従業員番号
+     * @return 検索結果(Employee)
+     */
+    @SuppressWarnings("unchecked")
+    public List<InterviewContent> searchContentFromResultID(Long resultID) {
+        String deletedTag = "deleted";
+        String resultIDTag = "resultID";
+        String sql = "FROM InterviewContent c"
+                + " WHERE c.deleted = :" + deletedTag
+                + " AND c.resultID = :" + resultIDTag;
+        Query query = entityManager.createQuery(sql);
+        query.setParameter(deletedTag, Consts.EXIST);
+        query.setParameter(resultIDTag, resultID);
+
+        return (List<InterviewContent>) query.getResultList();
     }
 
     /**
@@ -684,13 +716,15 @@ public class InterviewService {
             result.setUpdateUser(Utils.loginUsername());
             result.setUpdateTime(now);
             result.setUpdateCount(result.getUpdateCount() + 1);
-        } else {
+        }
+        else {
             LogUtils.error("面談結果更新対象の取得に失敗しました。");
             return;
         }
 
         result = interviewResultRepository.save(result);
 
+        deleteAllContents(result.getId());
         Map<Integer, String> contentJobItems = new LinkedHashMap<Integer, String>();
         for (int i = 0; i < req.getContentJobCheckItems().size(); i++) {
             if (req.containsContentJobChecked(i) || !req.getContentJobMemos().get(i).isEmpty()) {
@@ -709,7 +743,7 @@ public class InterviewService {
         saveContents(result.getId(), Consts.CONTENTKIND_PRIVATE, contentPrivateItems);
 
         if (req.getAttachedFile() != null && !req.getAttachedFile().isEmpty()) {
-            deleteAttaches(result.getId());
+            deleteAllAttaches(result.getId());
             List<MultipartFile> attachList = new ArrayList<MultipartFile>();
             attachList.add(req.getAttachedFile());
             saveAttaches(result.getId(), attachList);
@@ -732,7 +766,8 @@ public class InterviewService {
             result.setUpdateUser(Utils.loginUsername());
             result.setUpdateTime(now);
             result.setUpdateCount(result.getUpdateCount() + 1);
-        } else {
+        }
+        else {
             LogUtils.error("面談結果更新対象の取得に失敗しました。");
             return;
         }
@@ -757,7 +792,8 @@ public class InterviewService {
                 content.setContentComment(items.get(key));
                 content.setUpdateUser(Utils.loginUsername());
                 content.setUpdateTime(now);
-            } else {
+            }
+            else {
                 content = new InterviewContent();
                 content.setResultID(resultID);
                 content.setContentKind(contentKind);
@@ -791,19 +827,22 @@ public class InterviewService {
                     attach.setFilename(file.getOriginalFilename());
                     if (file.getOriginalFilename().toLowerCase().endsWith(".pdf")) {
                         attach.setFiledata(file.getBytes());
-                    } else {
+                    }
+                    else {
                         attach.setFiledata(Utils.imageSizeConvert(file.getBytes()));
 
                     }
                     attach.setUpdateUser(Utils.loginUsername());
                     attach.setUpdateTime(now);
-                } else {
+                }
+                else {
                     attach = new InterviewAttach();
                     attach.setResultID(resultID);
                     attach.setFilename(file.getOriginalFilename());
                     if (file.getOriginalFilename().toLowerCase().endsWith(".pdf")) {
                         attach.setFiledata(file.getBytes());
-                    } else {
+                    }
+                    else {
                         attach.setFiledata(Utils.imageSizeConvert(file.getBytes()));
 
                     }
@@ -815,18 +854,38 @@ public class InterviewService {
                 }
 
                 interviewAttachRepository.save(attach);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 LogUtils.error("添付ファイルのアクセスに失敗しました。filename = " + file.getOriginalFilename());
             }
         }
     }
 
     /**
-     * 面談添付ファイル削除
+     * 面談内容全削除
      * @param resultID 面談結果ID
      */
     @Transactional
-    private void deleteAttaches(Long resultID) {
+    private void deleteAllContents(Long resultID) {
+        Date now = new Date();
+
+        List<InterviewContent> contents = searchContentFromResultID(resultID);
+
+        for (InterviewContent content : contents) {
+            content.setDeleted(Consts.DELETED);
+            content.setUpdateUser(Utils.loginUsername());
+            content.setUpdateTime(now);
+            content.setUpdateCount(content.getUpdateCount() + 1);
+        }
+        interviewContentRepository.saveAll(contents);
+    }
+
+    /**
+     * 面談添付ファイル全削除
+     * @param resultID 面談結果ID
+     */
+    @Transactional
+    private void deleteAllAttaches(Long resultID) {
         List<InterviewAttach> attaches = searchAttachFromResultID(resultID);
 
         for (InterviewAttach attach : attaches) {
@@ -844,7 +903,8 @@ public class InterviewService {
     private String createSingleCondition(String prefix, String parm, String condition) {
         if (!parm.isEmpty()) {
             return prefix + condition;
-        } else {
+        }
+        else {
             return "";
         }
     }
@@ -861,7 +921,8 @@ public class InterviewService {
 
         if (paramNum == 1) {
             result.append(condition + 0);
-        } else if (paramNum > 1) {
+        }
+        else if (paramNum > 1) {
             result.append("(");
 
             for (int i = 0; i < paramNum; i++) {
@@ -877,7 +938,8 @@ public class InterviewService {
 
         if (result.length() != 0) {
             return prefix + result.toString();
-        } else {
+        }
+        else {
             return "";
         }
     }
@@ -901,7 +963,8 @@ public class InterviewService {
             if (!memos.get(checkedList.get(0)).isEmpty()) {
                 result.append(AND + memoCond + 0);
             }
-        } else if (checkedList.size() > 1) {
+        }
+        else if (checkedList.size() > 1) {
             result.append("(");
 
             for (int i = 0; i < checkedList.size(); i++) {
@@ -923,7 +986,8 @@ public class InterviewService {
 
         if (result.length() != 0) {
             return prefix + result.toString();
-        } else {
+        }
+        else {
             return "";
         }
     }
@@ -1035,7 +1099,8 @@ public class InterviewService {
                 Consts.CONDITIONKIND_USESEARCH);
         if (!list.isEmpty()) {
             return true;
-        } else {
+        }
+        else {
             return false;
         }
     }
