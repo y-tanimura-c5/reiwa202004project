@@ -40,13 +40,13 @@ public class Company implements Serializable {
      * 有効／無効
      */
     @Column(name="ENABLED")
-    private boolean enabled;
+    private int enabled;
 
     /**
      * 削除
      */
     @Column(name="DELETED")
-    private boolean deleted;
+    private int deleted;
 
     /**
      * 登録日
@@ -94,7 +94,7 @@ public class Company implements Serializable {
      * @return CompanyRequest
      */
     public CompanyRequest toRequest(Date lastlogin, Date lastInterview) {
-        return new CompanyRequest(getIdString(4), getName(), isEnabled(), lastlogin, lastInterview);
+        return new CompanyRequest(getIdString(4), getName(), getEnabled(), lastlogin, lastInterview);
     }
 
     /**
@@ -102,6 +102,6 @@ public class Company implements Serializable {
      * @return CompanyRequest
      */
     public CompanyRequest toRequest() {
-        return new CompanyRequest(getIdString(4), getName(), isEnabled(), null, null);
+        return new CompanyRequest(getIdString(4), getName(), getEnabled(), null, null);
     }
 }

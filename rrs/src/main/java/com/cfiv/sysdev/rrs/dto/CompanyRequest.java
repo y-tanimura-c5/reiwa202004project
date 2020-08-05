@@ -20,12 +20,12 @@ public class CompanyRequest implements Serializable {
         }
     }
 
-    public CompanyRequest(String _id, String _name, boolean _enabled, Date _lastLogin, Date _lastInter) {
+    public CompanyRequest(String _id, String _name, int _enabled, Date _lastLogin, Date _lastInter) {
         this();
 
         setId(_id);
         setName(_name);
-        setEnabled(_enabled ? 1 : 0);
+        setEnabled(_enabled);
         setInitialID("自動付与されます");
         setLastLoginDate(_lastLogin);
         setLastInterviewDate(_lastInter);

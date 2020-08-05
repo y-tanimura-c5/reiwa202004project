@@ -64,13 +64,13 @@ public class Account {
      * 有効／無効
      */
     @Column(name = "ENABLED", nullable = false)
-    private boolean enabled;
+    private int enabled;
 
     /**
      * 削除
      */
     @Column(name = "DELETED", nullable = false)
-    private boolean deleted;
+    private int deleted;
 
     /**
      * 登録日
@@ -145,6 +145,6 @@ public class Account {
      */
     public UserRequest toRequest(String _cDropdown, UserRequest _loginUser) {
         return new UserRequest(getIdString(1), getUsername(), getPassword(),
-                getDisplayName(), getUserRole(), getCompanyIDString(4), _cDropdown, isEnabled(), _loginUser);
+                getDisplayName(), getUserRole(), getCompanyIDString(4), _cDropdown, getEnabled(), _loginUser);
     }
 }

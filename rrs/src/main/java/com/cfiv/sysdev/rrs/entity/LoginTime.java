@@ -49,7 +49,7 @@ public class LoginTime {
      * 削除
      */
     @Column(name = "DELETED", nullable = false)
-    private boolean deleted;
+    private int deleted;
 
     /**
      * 登録日

@@ -7,11 +7,11 @@ public class Consts {
     public static final int ADMINCOMMENT_CONDNUM = 3;
     public static final int CONVERTEDIMAGE_WIDTH = 1600;
 
-    public static final boolean EXIST = false;
-    public static final boolean DELETED = true;
+    public static final int EXIST = 0;
+    public static final int DELETED = 1;
 
-    public static final boolean DISABLED = false;
-    public static final boolean ENABLED = true;
+    public static final int UNABLED = 0;
+    public static final int ENABLED = 1;
 
     public static final String EXIST_NAME = "あり";
     public static final String NOTEXIST_NAME = "なし";

@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -56,7 +57,7 @@ public class InterviewRequest implements Serializable {
         Map<Integer, String> priMap = new HashMap<>();
 
         for (InterviewContent content : _result.getInterviewContents()) {
-            if (!content.isDeleted()) {
+            if (content.getDeleted() == Consts.EXIST) {
                 if (content.getContentKind() == Consts.CONTENTKIND_JOB) {
                     jobMap.put(content.getContentCode(), content.getContentComment());
                 }
@@ -338,8 +339,9 @@ public class InterviewRequest implements Serializable {
     public String getContentJobNamesShort() {
         StringBuilder names = new StringBuilder();
 
+        Collections.sort(contentJobCheckedList);
         for (int i = 0; i < contentJobCheckedList.size(); i ++) {
-            names.append(Consts.JOB_SHORTNAMES[i]);
+            names.append(Consts.JOB_SHORTNAMES[contentJobCheckedList.get(i)]);
 
             if (i != contentJobCheckedList.size() - 1) {
                 names.append("、");

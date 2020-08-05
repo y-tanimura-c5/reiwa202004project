@@ -27,7 +27,7 @@ public class UserRequest implements Serializable {
     }
 
     public UserRequest(String _id, String _username, String _password, String _displayName,
-            int _userRoleCode, String _companyID, String _companyName, boolean _enabled, UserRequest _loginUser) {
+            int _userRoleCode, String _companyID, String _companyName, int _enabled, UserRequest _loginUser) {
         this();
 
         setId(_id);
@@ -38,7 +38,7 @@ public class UserRequest implements Serializable {
         setUserRoleCode(_userRoleCode);
         setCompanyID(_companyID);
         setCompanyName(_companyName);
-        setEnabled(_enabled ? 1 : 0);
+        setEnabled(_enabled);
 
         userRoleItems = new LinkedHashMap<Integer, String>();
         if (_loginUser != null && _loginUser.getUserRoleCode() == Consts.USERROLECODE_ADMIN) {

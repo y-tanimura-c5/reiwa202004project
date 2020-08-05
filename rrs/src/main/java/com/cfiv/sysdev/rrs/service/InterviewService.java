@@ -1109,7 +1109,7 @@ public class InterviewService {
      * ユーザーID、検索条件コードからのチェック結果リスト
      * @param username ユーザーID
      * @param code 検索条件コード
-     * @return ユーザーID、検索条件コードからのチェック結果リスト
+     * @return チェック結果リスト
      */
     private List<Integer> getConditionCheckedList(String username, int code) {
         List<InterviewCondition> list = interviewConditionRepository.findByUsernameAndConditionKind(username, code);
@@ -1121,6 +1121,13 @@ public class InterviewService {
         return iList;
     }
 
+    /**
+     * ユーザーID、検索条件コードからの面談内容メモリスト
+     * @param username ユーザーID
+     * @param code 検索条件コード
+     * @param size 面談内容最大サイズ
+     * @return 面談内容メモリスト
+     */
     private List<String> getConditionMemos(String username, int code, int size) {
         List<InterviewCondition> list = interviewConditionRepository.findByUsernameAndConditionKind(username, code);
         List<String> sList = new ArrayList<String>();

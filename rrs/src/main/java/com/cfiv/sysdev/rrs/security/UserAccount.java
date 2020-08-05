@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.cfiv.sysdev.rrs.Consts;
 import com.cfiv.sysdev.rrs.entity.Account;
 
 public class UserAccount implements UserDetails {
@@ -65,6 +66,6 @@ public class UserAccount implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return account.isEnabled();
+        return account.getEnabled() == Consts.ENABLED ? true : false;
     }
 }

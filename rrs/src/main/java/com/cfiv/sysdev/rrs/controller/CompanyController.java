@@ -65,7 +65,7 @@ public class CompanyController {
      */
     @RequestMapping(value = "/company/add", method = RequestMethod.GET)
     public String displayAdd(Model model) {
-        model.addAttribute("company_request", new CompanyRequest("", "", true, null, null));
+        model.addAttribute("company_request", new CompanyRequest("", "", Consts.ENABLED, null, null));
         model.addAttribute("loginUser", userService.getLoginAccount());
 
         return "company/add";

@@ -115,7 +115,7 @@ public class UserService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found: " + username);
         }
 
-        if (!account.isEnabled()) {
+        if (account.getEnabled() == Consts.UNABLED) {
             throw new UsernameNotFoundException("User not found: " + username);
         }
 
@@ -186,13 +186,13 @@ public class UserService implements UserDetailsService {
                 account.setCompanyIDFromName(req.getCompanyName());
             }
             account.setUserRole(req.getUserRoleCode());
-            account.setEnabled(req.getEnabled() == 1 ? Consts.ENABLED : Consts.DISABLED);
+            account.setEnabled(req.getEnabled());
             break;
 
         case Consts.USERROLECODE_CLIENTADMIN:
             account.setCompanyIDFromName(lReq.getCompanyName());
             account.setUserRole(req.getUserRoleCode());
-            account.setEnabled(req.getEnabled() == 1 ? Consts.ENABLED : Consts.DISABLED);
+            account.setEnabled(req.getEnabled());
             break;
         }
 
@@ -231,12 +231,12 @@ public class UserService implements UserDetailsService {
                 account.setCompanyIDFromName(req.getCompanyName());
             }
             account.setUserRole(req.getUserRoleCode());
-            account.setEnabled(req.getEnabled() == 1 ? Consts.ENABLED : Consts.DISABLED);
+            account.setEnabled(req.getEnabled());
             break;
 
         case Consts.USERROLECODE_CLIENTADMIN:
             account.setUserRole(req.getUserRoleCode());
-            account.setEnabled(req.getEnabled() == 1 ? Consts.ENABLED : Consts.DISABLED);
+            account.setEnabled(req.getEnabled());
             break;
         }
 

@@ -114,7 +114,7 @@ public class CompanyService {
         String loginUser = Utils.loginUsername();
 
         company.setName(req.getName());
-        company.setEnabled(req.getEnabled() == 1 ? Consts.ENABLED : Consts.DISABLED);
+        company.setEnabled(req.getEnabled());
         company.setDeleted(Consts.EXIST);
         company.setRegistTime(now);
         company.setRegistUser(loginUser);
@@ -141,7 +141,7 @@ public class CompanyService {
         String loginUser = Utils.loginUsername();
 
         company.setName(req.getName());
-        company.setEnabled(req.getEnabled() == 1 ? Consts.ENABLED : Consts.DISABLED);
+        company.setEnabled(req.getEnabled());
         company.setDeleted(Consts.EXIST);
         company.setRegistTime(now);
         company.setRegistUser(loginUser);
@@ -181,7 +181,7 @@ public class CompanyService {
             List<Company> company_list = searchAll();
 
             for (Company company : company_list) {
-                if (company.isEnabled()) {
+                if (company.getEnabled() == Consts.ENABLED) {
                     result.put(company.getIdString(4), company.getIdString(4) + ":" + company.getName());
                 }
             }
