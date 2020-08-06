@@ -2,11 +2,14 @@ package com.cfiv.sysdev.rrs.controller;
 
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cfiv.sysdev.rrs.Consts;
 import com.cfiv.sysdev.rrs.dto.CompanyRequest;
+import com.cfiv.sysdev.rrs.dto.UserRequest;
 import com.cfiv.sysdev.rrs.entity.Company;
 import com.cfiv.sysdev.rrs.service.CompanyService;
 import com.cfiv.sysdev.rrs.service.UserService;
@@ -94,9 +98,23 @@ public class CompanyController {
      * @return 企業情報一覧画面
      */
     @RequestMapping(value = "/company/{id}", method = RequestMethod.POST)
-    public String update(RedirectAttributes attributes, @PathVariable Long id, @ModelAttribute CompanyRequest req) {
+    public String update(RedirectAttributes attributes
+            , @PathVariable Long id
+            , @ModelAttribute("company_request") @Valid CompanyRequest req
+            , BindingResult result
+            , Model model) {
+        UserRequest lReq = userService.getLoginAccount();
+
+        if (result.hasErrors()) {
+            model.addAttribute("loginUser", lReq);
+            model.addAttribute("company_request", req);
+
+            return "company/edit";
+        }
+
         companyService.save(id, req);
-        attributes.addFlashAttribute("loginUser", userService.getLoginAccount());
+
+        attributes.addFlashAttribute("loginUser", lReq);
 
         return "redirect:/company/list";
     }
@@ -108,9 +126,22 @@ public class CompanyController {
      * @return 企業情報一覧画面
      */
     @RequestMapping(value = "/company/create", method = RequestMethod.POST)
-    public String create(RedirectAttributes attributes, @ModelAttribute CompanyRequest req, Model model) {
+    public String create(RedirectAttributes attributes
+            , @ModelAttribute("company_request") @Valid CompanyRequest req
+            , BindingResult result
+            , Model model) {
+        UserRequest lReq = userService.getLoginAccount();
+
+        if (result.hasErrors()) {
+            model.addAttribute("loginUser", lReq);
+            model.addAttribute("company_request", req);
+
+            return "company/add";
+        }
+
         companyService.create(req);
-        attributes.addFlashAttribute("loginUser", userService.getLoginAccount());
+
+        attributes.addFlashAttribute("loginUser", lReq);
 
         return "redirect:/company/list";
     }

@@ -52,19 +52,36 @@
 						</div>
 						<div class="col-md-3 col-lg-3">
 							<input class="form-control" type="text" th:field="*{displayName}" />
+						</div>
+						<div class="col-md-5 col-lg-5">
 							<label th:if="${#fields.hasErrors('displayName')}" th:errors="*{displayName}" style="color: red"></label>
 						</div>
 					</div>
 
-					<div th:if="${loginUser.userRoleCode == 0 || loginUser.userRoleCode == 1}">
+					<div th:if="${loginUser.userRoleCode == 0}">
 						<div class="row align-items-center" style="height:40px;">
-							<div class="col-md-3 col-lg-3">
+							<div class="col-md-2 col-lg-3">
 								ユーザー権限：
 							</div>
-							<div class="col-md-9 col-lg-9">
+							<div class="col-md-10 col-lg-9">
 								<div class="row align-items-center" style="height:40px;">
-									<div th:each="item : *{userRoleItems}" class="col-md-12 col-lg-3">
-										<input type="radio" name="userRole" th:value="${item.key}" th:text="${item.value}" th:field="*{userRoleCode}" />
+									<div th:each="userRoleItem : *{userRoleItems}" class="col-md-12 col-lg-3">
+										<input type="radio" name="userRole" th:value="${userRoleItem.key}" th:text="${userRoleItem.value}" th:field="*{userRoleCode}" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div th:if="${loginUser.userRoleCode == 1}">
+						<div class="row align-items-center" style="height:40px;">
+							<div class="col-md-2 col-lg-3">
+								ユーザー権限：
+							</div>
+							<div class="col-md-10 col-lg-9">
+								<div class="row align-items-center" style="height:40px;">
+									<div th:each="userRoleItem : *{userRoleItems}" th:if="${userRoleItem.key != 0}" class="col-md-12 col-lg-3">
+										<input type="radio" name="userRole" th:value="${userRoleItem.key}" th:text="${userRoleItem.value}" th:field="*{userRoleCode}" />
 									</div>
 								</div>
 							</div>

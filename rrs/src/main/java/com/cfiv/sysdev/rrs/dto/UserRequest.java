@@ -24,6 +24,11 @@ public class UserRequest implements Serializable {
         for (int i = 0; i < Consts.ENABLED_CODES.length; i ++) {
             enabledItems.put(Consts.ENABLED_CODES[i], Consts.ENABLED_NAMES[i]);
         }
+
+        userRoleItems = new LinkedHashMap<Integer, String>();
+        for (int i = 0; i < Consts.USERROLE_CODES.length; i ++) {
+            userRoleItems.put(Consts.USERROLE_CODES[i], Consts.USERROLE_NAMES[i]);
+        }
     }
 
     public UserRequest(String _id, String _username, String _password, String _displayName,
@@ -39,20 +44,6 @@ public class UserRequest implements Serializable {
         setCompanyID(_companyID);
         setCompanyName(_companyName);
         setEnabled(_enabled);
-
-        userRoleItems = new LinkedHashMap<Integer, String>();
-        if (_loginUser != null && _loginUser.getUserRoleCode() == Consts.USERROLECODE_ADMIN) {
-            for (int i = 0; i < Consts.USERROLE_CODES.length; i ++) {
-                userRoleItems.put(Consts.USERROLE_CODES[i], Consts.USERROLE_NAMES[i]);
-            }
-        }
-        else {
-            for (int i = 0; i < Consts.USERROLE_CODES.length; i ++) {
-                if (Consts.USERROLE_CODES[i] != Consts.USERROLECODE_ADMIN) {
-                    userRoleItems.put(Consts.USERROLE_CODES[i], Consts.USERROLE_NAMES[i]);
-                }
-            }
-        }
     }
 
     /**

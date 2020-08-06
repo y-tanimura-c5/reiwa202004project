@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.validation.constraints.Size;
+
 import com.cfiv.sysdev.rrs.Consts;
 
 import lombok.Data;
@@ -44,6 +46,7 @@ public class CompanyRequest implements Serializable {
     /**
      * 名前
      */
+    @Size(max=50)
     private String name;
 
     /**

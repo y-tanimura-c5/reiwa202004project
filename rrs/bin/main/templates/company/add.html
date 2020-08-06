@@ -29,6 +29,9 @@
 						<div class="col-md-3 col-lg-3">
 							<input class="form-control" type="text" th:field="*{name}" />
 						</div>
+						<div class="col-md-5 col-lg-5">
+							<label th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color: red"></label>
+						</div>
 					</div>
 
 					<div class="row align-items-center" style="height:40px;">

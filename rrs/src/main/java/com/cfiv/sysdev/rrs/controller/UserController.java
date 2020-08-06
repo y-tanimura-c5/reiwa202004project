@@ -106,7 +106,7 @@ public class UserController {
             model.addAttribute("company_items", companyService.getAllCompanyNamesForDropdown(lReq));
             model.addAttribute("loginUser", lReq);
 
-            return "/user/add";
+            return "user/add";
         }
 
         userService.create(req);
@@ -176,8 +176,11 @@ public class UserController {
      * @return ユーザー情報一覧画面(登録完了時)／新規登録画面(エラー発生時)
      */
     @RequestMapping(value = "/user/{id}", method = RequestMethod.POST)
-    public String update(RedirectAttributes attributes, @PathVariable Long id,
-            @ModelAttribute("user_request") @Valid UserRequest req, BindingResult result, Model model) {
+    public String update(RedirectAttributes attributes
+            , @PathVariable Long id
+            , @ModelAttribute("user_request") @Valid UserRequest req
+            , BindingResult result
+            , Model model) {
         boolean error = true;
         UserRequest lReq = userService.getLoginAccount();
 
@@ -202,9 +205,10 @@ public class UserController {
             }
 
             if (error) {
-                attributes.addFlashAttribute("errors", result);
-                attributes.addFlashAttribute("loginUser", lReq);
-                return "redirect:/user/{id}/edit";
+                model.addAttribute("company_items", companyService.getAllCompanyNamesForDropdown(lReq));
+                model.addAttribute("loginUser", lReq);
+
+                return "user/edit";
             }
         }
 
