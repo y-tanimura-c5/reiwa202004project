@@ -74,7 +74,7 @@ public class UserService implements UserDetailsService {
             list = searchAll();
         }
         else {
-            list = searchFromCompanyID(Utils.getLongFromString(lReq.getCompanyID()));
+            list = searchFromCompanyID(lReq.getCompanyIDLong());
         }
 
         for (Account account : list) {

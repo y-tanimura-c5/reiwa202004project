@@ -156,7 +156,6 @@ public class InterviewController {
      * @return 面談結果検索画面
      */
     @RequestMapping(value = "/interview/search", method = RequestMethod.POST)
-//    @RequestMapping(value = "/interview/search", params = "search", method = RequestMethod.POST)
     public String search(Model model
             , @ModelAttribute("interview_search_request") InterviewSearchRequest req
             , @RequestParam("page") Optional<Integer> page
@@ -165,6 +164,11 @@ public class InterviewController {
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(Consts.PAGENATION_PAGESIZE);
         UserRequest uReq = userService.getLoginAccount();
+
+        if (uReq.getUserRoleCode() != Consts.USERROLECODE_ADMIN
+                && req.getCompanyIDLong() != uReq.getCompanyIDLong()) {
+            req.setCompanyID(uReq.getCompanyID());
+        }
 
         Page<InterviewRequest> reqPage = interviewService.searchRequest(req, uReq, PageRequest.of(currentPage - 1, pageSize));
 
@@ -232,6 +236,11 @@ public class InterviewController {
 
             req.setCompanyName(company.getName());
             req.setEmployee(employee);
+            req.setEmployeeFName(employee.getEmployeeFName());
+            req.setEmployeeHireYM(employee.getHireYM());
+            req.setEmployeeAdopt(employee.getAdopt());
+            req.setEmployeeSupport(employee.getSupport());
+            req.setEmployeeEmploy(employee.getEmploy());
             req.setPastInterviews(past_list);
         }
 
@@ -306,6 +315,7 @@ public class InterviewController {
      */
     @RequestMapping(value = "/interview/{id}/{filename}", method = RequestMethod.GET)
     public String preview(@PathVariable Long id, @PathVariable String filename, Model model) {
+        UserRequest uReq = userService.getLoginAccount();
         InterviewAttach attach = interviewService.findOneAttachFromKey(id, filename);
 
         StringBuffer data = new StringBuffer();
@@ -332,7 +342,7 @@ public class InterviewController {
 
         model.addAttribute("filename", filename);
         model.addAttribute("base64image", data.toString());
-        model.addAttribute("loginUser", userService.getLoginAccount());
+        model.addAttribute("loginUser", uReq);
 
         return url;
     }
@@ -345,8 +355,9 @@ public class InterviewController {
      */
     @RequestMapping(value = "/interview/{id}/edit", method = RequestMethod.GET)
     public String edit(@PathVariable Long id, Model model) {
+        UserRequest uReq = userService.getLoginAccount();
         model.addAttribute("interview_request", interviewService.findOneRequest(id));
-        model.addAttribute("loginUser", userService.getLoginAccount());
+        model.addAttribute("loginUser", uReq);
 
         return "interview/edit";
     }
@@ -359,18 +370,23 @@ public class InterviewController {
      * @return 面談結果検索画面(更新成功)／面談結果編集画面(更新失敗)
      */
     @RequestMapping(value = "/interview/{id}", params = "confirm", method = RequestMethod.POST)
-    public String update(RedirectAttributes attributes, @PathVariable Long id, Model model, @ModelAttribute("interview_request") @Valid InterviewRequest req, BindingResult result) {
+    public String update(RedirectAttributes attributes
+            , @PathVariable Long id
+            , Model model
+            , @ModelAttribute("interview_request") @Valid InterviewRequest req
+            , BindingResult result) {
+        UserRequest uReq = userService.getLoginAccount();
 
         if (!result.hasErrors()) {
-            interviewService.update(id, req);
+            interviewService.save(id, req);
             attributes.addFlashAttribute("interview_request", req);
-            attributes.addFlashAttribute("loginUser", userService.getLoginAccount());
+            attributes.addFlashAttribute("loginUser", uReq);
 
             return "redirect:/interview/listinit";
         }
         else {
             model.addAttribute("interview_request", req);
-            model.addAttribute("loginUser", userService.getLoginAccount());
+            model.addAttribute("loginUser", uReq);
 
             return "interview/edit";
         }
@@ -384,17 +400,23 @@ public class InterviewController {
      * @return 面談結果検索画面(削除成功)／面談結果編集画面(削除失敗)
      */
     @RequestMapping(value = "/interview/{id}", params = "delete", method = RequestMethod.POST)
-    public String delte(RedirectAttributes attributes, @PathVariable Long id, Model model, @ModelAttribute("interview_request") @Valid InterviewRequest req, BindingResult result) {
+    public String delete(RedirectAttributes attributes
+            , @PathVariable Long id
+            , Model model
+            , @ModelAttribute("interview_request") @Valid InterviewRequest req
+            , BindingResult result) {
+        UserRequest uReq = userService.getLoginAccount();
+
         if (!result.hasErrors()) {
             interviewService.delete(id, req);
             attributes.addFlashAttribute("interview_request", req);
-            attributes.addFlashAttribute("loginUser", userService.getLoginAccount());
+            attributes.addFlashAttribute("loginUser", uReq);
 
             return "redirect:/interview/listinit";
         }
         else {
             model.addAttribute("interview_request", req);
-            model.addAttribute("loginUser", userService.getLoginAccount());
+            model.addAttribute("loginUser", uReq);
 
             return "interview/edit";
         }
@@ -407,22 +429,36 @@ public class InterviewController {
      */
     @RequestMapping(value = "/interview/condinit", method = RequestMethod.GET)
     public String initCondition(Model model) {
+        UserRequest uReq = userService.getLoginAccount();
         model.addAttribute("interview_condition_request", interviewService.getCondition(Utils.loginUsername()));
-        model.addAttribute("loginUser", userService.getLoginAccount());
+        model.addAttribute("loginUser", uReq);
 
         return "interview/condinit";
     }
 
     /**
-     * 面談結果検索画面初期表示
+     * 初期表示設定更新
      * @param model Model
-     * @return 面談結果検索画面
+     * @return ホーム画面
      */
     @RequestMapping(value = "/interview/condconfirm", method = RequestMethod.POST)
-    public String confirmCondition(RedirectAttributes attributes, Model model, @ModelAttribute("interview_condition_request") InterviewConditionRequest req) {
-        interviewService.saveCondition(Utils.loginUsername(), req);
-        attributes.addFlashAttribute("loginUser", userService.getLoginAccount());
+    public String confirmCondition(RedirectAttributes attributes
+            , Model model
+            , @ModelAttribute("interview_condition_request") @Valid InterviewConditionRequest req
+            , BindingResult result) {
+        UserRequest uReq = userService.getLoginAccount();
 
-        return "redirect:/";
+        if (!result.hasErrors()) {
+            interviewService.saveCondition(Utils.loginUsername(), req);
+            attributes.addFlashAttribute("loginUser", uReq);
+
+            return "redirect:/";
+        }
+        else {
+            model.addAttribute("interview_condition_request", req);
+            model.addAttribute("loginUser", uReq);
+
+            return "interview/condinit";
+        }
     }
 }

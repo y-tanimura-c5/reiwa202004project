@@ -1,6 +1,9 @@
 package com.cfiv.sysdev.rrs;
 
 public class Consts {
+    /**
+     * 画面表示用設定
+     */
     public static final int PAGENATION_PAGESIZE = 50;
     public static final int PASTINTERVIEW_NUM = 3;
     public static final int INTERVIEWERCOMMENT_CONDNUM = 3;

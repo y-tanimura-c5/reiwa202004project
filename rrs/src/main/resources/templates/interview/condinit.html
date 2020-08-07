@@ -203,6 +203,7 @@
 													</div>
 													<div class="col-md-10 col-lg-9">
 														<input class="form-control" type="text" th:field="*{contentJobMemos[__${stat.index}__]}" />
+														<label th:if="${#fields.hasErrors('contentJobMemos[' + __${stat.index}__ + ']')}" th:errors="*{contentJobMemos[__${stat.index}__]}" style="color: red"></label>
 													</div>
 												</div>
 											</div>
@@ -224,6 +225,7 @@
 											</div>
 											<div class="col-md-10 col-lg-9">
 												<input class="form-control" type="text" th:field="*{contentPrivateMemos[__${stat.index}__]}" />
+												<label th:if="${#fields.hasErrors('contentPrivateMemos[' + __${stat.index}__ + ']')}" th:errors="*{contentPrivateMemos[__${stat.index}__]}" style="color: red"></label>
 											</div>
 										</div>
 									</div>
@@ -248,6 +250,7 @@
 									<div class="row align-items-center">
 										<div th:each="icomment, stat : *{interviewerCommentMemos}" class="col-md-12 col-lg-4">
 											<input class="form-control" type="text" th:field="*{interviewerCommentMemos[__${stat.index}__]}" />
+											<label th:if="${#fields.hasErrors('interviewerCommentMemos[' + __${stat.index}__ + ']')}" th:errors="*{interviewerCommentMemos[__${stat.index}__]}" style="color: red"></label>
 										</div>
 									</div>
 								</div>
@@ -271,6 +274,7 @@
 									<div class="row align-items-center">
 										<div th:each="acomment, stat : *{adminCommentMemos}" class="col-md-12 col-lg-4">
 											<input class="form-control" type="text" th:field="*{adminCommentMemos[__${stat.index}__]}" />
+											<label th:if="${#fields.hasErrors('adminCommentMemos[' + __${stat.index}__ + ']')}" th:errors="*{adminCommentMemos[__${stat.index}__]}" style="color: red"></label>
 										</div>
 									</div>
 								</div>

@@ -33,7 +33,7 @@
 							<input class="form-control" type="text" th:field="*{employeeCode}" readonly="readonly" />
 						</div>
 						<div class="col-md-7 col-lg-3">
-							<input class="form-control" type="text" th:field="*{employee.employeeFName}" readonly="readonly" />
+							<input class="form-control" type="text" th:field="*{employeeFName}" readonly="readonly" />
 						</div>
 					</div>
 
@@ -50,7 +50,7 @@
 									入社年月：
 								</div>
 								<div class="col-md-10 col-lg-6">
-									<input class="form-control" type="text" th:field="*{employee.hireYM}" readonly="readonly" />
+									<input class="form-control" type="text" th:field="*{employeeHireYM}" readonly="readonly" />
 								</div>
 							</div>
 							<div class="row align-items-center">
@@ -58,7 +58,7 @@
 									採用種別：
 								</div>
 								<div class="col-md-10 col-lg-6">
-									<input class="form-control" type="text" th:field="*{employee.adopt}" readonly="readonly" />
+									<input class="form-control" type="text" th:field="*{employeeAdopt}" readonly="readonly" />
 								</div>
 							</div>
 							<div class="row align-items-center">
@@ -66,7 +66,7 @@
 									扶養有無：
 								</div>
 								<div class="col-md-10 col-lg-6">
-									<input class="form-control" type="text" th:field="*{employee.support}" readonly="readonly" />
+									<input class="form-control" type="text" th:field="*{employeeSupport}" readonly="readonly" />
 								</div>
 							</div>
 							<div class="row align-items-center">
@@ -74,7 +74,7 @@
 									就業種別：
 								</div>
 								<div class="col-md-10 col-lg-6">
-									<input class="form-control" type="text" th:field="*{employee.employ}" readonly="readonly" />
+									<input class="form-control" type="text" th:field="*{employeeEmploy}" readonly="readonly" />
 								</div>
 							</div>
 						</div>
@@ -132,6 +132,7 @@
 													</div>
 													<div class="col-md-10 col-lg-10">
 														<input class="form-control" type="text" th:field="*{contentJobMemos[__${stat.index}__]}" />
+														<label th:if="${#fields.hasErrors('contentJobMemos[' + __${stat.index}__ + ']')}" th:errors="*{contentJobMemos[__${stat.index}__]}" style="color: red"></label>
 													</div>
 												</div>
 											</div>
@@ -153,6 +154,7 @@
 											</div>
 											<div class="col-md-10 col-lg-10">
 												<input class="form-control" type="text" th:field="*{contentPrivateMemos[__${stat.index}__]}" />
+												<label th:if="${#fields.hasErrors('contentPrivateMemos[' + __${stat.index}__ + ']')}" th:errors="*{contentPrivateMemos[__${stat.index}__]}" style="color: red"></label>
 											</div>
 										</div>
 									</div>

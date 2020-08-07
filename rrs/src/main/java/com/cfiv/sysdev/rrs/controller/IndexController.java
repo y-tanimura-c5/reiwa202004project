@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cfiv.sysdev.rrs.Consts;
-import com.cfiv.sysdev.rrs.Utils;
 import com.cfiv.sysdev.rrs.dto.InterviewRequest;
 import com.cfiv.sysdev.rrs.dto.InterviewSearchRequest;
 import com.cfiv.sysdev.rrs.dto.UserRequest;
@@ -63,7 +62,7 @@ public class IndexController {
     @RequestMapping(path = "/", method = RequestMethod.POST)
     public String indexForward(Model model, @RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
         UserRequest uReq = userService.getLoginAccount();
-        loginTimeService.save(uReq.getUsername(), Utils.getLongFromString(uReq.getCompanyID()));
+        loginTimeService.save(uReq.getUsername(), uReq.getCompanyIDLong());
 
         return index(model, page, size);
     }

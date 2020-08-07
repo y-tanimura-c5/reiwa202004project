@@ -114,6 +114,13 @@ public class EmployeeController {
 
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(Consts.PAGENATION_PAGESIZE);
+        UserRequest uReq = userService.getLoginAccount();
+
+        if (uReq.getUserRoleCode() != Consts.USERROLECODE_ADMIN
+                && req.getCompanyIDLong() != uReq.getCompanyIDLong()) {
+            req.setCompanyID(uReq.getCompanyID());
+        }
+
         Page<EmployeeRequest> reqPage = employeeService.searchRequestFromID(req.getCompanyID(), req.getEmployeeCode()
                 , PageRequest.of(currentPage - 1, pageSize));
 
@@ -123,7 +130,7 @@ public class EmployeeController {
         model.addAttribute("url", "/employee/pagenate");
         model.addAttribute("employee_request", req);
         model.addAttribute("searchDone", 1);
-        model.addAttribute("loginUser", userService.getLoginAccount());
+        model.addAttribute("loginUser",uReq);
 
         return "employee/list";
     }

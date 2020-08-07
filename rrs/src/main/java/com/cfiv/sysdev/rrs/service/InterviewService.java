@@ -702,7 +702,7 @@ public class InterviewService {
      * @param req 面談結果
      */
     @Transactional
-    public void update(Long id, InterviewRequest req) {
+    public void save(Long id, InterviewRequest req) {
         Date now = new Date();
 
         InterviewResult result = findOne(id);

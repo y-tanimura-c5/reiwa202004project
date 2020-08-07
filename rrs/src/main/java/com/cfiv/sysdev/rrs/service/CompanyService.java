@@ -187,7 +187,7 @@ public class CompanyService {
             }
         }
         else {
-            String companyName = getCompanyName(Utils.getLongFromString(loginUser.getCompanyID()));
+            String companyName = getCompanyName(loginUser.getCompanyIDLong());
             result.put(loginUser.getCompanyID(), loginUser.getCompanyID() + ":" + companyName);
         }
 

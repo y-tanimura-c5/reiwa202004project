@@ -8,6 +8,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import com.cfiv.sysdev.rrs.Consts;
+import com.cfiv.sysdev.rrs.Utils;
 import com.cfiv.sysdev.rrs.annotation.PasswordConfirm;
 import com.cfiv.sysdev.rrs.annotation.UsernameUnused;
 
@@ -108,6 +109,14 @@ public class UserRequest implements Serializable {
      * 有効／無効ラジオボタン表示内容リスト
      */
     private Map<Integer, String> enabledItems;
+
+    /**
+     * Long形式の企業コード
+     * @return Long形式の企業コード
+     */
+    public Long getCompanyIDLong() {
+        return Utils.getLongFromString(companyID);
+    }
 
     /**
      * ユーザー権限文字列

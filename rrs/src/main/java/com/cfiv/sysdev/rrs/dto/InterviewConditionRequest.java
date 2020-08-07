@@ -10,6 +10,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.validation.constraints.Size;
+
 import com.cfiv.sysdev.rrs.Consts;
 import com.cfiv.sysdev.rrs.Utils;
 
@@ -121,7 +123,7 @@ public class InterviewConditionRequest implements Serializable {
     /**
      * 面談内容(会社関連)チェックメモリスト
      */
-    private List<String> contentJobMemos;
+    private List<@Size(max=200) String> contentJobMemos;
 
     /**
      * 面談内容(プライベート)チェックボックス表示内容リスト(ダミー)
@@ -136,17 +138,17 @@ public class InterviewConditionRequest implements Serializable {
     /**
      * 面談内容(プライベート)チェックメモリスト
      */
-    private List<String> contentPrivateMemos;
+    private List<@Size(max=200) String> contentPrivateMemos;
 
     /**
      * 相談内容キーワードリスト
      */
-    private List<String> interviewerCommentMemos;
+    private List<@Size(max=200) String> interviewerCommentMemos;
 
     /**
      * 管理者コメントキーワードリスト
      */
-    private List<String> adminCommentMemos;
+    private List<@Size(max=200) String> adminCommentMemos;
 
     /**
      * 勤続年数ドロップダウン表示内容リスト

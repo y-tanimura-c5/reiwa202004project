@@ -44,6 +44,11 @@ public class InterviewRequest implements Serializable {
         setCompanyID(_result.getCompanyIDString(4));
         setEmployeeCode(_result.getEmployeeCode());
         setEmployee(_employee);
+        setEmployeeFName(_employee.getEmployeeFName());
+        setEmployeeHireYM(_employee.getHireYM());
+        setEmployeeAdopt(_employee.getAdopt());
+        setEmployeeSupport(_employee.getSupport());
+        setEmployeeEmploy(_employee.getEmploy());
         setCompanyName(_companyName);
         setRefinerUsername(_result.getRefinerUserID());
         setRefinerDisplayName(_displayName);
@@ -125,6 +130,31 @@ public class InterviewRequest implements Serializable {
     private EmployeeRequest employee;
 
     /**
+     * 従業員名字
+     */
+    private String employeeFName;
+
+    /**
+     * 入社年月
+     */
+    private String employeeHireYM;
+
+    /**
+     * 採用種別
+     */
+    private String employeeAdopt;
+
+    /**
+     * 扶養有無
+     */
+    private String employeeSupport;
+
+    /**
+     * 就業種別
+     */
+    private String employeeEmploy;
+
+    /**
      * リファイナーユーザーID
      */
     private String refinerUsername;
@@ -185,7 +215,7 @@ public class InterviewRequest implements Serializable {
     /**
      * 面談内容(会社関連)チェックメモリスト
      */
-    private List<String> contentJobMemos;
+    private List<@Size(max=200) String> contentJobMemos;
 
     /**
      * 面談内容(プライベート)チェックボックス表示内容リスト(ダミー)
@@ -200,7 +230,7 @@ public class InterviewRequest implements Serializable {
     /**
      * 面談内容(プライベート)チェックメモリスト
      */
-    private List<String> contentPrivateMemos;
+    private List<@Size(max=200) String> contentPrivateMemos;
 
     /**
      * 過去面談結果リスト
