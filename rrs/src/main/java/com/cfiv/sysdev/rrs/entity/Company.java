@@ -19,63 +19,63 @@ import lombok.Data;
  */
 @Entity
 @Data
-@Table(name="M_COMPANY")
+@Table(name = "M_COMPANY")
 public class Company implements Serializable {
 
     /**
      * ID
      */
     @Id
-    @Column(name="ID")
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false, unique = true)
     private Long id;
 
     /**
      * 名前
      */
-    @Column(name="NAME")
+    @Column(name = "NAME", nullable = true)
     private String name;
 
     /**
      * 有効／無効
      */
-    @Column(name="ENABLED")
+    @Column(name = "ENABLED", nullable = false)
     private int enabled;
 
     /**
      * 削除
      */
-    @Column(name="DELETED")
+    @Column(name = "DELETED", nullable = false)
     private int deleted;
 
     /**
      * 登録日
      */
-    @Column(name="REGIST_TIME")
+    @Column(name = "REGIST_TIME", nullable = false)
     private Date registTime;
 
     /**
      * 登録者
      */
-    @Column(name="REGIST_USER")
+    @Column(name = "REGIST_USER", nullable = false)
     private String registUser;
 
     /**
      * 更新日
      */
-    @Column(name="UPDATE_TIME")
+    @Column(name = "UPDATE_TIME", nullable = false)
     private Date updateTime;
 
     /**
      * 更新者
      */
-    @Column(name="UPDATE_USER")
+    @Column(name = "UPDATE_USER", nullable = false)
     private String updateUser;
 
     /**
      * 更新回数
      */
-    @Column(name="UPDATE_COUNT")
+    @Column(name = "UPDATE_COUNT", nullable = false)
     private int updateCount;
 
     /**

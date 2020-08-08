@@ -42,7 +42,7 @@ public class LoginTime {
     /**
      * ログイン日時
      */
-    @Column(name="LOGIN_TIME", nullable = false)
+    @Column(name = "LOGIN_TIME", nullable = false)
     private Date loginTime;
 
     /**

@@ -33,7 +33,7 @@ public class UserRequest implements Serializable {
     }
 
     public UserRequest(String _id, String _username, String _password, String _displayName,
-            int _userRoleCode, String _companyID, String _companyName, int _enabled, UserRequest _loginUser) {
+            int _userRoleCode, String _companyID, String _companyName, int _enabled) {
         this();
 
         setId(_id);

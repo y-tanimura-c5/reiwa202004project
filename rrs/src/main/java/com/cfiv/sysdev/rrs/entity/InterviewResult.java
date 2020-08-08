@@ -24,99 +24,99 @@ import lombok.Data;
  */
 @Entity
 @Data
-@Table(name="D_INTERVIEW_RESULT")
+@Table(name = "D_INTERVIEW_RESULT")
 public class InterviewResult implements Serializable {
 
     /**
      * ID
      */
     @Id
-    @Column(name="ID")
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false, unique = true)
     private Long id;
 
     /**
      * 企業コード
      */
-    @Column(name="COMPANY_ID")
+    @Column(name = "COMPANY_ID", nullable = false)
     private Long companyID;
 
     /**
      * 従業員番号
      */
-    @Column(name="EMPLOYEE_CODE")
+    @Column(name = "EMPLOYEE_CODE", nullable = false)
     private String employeeCode;
 
     /**
      * 面談日
      */
-    @Column(name="INTERVIEW_DATETIME")
+    @Column(name = "INTERVIEW_DATETIME", nullable = false)
     private Date interviewDate;
 
     /**
      * リファイナー
      */
-    @Column(name="REFINER_USER_ID")
+    @Column(name = "REFINER_USER_ID", nullable = false)
     private String refinerUserID;
 
     /**
      * 面談時間コード
      */
-    @Column(name="INTERVIEWTIME_CODE")
+    @Column(name = "INTERVIEWTIME_CODE", nullable = false)
     private int interviewTimeCode;
 
     /**
      * 相談内容
      */
-    @Column(name="INTERVIEWER_COMMENT")
+    @Column(name = "INTERVIEWER_COMMENT", nullable = true)
     private String interviewerComment;
 
     /**
      * 情報開示コード
      */
-    @Column(name="DISCLOSE_CODE")
+    @Column(name = "DISCLOSE_CODE", nullable = false)
     private int discloseCode;
 
     /**
      * 管理者コメント
      */
-    @Column(name="ADMIN_COMMENT")
+    @Column(name = "ADMIN_COMMENT", nullable = true)
     private String adminComment;
 
     /**
      * 削除
      */
-    @Column(name="DELETED")
+    @Column(name = "DELETED", nullable = false)
     private int deleted;
 
     /**
      * 登録日
      */
-    @Column(name="REGIST_TIME")
+    @Column(name = "REGIST_TIME", nullable = false)
     private Date registTime;
 
     /**
      * 登録者
      */
-    @Column(name="REGIST_USER")
+    @Column(name = "REGIST_USER", nullable = false)
     private String registUser;
 
     /**
      * 更新日
      */
-    @Column(name="UPDATE_TIME")
+    @Column(name = "UPDATE_TIME", nullable = false)
     private Date updateTime;
 
     /**
      * 更新者
      */
-    @Column(name="UPDATE_USER")
+    @Column(name = "UPDATE_USER", nullable = false)
     private String updateUser;
 
     /**
      * 更新回数
      */
-    @Column(name="UPDATE_COUNT")
+    @Column(name = "UPDATE_COUNT", nullable = false)
     private int updateCount;
 
     /**

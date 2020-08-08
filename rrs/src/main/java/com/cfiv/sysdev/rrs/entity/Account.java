@@ -143,8 +143,8 @@ public class Account {
      * @param _companyName 企業名称
      * @return CompanyRequest
      */
-    public UserRequest toRequest(String _cDropdown, UserRequest _loginUser) {
+    public UserRequest toRequest(String _cDropdown) {
         return new UserRequest(getIdString(1), getUsername(), getPassword(),
-                getDisplayName(), getUserRole(), getCompanyIDString(4), _cDropdown, getEnabled(), _loginUser);
+                getDisplayName(), getUserRole(), getCompanyIDString(4), _cDropdown, getEnabled());
     }
 }

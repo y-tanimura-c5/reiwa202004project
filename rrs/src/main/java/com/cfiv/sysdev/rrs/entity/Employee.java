@@ -19,93 +19,93 @@ import lombok.Data;
  */
 @Entity
 @Data
-@Table(name="M_EMPLOYEE")
+@Table(name = "M_EMPLOYEE")
 public class Employee {
 
     /**
      * ID
      */
     @Id
-    @Column(name="ID")
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false, unique = true)
     private Long id;
 
     /**
      * 企業コード
      */
-    @Column(name="COMPANY_ID")
+    @Column(name = "COMPANY_ID", nullable = false, unique = true)
     private Long companyID;
 
     /**
      * 従業員番号
      */
-    @Column(name="EMPLOYEE_CODE")
+    @Column(name = "EMPLOYEE_CODE", nullable = false, unique = true)
     private String employeeCode;
 
     /**
      * 従業員名字
      */
-    @Column(name="EMPLOYEE_FNAME")
+    @Column(name = "EMPLOYEE_FNAME", nullable = false)
     private String employeeFName;
 
     /**
      * 入社年月
      */
-    @Column(name="HIRE_YM")
+    @Column(name = "HIRE_YM", nullable = false)
     private Date hireYM;
 
     /**
      * 採用種別
      */
-    @Column(name="ADOPT_CODE")
+    @Column(name = "ADOPT_CODE", nullable = false)
     private int adoptCode;
 
     /**
      * 扶養有無
      */
-    @Column(name="SUPPORT_CODE")
+    @Column(name = "SUPPORT_CODE", nullable = false)
     private int supportCode;
 
     /**
      * 就業種別
      */
-    @Column(name="EMPLOY_CODE")
+    @Column(name = "EMPLOY_CODE", nullable = false)
     private int employCode;
 
     /**
      * 削除
      */
-    @Column(name="DELETED")
+    @Column(name = "DELETED")
     private int deleted;
 
     /**
      * 登録日
      */
-    @Column(name="REGIST_TIME")
+    @Column(name = "REGIST_TIME")
     private Date registTime;
 
     /**
      * 登録者
      */
-    @Column(name="REGIST_USER")
+    @Column(name = "REGIST_USER")
     private String registUser;
 
     /**
      * 更新日
      */
-    @Column(name="UPDATE_TIME")
+    @Column(name = "UPDATE_TIME")
     private Date updateTime;
 
     /**
      * 更新者
      */
-    @Column(name="UPDATE_USER")
+    @Column(name = "UPDATE_USER")
     private String updateUser;
 
     /**
      * 更新回数
      */
-    @Column(name="UPDATE_COUNT")
+    @Column(name = "UPDATE_COUNT")
     private int updateCount;
 
     /**

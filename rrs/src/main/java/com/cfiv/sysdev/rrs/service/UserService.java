@@ -78,7 +78,7 @@ public class UserService implements UserDetailsService {
         }
 
         for (Account account : list) {
-            reqList.add(account.toRequest(companyService.getCompanyNameForDropdown(account.getCompanyID()), lReq));
+            reqList.add(account.toRequest(companyService.getCompanyNameForDropdown(account.getCompanyID())));
         }
 
         int pageSize = pageable.getPageSize();
@@ -131,7 +131,7 @@ public class UserService implements UserDetailsService {
      */
     public UserRequest getLoginAccount() {
         Account account = accountRepository.findByUsername(Utils.loginUsername());
-        return account.toRequest(companyService.getCompanyNameForDropdown(account.getCompanyID()), null);
+        return account.toRequest(companyService.getCompanyNameForDropdown(account.getCompanyID()));
     }
 
     /**

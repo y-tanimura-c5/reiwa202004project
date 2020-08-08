@@ -79,7 +79,7 @@ public class UserController {
         List<String> keys = new ArrayList<String>(companyItems.keySet());
 
         UserRequest uReq = new UserRequest("", "", "", "", Consts.USERROLECODE_REFINER, ""
-                , companyItems.get(keys.get(0)), Consts.ENABLED, lReq);
+                , companyItems.get(keys.get(0)), Consts.ENABLED);
         model.addAttribute("user_request", uReq);
         model.addAttribute("company_items", companyItems);
         model.addAttribute("loginUser", lReq);
@@ -127,7 +127,7 @@ public class UserController {
         Account account = userService.findOne(id);
         Map<String, String> companyItems = companyService.getAllCompanyNamesForDropdown(lReq);
 
-        UserRequest uReq = account.toRequest(companyService.getCompanyNameForDropdown(account.getCompanyID()), lReq);
+        UserRequest uReq = account.toRequest(companyService.getCompanyNameForDropdown(account.getCompanyID()));
         model.addAttribute("user_request", uReq);
         model.addAttribute("company_items", companyItems);
 
