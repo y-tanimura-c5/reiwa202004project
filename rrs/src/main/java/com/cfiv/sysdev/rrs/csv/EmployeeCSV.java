@@ -1,4 +1,4 @@
-package com.cfiv.sysdev.rrs.dto;
+package com.cfiv.sysdev.rrs.csv;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -58,6 +58,10 @@ public class EmployeeCSV {
 
     private String reason = "";
 
+    /**
+     * バリデーションチェック
+     * @param checkCompanyID ログインユーザの企業コード
+     */
     public void check(String checkCompanyID) {
         checkCompanyID(checkCompanyID);
         checkEmployeeCode();
@@ -67,6 +71,10 @@ public class EmployeeCSV {
         checkSupportCode();
     }
 
+    /**
+     * 企業コードバリデーションチェック
+     * @param checkCompanyID ログインユーザの企業コード
+     */
     private void checkCompanyID(String checkCompanyID) {
         // 数字のみか
         if (!companyID.matches("^[0-9]*$")) {
@@ -85,6 +93,9 @@ public class EmployeeCSV {
         }
     }
 
+    /**
+     * 従業員番号バリデーションチェック
+     */
     private void checkEmployeeCode() {
         // 50文字以内か
         if (employeeCode.length() > 50) {
@@ -100,6 +111,9 @@ public class EmployeeCSV {
         }
     }
 
+    /**
+     * 従業員名字バリデーションチェック
+     */
     private void checkEmployeeFName() {
         // 20文字以内か
         if (employeeFName.length() > 20) {
@@ -115,6 +129,9 @@ public class EmployeeCSV {
         }
     }
 
+    /**
+     * 入社年月バリデーションチェック
+     */
     private void checkHireYM() {
         // 6文字か
         if (hireYM.length() != 6) {
@@ -141,6 +158,9 @@ public class EmployeeCSV {
         }
     }
 
+    /**
+     * 採用種別バリデーションチェック
+     */
     private void checkAdoptCode() {
         // 数字のみか
         try {
@@ -156,6 +176,9 @@ public class EmployeeCSV {
         }
     }
 
+    /**
+     * 扶養有無バリデーションチェック
+     */
     private void checkSupportCode() {
         // 数字のみか
         try {

@@ -32,14 +32,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cfiv.sysdev.rrs.Consts;
 import com.cfiv.sysdev.rrs.Utils;
-import com.cfiv.sysdev.rrs.dto.EmployeeRequest;
-import com.cfiv.sysdev.rrs.dto.InterviewCSV;
-import com.cfiv.sysdev.rrs.dto.InterviewConditionRequest;
-import com.cfiv.sysdev.rrs.dto.InterviewRequest;
-import com.cfiv.sysdev.rrs.dto.InterviewSearchRequest;
-import com.cfiv.sysdev.rrs.dto.UserRequest;
+import com.cfiv.sysdev.rrs.csv.InterviewCSV;
 import com.cfiv.sysdev.rrs.entity.Company;
 import com.cfiv.sysdev.rrs.entity.InterviewAttach;
+import com.cfiv.sysdev.rrs.request.EmployeeRequest;
+import com.cfiv.sysdev.rrs.request.InterviewConditionRequest;
+import com.cfiv.sysdev.rrs.request.InterviewRequest;
+import com.cfiv.sysdev.rrs.request.InterviewSearchRequest;
+import com.cfiv.sysdev.rrs.request.UserRequest;
 import com.cfiv.sysdev.rrs.service.CompanyService;
 import com.cfiv.sysdev.rrs.service.EmployeeService;
 import com.cfiv.sysdev.rrs.service.InterviewService;
@@ -93,15 +93,18 @@ public class InterviewController {
     /**
      * 面談結果検索画面初期表示
      * @param model Model
+     * @param page ページ番号
+     * @param size 1ページあたりの表示行数
      * @return 面談結果検索画面
      */
     @RequestMapping(value = "/interview/listinit", method = RequestMethod.GET)
-    public String init(Model model, @RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
+    public String init(Model model, @RequestParam("page") Optional<Integer> page,
+            @RequestParam("size") Optional<Integer> size) {
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(Consts.PAGENATION_PAGESIZE);
         InterviewSearchRequest cond = new InterviewSearchRequest();
-        Page<InterviewRequest> reqPage = new PageImpl<InterviewRequest>(new ArrayList<InterviewRequest>()
-                , PageRequest.of(currentPage - 1, pageSize), 0);
+        Page<InterviewRequest> reqPage = new PageImpl<InterviewRequest>(new ArrayList<InterviewRequest>(),
+                PageRequest.of(currentPage - 1, pageSize), 0);
 
         UserRequest uReq = userService.getLoginAccount();
 
@@ -136,11 +139,11 @@ public class InterviewController {
 
     /**
      * 面談結果検索結果表示(ページ)
-     * @param model
-     * @param page
+     * @param model モデル
+     * @param page ページ番号
      * @return 面談結果検索画面(POST結果)
      */
-    @RequestMapping(value="/interview/pagenate", method = RequestMethod.GET)
+    @RequestMapping(value = "/interview/pagenate", method = RequestMethod.GET)
     public String pagenate(Model model, @RequestParam("page") int page) {
         InterviewSearchRequest req = (InterviewSearchRequest) session.getAttribute(SESSION_FORM_ID);
 
@@ -156,10 +159,8 @@ public class InterviewController {
      * @return 面談結果検索画面
      */
     @RequestMapping(value = "/interview/search", method = RequestMethod.POST)
-    public String search(Model model
-            , @ModelAttribute("interview_search_request") InterviewSearchRequest req
-            , @RequestParam("page") Optional<Integer> page
-            , @RequestParam("size") Optional<Integer> size) {
+    public String search(Model model, @ModelAttribute("interview_search_request") InterviewSearchRequest req,
+            @RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
 
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(Consts.PAGENATION_PAGESIZE);
@@ -170,7 +171,10 @@ public class InterviewController {
             req.setCompanyID(uReq.getCompanyID());
         }
 
-        Page<InterviewRequest> reqPage = interviewService.searchRequest(req, uReq, PageRequest.of(currentPage - 1, pageSize));
+        interviewService.saveHistory(uReq.getUsername(), req);
+
+        Page<InterviewRequest> reqPage = interviewService.searchRequest(req, uReq,
+                PageRequest.of(currentPage - 1, pageSize));
 
         session.setAttribute(SESSION_FORM_ID, req);
 
@@ -187,14 +191,14 @@ public class InterviewController {
      * 面談結果検索結果CSVダウンロード
      * @param model モデル
      * @param req 検索条件
-     * @param page ページ番号
-     * @param size 1ページ表示件数
-     * @return 面談結果検索画面
+     * @param response レスポンス
+     * @return 検索結果CSV
      */
     @RequestMapping(value = "/interview/search", params = "download", method = RequestMethod.POST)
     public ResponseEntity<byte[]> download(Model model
             , @ModelAttribute("interview_search_request") InterviewSearchRequest req
-            , HttpServletResponse response) throws IOException {
+            , HttpServletResponse response)
+            throws IOException {
         UserRequest uReq = userService.getLoginAccount();
         List<InterviewCSV> csvList = interviewService.searchCSV(req, uReq);
 
@@ -202,11 +206,11 @@ public class InterviewController {
         try {
             StatefulBeanToCsv<InterviewCSV> beanToCsv = new StatefulBeanToCsvBuilder<InterviewCSV>(writer).build();
             beanToCsv.write(csvList);
-        } catch (CsvDataTypeMismatchException e) {
-            // TODO 自動生成された catch ブロック
+        }
+        catch (CsvDataTypeMismatchException e) {
             e.printStackTrace();
-        } catch (CsvRequiredFieldEmptyException e) {
-            // TODO 自動生成された catch ブロック
+        }
+        catch (CsvRequiredFieldEmptyException e) {
             e.printStackTrace();
         }
 
@@ -216,9 +220,9 @@ public class InterviewController {
         header.setContentDispositionFormData("filename", filename);
         StringBuffer csv = writer.getBuffer();
         csv.insert(0, Utils.interviewCSVHeaderString());
+
         return new ResponseEntity<>(csv.toString().getBytes("MS932"), header, HttpStatus.OK);
     }
-
 
     /**
      * 従業員情報、過去面談結果表示
@@ -228,11 +232,15 @@ public class InterviewController {
      * @return 面談結果新規登録画面
      */
     @RequestMapping(value = "/interview/submit", params = "info", method = RequestMethod.POST)
-    public String info(Model model, @ModelAttribute("interview_request") @Valid InterviewRequest req, BindingResult result) {
+    public String info(Model model
+            , @ModelAttribute("interview_request") @Valid InterviewRequest req
+            , BindingResult result) {
+
         if (!result.hasErrors()) {
             EmployeeRequest employee = employeeService.findOneRequestFromID(req.getCompanyID(), req.getEmployeeCode());
             Company company = companyService.findOne(req.getCompanyIDLong());
-            List<InterviewRequest> past_list = interviewService.searchRequestFromKey(req.getCompanyIDLong(), req.getEmployeeCode(), Consts.PASTINTERVIEW_NUM);
+            List<InterviewRequest> past_list = interviewService.searchRequestFromKey(req.getCompanyIDLong(),
+                    req.getEmployeeCode(), Consts.PASTINTERVIEW_NUM);
 
             req.setCompanyName(company.getName());
             req.setEmployee(employee);
@@ -249,7 +257,6 @@ public class InterviewController {
 
         return "interview/add";
     }
-
 
     /**
      * 面談結果新規登録画面表示
@@ -275,13 +282,17 @@ public class InterviewController {
 
     /**
      * 面談結果新規登録
+     * @param attributes リダイレクト用属性
      * @param model モデル
      * @param req 面談結果
      * @param result バリデーションチェック結果
      * @return トップ画面(更新成功)／面談結果新規登録画面(更新失敗)
      */
     @RequestMapping(value = "/interview/submit", params = "create", method = RequestMethod.POST)
-    public String create(RedirectAttributes attributes, Model model, @ModelAttribute("interview_request") @Valid InterviewRequest req, BindingResult result) {
+    public String create(RedirectAttributes attributes
+            , Model model
+            , @ModelAttribute("interview_request") @Valid InterviewRequest req
+            , BindingResult result) {
         UserRequest uReq = userService.getLoginAccount();
 
         if (!result.hasErrors()) {
@@ -293,7 +304,8 @@ public class InterviewController {
         else {
             EmployeeRequest employee = employeeService.findOneRequestFromID(req.getCompanyID(), req.getEmployeeCode());
             Company company = companyService.findOne(req.getCompanyIDLong());
-            List<InterviewRequest> past_list = interviewService.searchRequestFromKey(req.getCompanyIDLong(), req.getEmployeeCode(), Consts.PASTINTERVIEW_NUM);
+            List<InterviewRequest> past_list = interviewService.searchRequestFromKey(req.getCompanyIDLong(),
+                    req.getEmployeeCode(), Consts.PASTINTERVIEW_NUM);
 
             req.setCompanyName(company.getName());
             req.setEmployee(employee);
@@ -314,7 +326,9 @@ public class InterviewController {
      * @return プレビュー画面
      */
     @RequestMapping(value = "/interview/{id}/{filename}", method = RequestMethod.GET)
-    public String preview(@PathVariable Long id, @PathVariable String filename, Model model) {
+    public String preview(@PathVariable Long id
+            , @PathVariable String filename
+            , Model model) {
         UserRequest uReq = userService.getLoginAccount();
         InterviewAttach attach = interviewService.findOneAttachFromKey(id, filename);
 
@@ -354,7 +368,8 @@ public class InterviewController {
      * @return 面談結果編集画面
      */
     @RequestMapping(value = "/interview/{id}/edit", method = RequestMethod.GET)
-    public String edit(@PathVariable Long id, Model model) {
+    public String edit(@PathVariable Long id
+            , Model model) {
         UserRequest uReq = userService.getLoginAccount();
         model.addAttribute("interview_request", interviewService.findOneRequest(id));
         model.addAttribute("loginUser", uReq);
@@ -364,6 +379,8 @@ public class InterviewController {
 
     /**
      * 面談結果更新
+     * @param attributes リダイレクト用属性
+     * @param id 面談結果ID
      * @param model モデル
      * @param req 面談結果
      * @param result バリデーションチェック結果
@@ -394,6 +411,8 @@ public class InterviewController {
 
     /**
      * 面談結果削除
+     * @param attributes リダイレクト用属性
+     * @param id 面談結果ID
      * @param model モデル
      * @param req 面談結果
      * @param result バリデーションチェック結果
@@ -438,7 +457,10 @@ public class InterviewController {
 
     /**
      * 初期表示設定更新
-     * @param model Model
+     * @param attributes リダイレクト用属性
+     * @param model モデル
+     * @param req 面談検索条件
+     * @param result バリデーションチェック結果
      * @return ホーム画面
      */
     @RequestMapping(value = "/interview/condconfirm", method = RequestMethod.POST)

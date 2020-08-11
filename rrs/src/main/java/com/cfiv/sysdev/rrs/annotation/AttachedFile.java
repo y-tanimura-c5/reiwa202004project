@@ -11,6 +11,9 @@ import javax.validation.Payload;
 
 import com.cfiv.sysdev.rrs.validator.AttachFileValidator;
 
+/**
+ * 添付ファイルバリデーションチェック用アノテーション
+ */
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = AttachFileValidator.class)

@@ -12,6 +12,9 @@ import javax.validation.Payload;
 
 import com.cfiv.sysdev.rrs.validator.EmployeeCodeUsedValidator;
 
+/**
+ * 未登録従業員番号バリデーションチェック用アノテーション
+ */
 @Documented
 @Constraint(validatedBy = {EmployeeCodeUsedValidator.class})
 @Target({TYPE})

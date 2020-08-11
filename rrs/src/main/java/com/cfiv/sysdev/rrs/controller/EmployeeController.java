@@ -23,10 +23,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cfiv.sysdev.rrs.Consts;
-import com.cfiv.sysdev.rrs.dto.EmployeeCSV;
-import com.cfiv.sysdev.rrs.dto.EmployeeFileRequest;
-import com.cfiv.sysdev.rrs.dto.EmployeeRequest;
-import com.cfiv.sysdev.rrs.dto.UserRequest;
+import com.cfiv.sysdev.rrs.csv.EmployeeCSV;
+import com.cfiv.sysdev.rrs.request.EmployeeFileRequest;
+import com.cfiv.sysdev.rrs.request.EmployeeRequest;
+import com.cfiv.sysdev.rrs.request.UserRequest;
 import com.cfiv.sysdev.rrs.service.EmployeeService;
 import com.cfiv.sysdev.rrs.service.UserService;
 import com.opencsv.bean.CsvToBean;
@@ -64,10 +64,14 @@ public class EmployeeController {
     /**
      * 従業員情報検索画面初期表示
      * @param model Model
+     * @param page ページ番号
+     * @param size 1ページあたりの表示行数
      * @return 従業員情報検索画面
      */
     @RequestMapping(value = "/employee/list", method = RequestMethod.GET)
-    public String list(Model model, @RequestParam("page") Optional<Integer> page, @RequestParam("size") Optional<Integer> size) {
+    public String list(Model model
+            , @RequestParam("page") Optional<Integer> page
+            , @RequestParam("size") Optional<Integer> size) {
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(Consts.PAGENATION_PAGESIZE);
         EmployeeRequest cond = new EmployeeRequest();
@@ -90,8 +94,8 @@ public class EmployeeController {
 
     /**
      * 従業員情報検索結果表示(ページ)
-     * @param model
-     * @param page
+     * @param model モデル
+     * @param page ページ番号
      * @return 従業員情報検索画面(POST結果)
      */
     @RequestMapping(value="/employee/pagenate", method = RequestMethod.GET)
@@ -104,6 +108,9 @@ public class EmployeeController {
     /**
      * 従業員情報検索画面検索結果表示
      * @param model Model
+     * @param req リクエストデータ
+     * @param page ページ番号
+     * @param size 1ページあたりの表示行数
      * @return 従業員情報検索画面
      */
     @RequestMapping(value = "/employee/search", method = RequestMethod.POST)
@@ -151,11 +158,15 @@ public class EmployeeController {
 
     /**
      * 従業員一括登録情報取り込み
+     * @param employeeFileRequest リクエストデータ
+     * @param result バリデーションチェック結果
      * @param model Model
      * @return 従業員一括登録画面
      */
     @RequestMapping(value = "/employee/upload", method = RequestMethod.POST)
-    public String upload(@Valid EmployeeFileRequest employeeFileRequest, BindingResult result, Model model) {
+    public String upload(@Valid EmployeeFileRequest employeeFileRequest
+            , BindingResult result
+            , Model model) {
         UserRequest uReq = userService.getLoginAccount();
 
         if (result.hasErrors()) {
@@ -180,16 +191,32 @@ public class EmployeeController {
         return "employee/bulkregist";
     }
 
+    /**
+     * 従業員情報編集画面表示
+     * @param id 従業員情報ID
+     * @param model モデル
+     * @return 従業員情報編集画面
+     */
     @RequestMapping(value = "/employee/{id}/edit", method = RequestMethod.GET)
-    public String edit(@PathVariable Long id, Model model) {
+    public String edit(@PathVariable Long id
+            , Model model) {
         model.addAttribute("employee_request", employeeService.findOneRequest(id));
         model.addAttribute("loginUser", userService.getLoginAccount());
 
         return "employee/edit";
     }
 
+    /**
+     * 従業員情報更新
+     * @param attributes リダイレクト用属性
+     * @param id 従業員情報ID
+     * @param req リクエストデータ
+     * @return 従業員情報一覧画面
+     */
     @RequestMapping(value = "/employee/{id}", method = RequestMethod.POST)
-    public String update(RedirectAttributes attributes, @PathVariable Long id, @ModelAttribute("employee_request") EmployeeRequest req) {
+    public String update(RedirectAttributes attributes
+            , @PathVariable Long id
+            , @ModelAttribute("employee_request") EmployeeRequest req) {
         employeeService.save(id, req);
         attributes.addFlashAttribute("loginUser", userService.getLoginAccount());
 

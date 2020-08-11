@@ -1,4 +1,4 @@
-package com.cfiv.sysdev.rrs.dto;
+package com.cfiv.sysdev.rrs.request;
 
 import java.io.Serializable;
 

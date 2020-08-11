@@ -11,6 +11,9 @@ import javax.validation.Payload;
 
 import com.cfiv.sysdev.rrs.validator.FileRequiredValidator;
 
+/**
+ * 従業員情報一括登録CSVファイルバリデーションチェック用アノテーション
+ */
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = FileRequiredValidator.class)

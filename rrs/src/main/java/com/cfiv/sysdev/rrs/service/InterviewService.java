@@ -25,21 +25,25 @@ import org.springframework.web.multipart.MultipartFile;
 import com.cfiv.sysdev.rrs.Consts;
 import com.cfiv.sysdev.rrs.LogUtils;
 import com.cfiv.sysdev.rrs.Utils;
-import com.cfiv.sysdev.rrs.dto.EmployeeRequest;
-import com.cfiv.sysdev.rrs.dto.InterviewCSV;
-import com.cfiv.sysdev.rrs.dto.InterviewConditionRequest;
-import com.cfiv.sysdev.rrs.dto.InterviewRequest;
-import com.cfiv.sysdev.rrs.dto.InterviewSearchRequest;
-import com.cfiv.sysdev.rrs.dto.UserRequest;
+import com.cfiv.sysdev.rrs.csv.InterviewCSV;
 import com.cfiv.sysdev.rrs.entity.Employee;
+import com.cfiv.sysdev.rrs.entity.HistoryInterviewCondition;
+import com.cfiv.sysdev.rrs.entity.HistoryInterviewConditionDetail;
 import com.cfiv.sysdev.rrs.entity.InterviewAttach;
 import com.cfiv.sysdev.rrs.entity.InterviewCondition;
 import com.cfiv.sysdev.rrs.entity.InterviewContent;
 import com.cfiv.sysdev.rrs.entity.InterviewResult;
+import com.cfiv.sysdev.rrs.repository.HistoryInterviewConditionDetailRepository;
+import com.cfiv.sysdev.rrs.repository.HistoryInterviewConditionRepository;
 import com.cfiv.sysdev.rrs.repository.InterviewAttachRepository;
 import com.cfiv.sysdev.rrs.repository.InterviewConditionRepository;
 import com.cfiv.sysdev.rrs.repository.InterviewContentRepository;
 import com.cfiv.sysdev.rrs.repository.InterviewResultRepository;
+import com.cfiv.sysdev.rrs.request.EmployeeRequest;
+import com.cfiv.sysdev.rrs.request.InterviewConditionRequest;
+import com.cfiv.sysdev.rrs.request.InterviewRequest;
+import com.cfiv.sysdev.rrs.request.InterviewSearchRequest;
+import com.cfiv.sysdev.rrs.request.UserRequest;
 
 /**
  * 面談結果 Service
@@ -98,6 +102,18 @@ public class InterviewService {
      */
     @Autowired
     private InterviewConditionRepository interviewConditionRepository;
+
+    /**
+     * 面談結果検索条件履歴 Repository
+     */
+    @Autowired
+    private HistoryInterviewConditionRepository historyInterviewConditionRepository;
+
+    /**
+     * 面談結果検索条件履歴詳細 Repository
+     */
+    @Autowired
+    private HistoryInterviewConditionDetailRepository historyInterviewConditionDetailRepository;
 
     /**
      * IDでの面談結果検索
@@ -1210,5 +1226,105 @@ public class InterviewService {
         }
 
         interviewConditionRepository.saveAll(list);
+    }
+
+    /**
+     * 面談結果検索条件履歴保存
+     * @param username ユーザーID
+     * @param req 面談結果検索条件
+     */
+    @Transactional
+    public void saveHistory(String username, InterviewSearchRequest req) {
+        HistoryInterviewCondition history = historyInterviewConditionRepository.save(new HistoryInterviewCondition(username));
+
+        List<HistoryInterviewConditionDetail> list = new ArrayList<>();
+
+        list.add(new HistoryInterviewConditionDetail(username, history.getId(),
+                Consts.CONDITIONKIND_INTERVIEWDATECODE, req.getInterviewDateCode(),
+                Consts.INTERVIEWDATE_NAMES[req.getInterviewDateCode()]));
+
+        if (req.getInterviewDateCode() == Consts.INTERVIEWDATECODE_REGION) {
+            list.add(new HistoryInterviewConditionDetail(username, history.getId(),
+                    Consts.CONDITIONKIND_INTERVIEWDATEREGION, 0, req.getInterviewDateStart()));
+            list.add(new HistoryInterviewConditionDetail(username, history.getId(),
+                    Consts.CONDITIONKIND_INTERVIEWDATEREGION, 0, req.getInterviewDateEnd()));
+        }
+
+        if (req.getInterviewDateCode() == Consts.INTERVIEWDATECODE_LAST) {
+            list.add(new HistoryInterviewConditionDetail(username, history.getId(),
+                    Consts.CONDITIONKIND_INTERVIEWDATELAST, req.getInterviewDateLastCode(),
+                    Consts.INTERVIEWDATELAST_NAMES[req.getInterviewDateLastCode()]));
+        }
+
+        for (int i : req.getInterviewTimeCheckedList()) {
+            list.add(new HistoryInterviewConditionDetail(username, history.getId(),
+                    Consts.CONDITIONKIND_INTERVIEWTIME, i, Consts.INTERVIEWTIME_NAMES[i]));
+        }
+        for (int i : req.getDiscloseCheckedList()) {
+            list.add(new HistoryInterviewConditionDetail(username, history.getId(),
+                    Consts.CONDITIONKIND_DISCLOSE, i, Consts.DISCLOSE_NAMES[i]));
+        }
+
+        for (int i = 0; i < req.getContentJobCheckItems().size(); i++) {
+            if (!req.containsContentJobChecked(i) && !req.getContentJobMemos().isEmpty()
+                    && !req.getContentJobMemos().get(i).isEmpty()) {
+                req.getContentJobCheckedList().add(i);
+            }
+        }
+        for (int i = 0; i < req.getContentJobCheckedList().size(); i++) {
+            list.add(new HistoryInterviewConditionDetail(username, history.getId(),
+                    Consts.CONDITIONKIND_CONTENTJOB, req.getContentJobCheckedList().get(i),
+                    req.getContentJobMemos().get(req.getContentJobCheckedList().get(i))));
+        }
+        for (int i = 0; i < Utils.trimMemos(req.getContentPrivateMemos()).size(); i++) {
+            list.add(new HistoryInterviewConditionDetail(username, history.getId(),
+                    Consts.CONDITIONKIND_CONTENTPRIVATE, i, req.getContentPrivateMemos().get(i)));
+        }
+
+        for (int i = 0; i < Utils.trimMemos(req.getInterviewerCommentMemos()).size(); i++) {
+            list.add(new HistoryInterviewConditionDetail(username, history.getId(),
+                    Consts.CONDITIONKIND_INTERVIEWERCOMMENT, i, req.getInterviewerCommentMemos().get(i)));
+        }
+        for (int i = 0; i < Utils.trimMemos(req.getAdminCommentMemos()).size(); i++) {
+            list.add(new HistoryInterviewConditionDetail(username, history.getId(),
+                    Consts.CONDITIONKIND_ADMINCOMMENT, i, req.getAdminCommentMemos().get(i)));
+        }
+
+        if (req.getHireLengthStartCode() != Consts.HIRELENGTH_NONE) {
+            list.add(new HistoryInterviewConditionDetail(username, history.getId(),
+                    Consts.CONDITIONKIND_HIREREGION, req.getHireLengthStartCode(),
+                    Consts.HIRELENGTH_NAMES[req.getHireLengthStartCode()]));
+        }
+
+        if (req.getHireLengthEndCode() != Consts.HIRELENGTH_NONE) {
+            list.add(new HistoryInterviewConditionDetail(username, history.getId(),
+                    Consts.CONDITIONKIND_HIREREGION, req.getHireLengthEndCode(),
+            Consts.HIRELENGTH_NAMES[req.getHireLengthEndCode()]));
+        }
+
+        for (int i : req.getAdoptCheckedList()) {
+            list.add(new HistoryInterviewConditionDetail(username, history.getId(),
+                    Consts.CONDITIONKIND_ADOPT, i, Consts.ADOPT_NAMES[i]));
+        }
+        for (int i : req.getSupportCheckedList()) {
+            list.add(new HistoryInterviewConditionDetail(username, history.getId(),
+                    Consts.CONDITIONKIND_SUPPORT, i, Consts.SUPPORT_NAMES[i]));
+        }
+        for (int i : req.getEmployCheckedList()) {
+            list.add(new HistoryInterviewConditionDetail(username, history.getId(),
+                    Consts.CONDITIONKIND_EMPLOY, i, Consts.EMPLOY_NAMES[i]));
+        }
+
+        if (!req.getCompanyID().isEmpty()) {
+            list.add(new HistoryInterviewConditionDetail(username, history.getId(),
+                    Consts.CONDITIONKIND_COMPANYID, 0, req.getCompanyID()));
+        }
+
+        if (!req.getEmployeeCode().isEmpty()) {
+            list.add(new HistoryInterviewConditionDetail(username, history.getId(),
+                    Consts.CONDITIONKIND_COMPANYID, 0, req.getEmployeeCode()));
+        }
+
+        historyInterviewConditionDetailRepository.saveAll(list);
     }
 }

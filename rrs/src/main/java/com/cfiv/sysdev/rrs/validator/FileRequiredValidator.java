@@ -13,8 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cfiv.sysdev.rrs.Consts;
 import com.cfiv.sysdev.rrs.annotation.FileRequired;
-import com.cfiv.sysdev.rrs.dto.EmployeeCSV;
-import com.cfiv.sysdev.rrs.dto.UserRequest;
+import com.cfiv.sysdev.rrs.csv.EmployeeCSV;
+import com.cfiv.sysdev.rrs.request.UserRequest;
 import com.cfiv.sysdev.rrs.service.UserService;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;

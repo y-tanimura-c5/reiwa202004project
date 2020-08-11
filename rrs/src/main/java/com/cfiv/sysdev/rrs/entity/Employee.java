@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.cfiv.sysdev.rrs.Utils;
-import com.cfiv.sysdev.rrs.dto.EmployeeRequest;
+import com.cfiv.sysdev.rrs.request.EmployeeRequest;
 
 import lombok.Data;
 

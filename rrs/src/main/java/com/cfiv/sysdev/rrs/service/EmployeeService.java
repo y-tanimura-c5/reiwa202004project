@@ -20,10 +20,10 @@ import org.springframework.stereotype.Service;
 
 import com.cfiv.sysdev.rrs.Consts;
 import com.cfiv.sysdev.rrs.Utils;
-import com.cfiv.sysdev.rrs.dto.EmployeeCSV;
-import com.cfiv.sysdev.rrs.dto.EmployeeRequest;
+import com.cfiv.sysdev.rrs.csv.EmployeeCSV;
 import com.cfiv.sysdev.rrs.entity.Employee;
 import com.cfiv.sysdev.rrs.repository.EmployeeRepository;
+import com.cfiv.sysdev.rrs.request.EmployeeRequest;
 
 /**
  * 従業員情報 Service

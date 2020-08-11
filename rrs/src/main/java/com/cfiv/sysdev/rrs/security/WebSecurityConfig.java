@@ -18,11 +18,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    /**
+     * パスワード認証
+     * @param auth 認証管理
+     * @throws Exception
+     */
     @Autowired
     void configureAuthenticationManager(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
+    /**
+     * 認証設定
+     * @param web 認証対象
+     */
     @Override
     protected void configure(HttpSecurity web) throws Exception {
         web.formLogin().loginPage("/login").successForwardUrl("/").failureUrl("/login-error").permitAll();
@@ -30,6 +39,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         web.logout().logoutSuccessUrl("/login").permitAll();
     }
 
+    /**
+     * パスワード暗号アルゴリズム
+     * @return
+     */
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

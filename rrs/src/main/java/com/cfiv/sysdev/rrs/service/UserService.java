@@ -22,9 +22,9 @@ import org.thymeleaf.util.StringUtils;
 
 import com.cfiv.sysdev.rrs.Consts;
 import com.cfiv.sysdev.rrs.Utils;
-import com.cfiv.sysdev.rrs.dto.UserRequest;
 import com.cfiv.sysdev.rrs.entity.Account;
 import com.cfiv.sysdev.rrs.repository.AccountRepository;
+import com.cfiv.sysdev.rrs.request.UserRequest;
 import com.cfiv.sysdev.rrs.security.UserAccount;
 
 /**

@@ -10,17 +10,37 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.cfiv.sysdev.rrs.request.CompanyRequest;
+import com.cfiv.sysdev.rrs.Consts;
 
 import lombok.Data;
 
 /**
- * 企業情報 Entity
+ * 面談結果検索条件履歴詳細 Entity
  */
 @Entity
 @Data
-@Table(name = "M_COMPANY")
-public class Company implements Serializable {
+@Table(name = "H_INTERVIEW_CONDITION_DETAIL")
+public class HistoryInterviewConditionDetail implements Serializable {
+    public HistoryInterviewConditionDetail() {
+        super();
+    }
+
+    public HistoryInterviewConditionDetail(String u, Long h, int k, int c, String s) {
+        this();
+
+        Date now = new Date();
+
+        setHistoryID(h);
+        setConditionKind(k);
+        setConditionCode(c);
+        setConditionString(s);
+        setDeleted(Consts.EXIST);
+        setRegistUser(u);
+        setRegistTime(now);
+        setUpdateUser(u);
+        setUpdateTime(now);
+        setUpdateCount(0);
+    }
 
     /**
      * ID
@@ -31,16 +51,28 @@ public class Company implements Serializable {
     private Long id;
 
     /**
-     * 名前
+     * 検索条件履歴ID
      */
-    @Column(name = "NAME", nullable = true)
-    private String name;
+    @Column(name = "HISTORY_ID", nullable = false)
+    private Long historyID;
 
     /**
-     * 有効／無効
+     * 検索条件種別
      */
-    @Column(name = "ENABLED", nullable = false)
-    private int enabled;
+    @Column(name = "CONDITION_KIND", nullable = false)
+    private int conditionKind;
+
+    /**
+     * 検索条件コード
+     */
+    @Column(name = "CONDITION_CODE", nullable = true)
+    private int conditionCode;
+
+    /**
+     * 検索条件文字列
+     */
+    @Column(name = "CONDITION_STRING", nullable = true)
+    private String conditionString;
 
     /**
      * 削除
@@ -78,30 +110,4 @@ public class Company implements Serializable {
     @Column(name = "UPDATE_COUNT", nullable = false)
     private int updateCount;
 
-    /**
-     * 文字列形式のID
-     * @param nDigits 0埋め桁数
-     * @return 指定桁で0埋め後のID文字列
-     */
-    public String getIdString(int nDigits) {
-        return String.format("%0" + nDigits + "d", id);
-    }
-
-    /**
-     * Company→CompanyRequest変換
-     * @param lastlogin 最終ログイン日時
-     * @param lastInterview 最終面談日時
-     * @return CompanyRequest
-     */
-    public CompanyRequest toRequest(Date lastlogin, Date lastInterview) {
-        return new CompanyRequest(getIdString(4), getName(), getEnabled(), lastlogin, lastInterview);
-    }
-
-    /**
-     * Company→CompanyRequest変換
-     * @return CompanyRequest
-     */
-    public CompanyRequest toRequest() {
-        return new CompanyRequest(getIdString(4), getName(), getEnabled(), null, null);
-    }
 }

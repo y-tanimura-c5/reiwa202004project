@@ -19,10 +19,10 @@ import org.springframework.stereotype.Service;
 
 import com.cfiv.sysdev.rrs.Consts;
 import com.cfiv.sysdev.rrs.Utils;
-import com.cfiv.sysdev.rrs.dto.CompanyRequest;
-import com.cfiv.sysdev.rrs.dto.UserRequest;
 import com.cfiv.sysdev.rrs.entity.Company;
 import com.cfiv.sysdev.rrs.repository.CompanyRepository;
+import com.cfiv.sysdev.rrs.request.CompanyRequest;
+import com.cfiv.sysdev.rrs.request.UserRequest;
 
 /**
  * 企業情報 Service

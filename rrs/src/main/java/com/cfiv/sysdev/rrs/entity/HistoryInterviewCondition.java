@@ -10,17 +10,34 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.cfiv.sysdev.rrs.request.CompanyRequest;
+import com.cfiv.sysdev.rrs.Consts;
 
 import lombok.Data;
 
 /**
- * 企業情報 Entity
+ * 面談結果検索条件履歴 Entity
  */
 @Entity
 @Data
-@Table(name = "M_COMPANY")
-public class Company implements Serializable {
+@Table(name = "H_INTERVIEW_CONDITION")
+public class HistoryInterviewCondition implements Serializable {
+    public HistoryInterviewCondition() {
+        super();
+    }
+
+    public HistoryInterviewCondition(String u) {
+        this();
+
+        Date now = new Date();
+
+        setUsername(u);
+        setDeleted(Consts.EXIST);
+        setRegistUser(u);
+        setRegistTime(now);
+        setUpdateUser(u);
+        setUpdateTime(now);
+        setUpdateCount(0);
+    }
 
     /**
      * ID
@@ -31,16 +48,10 @@ public class Company implements Serializable {
     private Long id;
 
     /**
-     * 名前
+     * ユーザー名
      */
-    @Column(name = "NAME", nullable = true)
-    private String name;
-
-    /**
-     * 有効／無効
-     */
-    @Column(name = "ENABLED", nullable = false)
-    private int enabled;
+    @Column(name = "USERNAME", nullable = false)
+    private String username;
 
     /**
      * 削除
@@ -77,31 +88,4 @@ public class Company implements Serializable {
      */
     @Column(name = "UPDATE_COUNT", nullable = false)
     private int updateCount;
-
-    /**
-     * 文字列形式のID
-     * @param nDigits 0埋め桁数
-     * @return 指定桁で0埋め後のID文字列
-     */
-    public String getIdString(int nDigits) {
-        return String.format("%0" + nDigits + "d", id);
-    }
-
-    /**
-     * Company→CompanyRequest変換
-     * @param lastlogin 最終ログイン日時
-     * @param lastInterview 最終面談日時
-     * @return CompanyRequest
-     */
-    public CompanyRequest toRequest(Date lastlogin, Date lastInterview) {
-        return new CompanyRequest(getIdString(4), getName(), getEnabled(), lastlogin, lastInterview);
-    }
-
-    /**
-     * Company→CompanyRequest変換
-     * @return CompanyRequest
-     */
-    public CompanyRequest toRequest() {
-        return new CompanyRequest(getIdString(4), getName(), getEnabled(), null, null);
-    }
 }

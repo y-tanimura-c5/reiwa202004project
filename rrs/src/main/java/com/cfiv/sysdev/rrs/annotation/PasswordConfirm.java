@@ -12,6 +12,9 @@ import javax.validation.Payload;
 
 import com.cfiv.sysdev.rrs.validator.PasswordConfirmValidator;
 
+/**
+ * 入力パスワード一致バリデーションチェック用アノテーション
+ */
 @Documented
 @Constraint(validatedBy = {PasswordConfirmValidator.class})
 @Target({TYPE})

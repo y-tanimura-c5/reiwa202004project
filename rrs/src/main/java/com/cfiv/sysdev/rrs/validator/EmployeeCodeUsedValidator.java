@@ -8,7 +8,7 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cfiv.sysdev.rrs.annotation.EmployeeCodeUsed;
-import com.cfiv.sysdev.rrs.dto.EmployeeRequest;
+import com.cfiv.sysdev.rrs.request.EmployeeRequest;
 import com.cfiv.sysdev.rrs.service.EmployeeService;
 
 public class EmployeeCodeUsedValidator implements ConstraintValidator<EmployeeCodeUsed, Object> {

@@ -11,6 +11,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class LoginController {
 
+    /**
+     * ログイン成功
+     * @param model Model
+     * @return ログイン画面
+     */
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String index(Model model) {
         model.addAttribute("iserror", false);
@@ -18,6 +23,11 @@ public class LoginController {
         return "login";
     }
 
+    /**
+     * ログイン失敗
+     * @param model Model
+     * @return ログイン画面
+     */
     @RequestMapping(value = "/login-error", method = RequestMethod.GET)
     public String loginError(Model model) {
         model.addAttribute("iserror", true);

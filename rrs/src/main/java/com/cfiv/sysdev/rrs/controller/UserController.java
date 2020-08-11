@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cfiv.sysdev.rrs.Consts;
-import com.cfiv.sysdev.rrs.dto.UserRequest;
 import com.cfiv.sysdev.rrs.entity.Account;
+import com.cfiv.sysdev.rrs.request.UserRequest;
 import com.cfiv.sysdev.rrs.service.CompanyService;
 import com.cfiv.sysdev.rrs.service.UserService;
 
@@ -49,6 +49,8 @@ public class UserController {
     /**
      * ユーザー情報一覧画面
      * @param model Model
+     * @param page ページ番号
+     * @param size 1ページあたりの表示行数
      * @return ユーザー情報一覧画面
      */
     @RequestMapping(value = "/user/list", method = RequestMethod.GET)
@@ -89,9 +91,10 @@ public class UserController {
 
     /**
      * ユーザー情報新規登録
+     * @param attributes リダイレクト用属性
      * @param req リクエストデータ
      * @param result バリデーションチェック結果
-     * @param model Model
+     * @param model モデル
      * @return ユーザー情報一覧画面(登録完了時)／新規登録画面(エラー発生時)
      */
     @RequestMapping(value = "/user/create", method = RequestMethod.POST)
@@ -117,12 +120,13 @@ public class UserController {
 
     /**
      * ユーザー情報更新画面
-     * @param id ID
+     * @param id ユーザー情報ID
      * @param model Model
      * @return ユーザー情報更新画面
      */
     @RequestMapping(value = "/user/{id}/edit", method = RequestMethod.GET)
-    public String edit(@PathVariable Long id, ModelMap model) {
+    public String edit(@PathVariable Long id
+            , ModelMap model) {
         UserRequest lReq = userService.getLoginAccount();
         Account account = userService.findOne(id);
         Map<String, String> companyItems = companyService.getAllCompanyNamesForDropdown(lReq);
@@ -143,7 +147,6 @@ public class UserController {
 
     /**
      * ログインユーザー情報更新画面
-     * @param id ID
      * @param model Model
      * @return ユーザー情報更新画面
      */
@@ -167,11 +170,11 @@ public class UserController {
 
     /**
      * ユーザー情報更新
-     * @param attributes リダイレクト先に渡す属性値
-     * @param id ID
+     * @param attributes リダイレクト用属性
+     * @param id ユーザー情報ID
      * @param req リクエストデータ
      * @param result バリデーションチェック結果
-     * @param model Model
+     * @param model モデル
      * @return ユーザー情報一覧画面(登録完了時)／新規登録画面(エラー発生時)
      */
     @RequestMapping(value = "/user/{id}", method = RequestMethod.POST)
@@ -197,7 +200,6 @@ public class UserController {
                     error = false;
                 }
                 else {
-//                    LogUtils.info("err.getField() = " + err.getField() + ", err.getCode() = " + err.getCode());
                     error = true;
                     break;
                 }

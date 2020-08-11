@@ -43,10 +43,14 @@ public class Consts {
     public static final int CONDITIONKIND_ADOPT = 11;
     public static final int CONDITIONKIND_SUPPORT = 12;
     public static final int CONDITIONKIND_EMPLOY = 13;
+    public static final int CONDITIONKIND_COMPANYID = 14;
+    public static final int CONDITIONKIND_EMPLOYEECODE = 15;
 
     public static final int DISCLOSECODE_OK = 0;
     public static final int DISCLOSECODE_PARTIALNG = 1;
     public static final int DISCLOSECODE_ALLNG = 2;
+
+    public static final int HIRELENGTH_NONE = 0;
 
     public static final Long COMPANYID_ADMIN = 0L;
 
@@ -192,5 +196,10 @@ public class Consts {
             "プライベート1メモ",
             "プライベート2メモ",
             "プライベート3メモ"
+            };
+
+    public static final String[] INTERVIEWDATE_NAMES = {
+            "最終面談日",
+            "範囲指定"
             };
 }

@@ -1,4 +1,4 @@
-package com.cfiv.sysdev.rrs.dto;
+package com.cfiv.sysdev.rrs.csv;
 
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvBindByPosition;

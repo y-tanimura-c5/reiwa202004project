@@ -12,6 +12,9 @@ import javax.validation.Payload;
 
 import com.cfiv.sysdev.rrs.validator.UsernameUnusedValidator;
 
+/**
+ * 登録済ユーザーIDバリデーションチェック用アノテーション
+ */
 @Documented
 @Constraint(validatedBy = {UsernameUnusedValidator.class})
 @Target({FIELD})

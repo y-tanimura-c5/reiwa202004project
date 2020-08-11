@@ -1,4 +1,4 @@
-package com.cfiv.sysdev.rrs.dto;
+package com.cfiv.sysdev.rrs.request;
 
 import java.io.Serializable;
 import java.text.DateFormat;
@@ -195,14 +195,30 @@ public class InterviewConditionRequest implements Serializable {
      */
     private List<Integer> employCheckedList;
 
+    /**
+     * 面談内容選択コードチェック(会社関連)
+     * @param c チェック対象コード
+     * @return true＝含まれる／false＝含まれない
+     */
     public boolean containsContentJobChecked(int c) {
         return containsContentChecked(contentJobCheckedList, c);
     }
 
+    /**
+     * 面談内容選択コードチェック(プライベート)
+     * @param c チェック対象コード
+     * @return true＝含まれる／false＝含まれない
+     */
     public boolean containsContentPrivateChecked(int c) {
         return containsContentChecked(contentPrivateCheckedList, c);
     }
 
+    /**
+     * 選択コードチェック
+     * @param list 選択済コードリスト
+     * @param c チェック対象コード
+     * @return true＝含まれる／false＝含まれない
+     */
     private boolean containsContentChecked(List<Integer> list, int c) {
         for (int value : list) {
             if (value == c) {
@@ -226,6 +242,10 @@ public class InterviewConditionRequest implements Serializable {
         }
     }
 
+    /**
+     * 面談内容チェックボックス(会社関連)表示文字リスト
+     * @return 表示文字リスト
+     */
     public List<String> getContentJobNames() {
         List<String> names = new ArrayList<String>();
 
@@ -241,14 +261,27 @@ public class InterviewConditionRequest implements Serializable {
         return names;
     }
 
+    /**
+     * 入社年月範囲開始値ドロップダウンメニューコード
+     * @return ドロップダウンメニューコード
+     */
     public Date getHireYMDateFromLengthStartCode() {
         return getHireYMDateFromCode(hireLengthStartCode);
     }
 
+    /**
+     * 入社年月範囲終了値ドロップダウンメニューコード
+     * @return ドロップダウンメニューコード
+     */
     public Date getHireYMDateFromLengthEndCode() {
         return getHireYMDateFromCode(hireLengthEndCode);
     }
 
+    /**
+     * 入社年月(Date形式)
+     * @param code ドロップダウンメニューコード
+     * @return
+     */
     public Date getHireYMDateFromCode(int code) {
         Date result = null;
         Calendar calendar = Calendar.getInstance();
@@ -281,14 +314,26 @@ public class InterviewConditionRequest implements Serializable {
         return result;
     }
 
+    /**
+     * 面談日範囲開始値文字列
+     * @return 日付文字列(YYYY-MM-DD)
+     */
     public String getInterviewDateStart() {
         return Utils.getStringDashFromDate(getInterviewDateStartDate());
     }
 
+    /**
+     * 面談日範囲終了値文字列
+     * @return 日付文字列(YYYY-MM-DD)
+     */
     public String getInterviewDateEnd() {
         return Utils.getStringDashFromDate(getInterviewDateEndDate());
     }
 
+    /**
+     * 面談日範囲開始値
+     * @return 日付(Date形式)
+     */
     public Date getInterviewDateStartDate() {
         if (interviewDateMin < interviewDateMax) {
             return getInterviewDateBeforeDay(interviewDateMax);
@@ -298,6 +343,10 @@ public class InterviewConditionRequest implements Serializable {
         }
     }
 
+    /**
+     * 面談日範囲終了値
+     * @return 日付(Date形式)
+     */
     public Date getInterviewDateEndDate() {
         if (interviewDateMin < interviewDateMax) {
             return getInterviewDateBeforeDay(interviewDateMin);
@@ -307,6 +356,11 @@ public class InterviewConditionRequest implements Serializable {
         }
     }
 
+    /**
+     * 現在からの指定日付前日付
+     * @param before 指定日付
+     * @return 現在からの指定日付前日付
+     */
     public Date getInterviewDateBeforeDay(int before) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Date now = new Date();
@@ -319,6 +373,10 @@ public class InterviewConditionRequest implements Serializable {
         return Utils.dayAfter(now, (-1) * before);
     }
 
+    /**
+     * 現在から最終面談月数前の日付
+     * @return 現在から最終面談月数前の日付
+     */
     public Date getInterviewDateLastDate() {
         Date result = null;
         Calendar calendar = Calendar.getInstance();

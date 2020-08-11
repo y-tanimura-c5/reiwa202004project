@@ -1,4 +1,4 @@
-package com.cfiv.sysdev.rrs.dto;
+package com.cfiv.sysdev.rrs.request;
 
 import java.io.Serializable;
 import java.text.ParseException;
@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.cfiv.sysdev.rrs.Consts;
 import com.cfiv.sysdev.rrs.annotation.AttachedFile;
 import com.cfiv.sysdev.rrs.annotation.EmployeeCodeUsed;
+import com.cfiv.sysdev.rrs.csv.InterviewCSV;
 import com.cfiv.sysdev.rrs.entity.InterviewAttach;
 import com.cfiv.sysdev.rrs.entity.InterviewContent;
 import com.cfiv.sysdev.rrs.entity.InterviewResult;
@@ -261,14 +262,30 @@ public class InterviewRequest implements Serializable {
         }
     }
 
+    /**
+     * 面談内容選択コードチェック(会社関連)
+     * @param c チェック対象コード
+     * @return true＝含まれる／false＝含まれない
+     */
     public boolean containsContentJobChecked(int c) {
         return containsContentChecked(contentJobCheckedList, c);
     }
 
+    /**
+     * 面談内容選択コードチェック(プライベート)
+     * @param c チェック対象コード
+     * @return true＝含まれる／false＝含まれない
+     */
     public boolean containsContentPrivateChecked(int c) {
         return containsContentChecked(contentPrivateCheckedList, c);
     }
 
+    /**
+     * 選択コードチェック
+     * @param list 選択済コードリスト
+     * @param c チェック対象コード
+     * @return true＝含まれる／false＝含まれない
+     */
     private boolean containsContentChecked(List<Integer> list, int c) {
         for (int value : list) {
             if (value == c) {
@@ -279,6 +296,10 @@ public class InterviewRequest implements Serializable {
         return false;
     }
 
+    /**
+     * 面談日
+     * @return 面談日(Date形式)
+     */
     public Date getInterviewDateDate() {
         Date result;
         try {
