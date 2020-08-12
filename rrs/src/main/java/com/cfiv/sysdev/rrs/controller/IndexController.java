@@ -58,6 +58,10 @@ public class IndexController {
         UserRequest uReq = userService.getLoginAccount();
         InterviewSearchRequest cond = interviewService.getSearchRequestFromCondition(uReq.getUsername());
 
+        if (uReq.getUserRoleCode() != Consts.USERROLECODE_ADMIN) {
+            cond.setCompanyID(uReq.getCompanyID());
+        }
+
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(Consts.PAGENATION_PAGESIZE);
 

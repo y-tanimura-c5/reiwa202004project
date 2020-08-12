@@ -247,6 +247,7 @@ public class InterviewRequest implements Serializable {
     /**
      * 添付ファイル名
      */
+    @Size(max=200)
     private String attachedFilename;
 
     /**

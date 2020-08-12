@@ -19,6 +19,11 @@ public class AttachFileValidator implements ConstraintValidator<AttachedFile, Mu
         String message = "";
 
         if (multipartFile != null && !multipartFile.getOriginalFilename().isEmpty()) {
+            // ファイル名長チェック
+            if (multipartFile.getOriginalFilename().length() > 200) {
+                message = "登録可能な添付ファイル名は200文字以内です。＜添付ファイル：" + multipartFile.getOriginalFilename() + "＞";
+            }
+
             // 拡張子チェック
             if (!multipartFile.getOriginalFilename().toLowerCase().endsWith(".jpg") &&
                     !multipartFile.getOriginalFilename().toLowerCase().endsWith(".jpeg") &&
