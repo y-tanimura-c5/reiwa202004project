@@ -10,7 +10,9 @@
 		<div class="card mt-2 p-3">
 			<div class="card-heading"><h2>ユーザー情報新規登録</h2></div>
 			<div class="card-body">
-				<div><a class="btn btn-primary" th:href="@{/user/list}">ユーザー情報一覧へ戻る</a></div>
+				<div th:if="${loginUser.userRoleCode == 0 || loginUser.userRoleCode == 1}">
+					<div><a class="btn btn-primary" th:href="@{/user/list}">ユーザー情報一覧へ戻る</a></div>
+				</div>
 				<div class="my-box mb-3"></div>
 				<form th:action="@{/user/create}" th:method="post" th:object="${user_request}">
 					<div class="row align-items-center" style="height:40px;">

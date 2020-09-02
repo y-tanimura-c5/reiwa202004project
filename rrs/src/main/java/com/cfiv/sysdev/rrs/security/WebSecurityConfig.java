@@ -37,6 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         web.formLogin().loginPage("/login").successForwardUrl("/").failureUrl("/login-error").permitAll();
         web.authorizeRequests().antMatchers("/css/**", "/images/**", "/js/**").permitAll().anyRequest().authenticated();
         web.logout().logoutSuccessUrl("/login").permitAll();
+        web.csrf().disable();
     }
 
     /**

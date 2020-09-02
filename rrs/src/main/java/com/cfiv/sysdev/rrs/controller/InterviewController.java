@@ -231,7 +231,7 @@ public class InterviewController {
      * @param result バリデーションチェック結果
      * @return 面談結果新規登録画面
      */
-    @RequestMapping(value = "/interview/submit", params = "info", method = RequestMethod.POST)
+    @RequestMapping(value = "/interview/submit", method = RequestMethod.POST)
     public String info(Model model
             , @ModelAttribute("interview_request") @Valid InterviewRequest req
             , BindingResult result) {

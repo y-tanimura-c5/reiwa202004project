@@ -62,6 +62,18 @@ public class UserService implements UserDetailsService {
     }
 
     /**
+     * ユーザー情報 企業コード指定検索
+     * @return 検索結果
+     */
+    public List<Account> searchFromUsername(String username) {
+        Account account = accountRepository.findByUsername(username);
+        List<Account> list = new ArrayList<>();
+        list.add(account);
+
+        return list;
+    }
+
+    /**
      * 企業コード 全検索
      * @param pageable ページング条件
      * @return 検索結果ページ(UserRequest)
@@ -73,8 +85,11 @@ public class UserService implements UserDetailsService {
         if (lReq.getUserRoleCode() == Consts.USERROLECODE_ADMIN) {
             list = searchAll();
         }
-        else {
+        else if (lReq.getUserRoleCode() == Consts.USERROLECODE_CLIENTADMIN) {
             list = searchFromCompanyID(lReq.getCompanyIDLong());
+        }
+        else {
+            list = searchFromUsername(lReq.getUsername());
         }
 
         for (Account account : list) {
