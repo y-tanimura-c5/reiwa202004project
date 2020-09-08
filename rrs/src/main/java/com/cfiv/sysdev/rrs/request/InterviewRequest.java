@@ -131,7 +131,7 @@ public class InterviewRequest implements Serializable {
     private EmployeeRequest employee;
 
     /**
-     * 従業員名字
+     * 従業員氏名
      */
     private String employeeFName;
 

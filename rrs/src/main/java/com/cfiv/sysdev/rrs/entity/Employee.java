@@ -43,7 +43,7 @@ public class Employee {
     private String employeeCode;
 
     /**
-     * 従業員名字
+     * 従業員氏名
      */
     @Column(name = "EMPLOYEE_FNAME", nullable = false)
     private String employeeFName;

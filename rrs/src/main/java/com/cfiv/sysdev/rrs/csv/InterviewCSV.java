@@ -33,9 +33,9 @@ public class InterviewCSV {
     private String employeeCode;
 
     /**
-     * 従業員番号
+     * 従業員氏名
      */
-    @CsvBindByName(column = "従業員名字", required = true)
+    @CsvBindByName(column = "従業員氏名", required = true)
     @CsvBindByPosition(position = 3)
     private String employeeFName;
 

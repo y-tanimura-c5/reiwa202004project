@@ -30,9 +30,9 @@ public class EmployeeCSV {
     private String employeeCode;
 
     /**
-     * 従業員名字
+     * 従業員氏名
      */
-    @CsvBindByName(column = "従業員名字", required = true)
+    @CsvBindByName(column = "従業員氏名", required = true)
     private String employeeFName;
 
     /**
@@ -112,20 +112,20 @@ public class EmployeeCSV {
     }
 
     /**
-     * 従業員名字バリデーションチェック
+     * 従業員氏名バリデーションチェック
      */
     private void checkEmployeeFName() {
         // 20文字以内か
         if (employeeFName.length() > 20) {
             result = false;
-            reason += "従業員名字が20文字を超えています。";
+            reason += "従業員氏名が20文字を超えています。";
             return;
         }
 
-        // 全角カタカナのみか
-        if (!employeeFName.matches("^[ァ-ンヴー]*$")) {
+        // 半角英数記号、全角英数記号、ひらがな、カタカナ、漢字か
+        if (!employeeFName.matches("^[a-zA-Z0-9 -/:-@\\[-`{-~　-〓ａ-ｚＡ-Ｚ０-９ぁ-んァ-ヶ\\p{InCjkUnifiedIdeographs}]*$")) {
             result = false;
-            reason += "従業員名字に全角カタカナ以外の文字が含まれています。";
+            reason += "従業員氏名に登録不可能な文字が含まれています。";
         }
     }
 

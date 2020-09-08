@@ -50,7 +50,7 @@ public class EmployeeRequest implements Serializable {
     private String employeeCode;
 
     /**
-     * 従業員名字
+     * 従業員氏名
      */
     private String employeeFName;
 
