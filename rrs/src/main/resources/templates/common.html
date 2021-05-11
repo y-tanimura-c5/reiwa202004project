@@ -3,10 +3,13 @@
 <head th:fragment="meta_header(title,links,scripts)">
 	<meta charset="utf-8">
 	<title th:text="${title}+' - Reiwa Refine System'">各ページタイトル - Reiwa Refine System</title>
-	<link rel="stylesheet" href="/css/bootstrap.css" />
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 	<link rel="stylesheet" href="/css/style.css">
-	<script src="/js/jquery.js"></script>
-	<script src="/js/bootstrap.js"></script>
+
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.js"></script>
 	<script>
 	$(document).on('change', ':file', function() {
