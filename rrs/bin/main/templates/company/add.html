@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common :: meta_header('企業情報新規登録',~{::link},~{::script})">
+</head>
+<body>
+<div class="box">
+	<div th:replace="header :: header"></div>
+
+	<div class="container">
+		<div class="card mt-2 p-3">
+			<div class="card-heading"><h2>企業情報新規登録</h2></div>
+			<div class="card-body">
+				<div><a class="btn btn-primary" th:href="@{/company/list}">企業情報一覧へ戻る</a></div>
+				<div class="my-box mb-1"></div>
+				<form th:action="@{/company/create}" th:method="post" th:object="${company_request}">
+					<div class="row align-items-center" style="height:40px;">
+						<div class="col-md-2 col-lg-2">
+							企業コード：
+						</div>
+						<div class="col-md-3 col-lg-3">
+							<input class="form-control" type="text" th:field="*{initialID}" disabled />
+						</div>
+					</div>
+
+					<div class="row align-items-center" style="height:40px;">
+						<div class="col-md-2 col-lg-2">
+							企業名称：
+						</div>
+						<div class="col-md-3 col-lg-3">
+							<input class="form-control" type="text" th:field="*{name}" />
+						</div>
+						<div class="col-md-5 col-lg-5">
+							<label th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color: red"></label>
+						</div>
+					</div>
+
+					<div class="row align-items-center" style="height:40px;">
+						<div class="col-md-2 col-lg-2">
+							有効／無効：
+						</div>
+						<div class="col-md-8 col-lg-10">
+							<div class="row align-items-center">
+								<div th:each="item : *{enabledItems}" class="col-md-3 col-lg-3">
+									<input type="radio" name="enabled" th:value="${item.key}" th:text="${item.value}" th:field="*{enabled}" />
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="my-box mb-3"></div>
+					<div class="col text-center">
+						<button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#modalconfirm">
+							登録
+						</button>
+						<div class="modal fade" id="modalconfirm" tabindex="-1" role="dialog" aria-labelledby="labelconfirm" aria-hidden="true">
+							<div class="modal-dialog modal-dialog-centered" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title" id="labelconfirm">企業情報新規登録</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+									<div class="modal-body">
+										入力した内容で企業情報を新規登録します。
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-secondary" data-dismiss="modal">キャンセル</button>
+										<button class="btn btn-primary" type="submit">登録</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div th:replace="footer :: footer"></div>
+</div>
+</body>
+</html>

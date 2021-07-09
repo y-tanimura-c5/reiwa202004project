@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common :: meta_header('従業員情報検索',~{::link},~{::script})">
+</head>
+<body>
+<div class="box">
+	<div th:replace="header :: header"></div>
+
+	<div class="container-fluid">
+		<div class="card mt-2 p-3">
+			<div class="card-heading"><h2>従業員情報検索</h2></div>
+			<div class="card-body">
+				<form th:action="@{/employee/search}" th:method="post" th:object="${employee_request}">
+					<div class="row align-items-center" style="height:40px;">
+						<div class="col-md-2 col-lg-2">
+							企業コード：
+						</div>
+						<div class="col-md-3 col-lg-3">
+							<div th:if="${loginUser.userRoleCode == 0}">
+								<input class="form-control" type="text" th:field="*{companyID}" />
+							</div>
+							<div th:if="${loginUser.userRoleCode != 0}">
+								<input class="form-control" type="text" th:field="*{companyID}" readonly/>
+							</div>
+						</div>
+					</div>
+
+					<div class="row align-items-center" style="height:40px;">
+						<div class="col-md-2 col-lg-2">
+							従業員番号：
+						</div>
+						<div class="col-md-3 col-lg-3">
+							<input class="form-control" type="text" th:field="*{employeeCode}" />
+						</div>
+					</div>
+
+					<div class="my-box mb-3"></div>
+					<div class="col text-center">
+						<button class="btn btn-primary btn-block" type="submit">検索</button>
+					</div>
+				</form>
+
+				<div class="my-box mb-3"></div>
+				<div class="row align-items-center no-gutters" style="height:40px;">
+					<div class="col-md-2 col-lg-1">
+						<a id="search_result">検索結果：</a>
+					</div>
+					<div class="col-md-3 col-lg-3">
+						[[${page.totalElements}]] 件
+					</div>
+				</div>
+				<table class="table table-hover table-bordered">
+					<thead class="thead-darknavy">
+						<tr>
+							<th><div class="text-center">企業コード</div></th>
+							<th><div class="text-center">従業員番号</div></th>
+							<th><div class="text-center">従業員氏名</div></th>
+							<th><div class="text-center">入社年月</div></th>
+							<th><div class="text-center">採用種別</div></th>
+							<th><div class="text-center">扶養有無</div></th>
+							<th><div class="text-center">就業種別</div></th>
+						</tr>
+					</thead>
+					<tbody>
+					    <tr th:each="employee : ${page.content}" th:object="${employee}" class="clickable-row" th:data-href="@{/employee/{id}/edit(id=*{id})}">
+							<td><div class="text-center" th:text="${employee.companyID}"></div></td>
+							<td><div class="text-center" th:text="${employee.employeeCode}"></div></td>
+							<td><div class="text-center" th:text="${employee.employeeFName}"></div></td>
+							<td><div class="text-center" th:text="${employee.hireYMShort}"></div></td>
+							<td><div class="text-center" th:text="${employee.adopt}"></div></td>
+							<td><div class="text-center" th:text="${employee.support}"></div></td>
+							<td>
+								<div th:if="${employee.employCode == 1}" class="text-center text-danger">
+									<a th:text="${employee.employ}"></a>
+								</div>
+								<div th:if="!${employee.employCode == 1}" class="text-center">
+									<a th:text="${employee.employ}"></a>
+								</div>
+							</td>
+					    </tr>
+					</tbody>
+				</table>
+
+				<div th:if="${page.totalElements != 0}">
+					<form th:action="@{/employee/pagenate}" th:object="${page}" method="get">
+						<ul>
+							<li th:class="${page.first} ? 'disabled':''" style="display:inline">
+								<span th:if="${page.first}">＜＜先頭</span>
+								<a th:if="${not page.first}" th:href="@{${url}(page=1)}">＜＜先頭</a>
+							</li>
+							<li th:each="i : ${#numbers.sequence(1, page.totalPages)}" th:class="(${i}==${page.number})? 'active' : ''" style="display:inline">
+								<span th:if="${i}==${page.number + 1}" th:text="'　' + ${i}">1</span>
+								<a th:if="${i}!=${page.number + 1}" th:href="@{${url}(page=${i})}">
+									<span th:text="'　' + ${i}">1</span>
+								</a>
+							</li>
+							<li th:class="${page.last} ? 'disabled':''" style="display:inline">
+								<span th:if="${page.last}">　末尾＞＞</span>
+								<a th:if="${not page.last}" th:href="@{${url}(page=(${page.totalPages}))}">　末尾＞＞</a>
+							</li>
+						</ul>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div th:replace="footer :: footer"></div>
+</div>
+</body>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common :: meta_header('企業情報一覧',~{::link},~{::script})">
+</head>
+<body>
+<div class="box">
+	<div th:replace="header :: header"></div>
+
+	<div class="container-fluid">
+		<div class="card mt-2 p-3">
+			<div class="card-heading"><h2>企業情報一覧</h2></div>
+			<div class="card-body">
+				<div><a class="btn btn-primary" th:href="@{/company/add}">企業情報の新規登録</a></div>
+
+				<div class="my-box mb-3"></div>
+				<table class="table table-hover table-bordered">
+					<thead class="thead-darknavy">
+						<tr>
+							<th><div class="text-center">企業コード</div></th>
+							<th><div class="text-center">企業名称</div></th>
+							<th><div class="text-center">種別</div></th>
+							<th><div class="text-center">最終ログイン日</div></th>
+							<th><div class="text-center">最終面談日</div></th>
+						</tr>
+					</thead>
+					<tbody>
+					    <tr th:each="company : ${page.content}" th:object="${company}" class="clickable-row" th:data-href="@{/company/{id}/edit(id=*{id})}">
+					        <td><div class="text-center" th:text="${company.id}"></div></td>
+					        <td><div class="text-center" th:text="${company.name}"></div></td>
+					        <td><div class="text-center" th:text="${company.enabledName}"></div></td>
+					        <td><div class="text-center" th:text="${company.lastLoginDateString}"></div></td>
+					        <td><div class="text-center" th:text="${company.lastInterviewDateString}"></div></td>
+					    </tr>
+					</tbody>
+				</table>
+
+				<div th:if="${page.totalElements != 0}">
+					<ul>
+						<li th:class="${page.first} ? 'disabled':''" style="display:inline">
+							<span th:if="${page.first}">＜＜先頭</span>
+							<a th:if="${not page.first}" th:href="@{${url}(page=1)}">＜＜先頭</a>
+						</li>
+						<li th:each="i : ${#numbers.sequence(1, page.totalPages)}" th:class="(${i}==${page.number})? 'active' : ''" style="display:inline">
+							<span th:if="${i}==${page.number + 1}" th:text="'　' + ${i}">1</span>
+							<a th:if="${i}!=${page.number + 1}" th:href="@{${url}(page=${i})}">
+								<span th:text="'　' + ${i}">1</span>
+							</a>
+						</li>
+						<li th:class="${page.last} ? 'disabled':''" style="display:inline">
+							<span th:if="${page.last}">　末尾＞＞</span>
+							<a th:if="${not page.last}" th:href="@{${url}(page=(${page.totalPages}))}">　末尾＞＞</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div th:replace="footer :: footer"></div>
+</div>
+</body>

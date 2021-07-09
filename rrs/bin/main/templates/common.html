@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head th:fragment="meta_header(title,links,scripts)">
+	<meta charset="utf-8">
+	<title th:text="${title}+' - Reiwa Refine System'">各ページタイトル - Reiwa Refine System</title>
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/css/style.css">
+
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.js"></script>
+	<script>
+	$(document).on('change', ':file', function() {
+		var input = $(this),
+		numFiles = input.get(0).files ? input.get(0).files.length : 1,
+		label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+		input.parent().parent().next(':text').val(label);
+
+		var files = !!this.files ? this.files : [];
+		if (!files.length || !window.FileReader) return; // no file selected, or no FileReader support
+		if (/^image/.test( files[0].type)){ // only image file
+			var reader = new FileReader(); // instance of the FileReader
+			reader.readAsDataURL(files[0]); // read the local file
+			reader.onloadend = function(){ // set image data as background of div
+				input.parent().parent().parent().prev('.imagePreview').css("background-image", "url("+this.result+")");
+			}
+		}
+	});
+
+	jQuery(document).ready(function($) {
+		$(".clickable-row").click(function() {
+			window.location = $(this).data("href");
+		});
+	});
+
+	$(function() {
+		$(document).on("keypress", "input:not(.allow_submit)", function(event) {
+			return event.which !== 13;
+		});
+	});
+</script>
+</head>
+<body>
+</body>
+</html>
